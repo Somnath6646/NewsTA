@@ -1,0 +1,48 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/bg_color</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="Cardviewripple" parent="CardView">
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="DescriptionText">
+        <item name="fontFamily">@font/seguisb</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">#605F5F</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+
+    <style name="Loginbuttontextstyle">
+        <item name="fontFamily">@font/segoeuib</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#003459</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+
+
+    <style name="signinbuttontextstyle">
+        <item name="fontFamily">@font/segoeuib</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+
+</resources>

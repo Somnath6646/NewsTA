@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/onboardingFragment">
+
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="com.newsta.android.ui.onboarding.OnboardingFragment"
+        android:label="fragment_onboarding"
+        tools:layout="@layout/fragment_onboarding" >
+        <action
+            android:id="@+id/action_onboardingFragment_to_signupSigninOptionsFragment"
+            app:destination="@id/signupSigninOptionsFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/signupSigninOptionsFragment"
+        android:name="com.newsta.android.ui.authentication.AuthenticationOptionsFragment"
+        android:label="SignupSigninOptionsFragment" >
+        <action
+            android:id="@+id/action_signupSigninOptionsFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_signupSigninOptionsFragment_to_signinFragment"
+            app:destination="@id/signinFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.newsta.android.ui.authentication.SignUpFragment"
+        android:label="SignUpFragment" />
+    <fragment
+        android:id="@+id/signinFragment"
+        android:name="com.newsta.android.ui.authentication.SigninFragment"
+        android:label="SigninFragment"
+        />
+</navigation>
