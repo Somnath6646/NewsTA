@@ -31,36 +31,35 @@ class SigninFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-         binding = DataBindingUtil.inflate<FragmentSigninBinding>(inflater, R.layout.fragment_signin, container, false )
+        binding = DataBindingUtil.inflate<FragmentSigninBinding>(
+            inflater,
+            R.layout.fragment_signin,
+            container,
+            false
+        )
 
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
-
-
         test()
 
         return binding.root
     }
+
     val REQUEST_CODE_EMAIL = 1;
 
-    fun test(){
-
-
-
-        // ...
+    fun test() {
 
         try {
-            val intent = AccountPicker.newChooseAccountIntent(null, null,
-             arrayOf(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE) , false, null, null, null, null);
+            val intent = AccountManager.newChooseAccountIntent(
+                null, null,
+                arrayOf(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE), false, null, null, null, null
+            );
             startActivityForResult(intent, REQUEST_CODE_EMAIL);
-        } catch ( e: ActivityNotFoundException) {
+        } catch (e: ActivityNotFoundException) {
             Log.i("Exception", e.toString())
         }
-
-
-
 
     }
 
@@ -70,12 +69,6 @@ class SigninFragment : Fragment() {
             binding.username.setText(accountName)
         }
     }
-
-
-
-
-
-
 
 
 }
