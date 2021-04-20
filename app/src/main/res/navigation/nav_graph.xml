@@ -3,21 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/onboardingFragment">
+    app:startDestination="@id/splashFragment">
 
-    <fragment
-        android:id="@+id/onboardingFragment"
-        android:name="com.newsta.android.ui.onboarding.OnboardingFragment"
-        android:label="fragment_onboarding"
-        tools:layout="@layout/fragment_onboarding" >
-        <action
-            android:id="@+id/action_onboardingFragment_to_signupSigninOptionsFragment"
-            app:destination="@id/signupSigninOptionsFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right" />
-    </fragment>
     <fragment
         android:id="@+id/signupSigninOptionsFragment"
         android:name="com.newsta.android.ui.authentication.AuthenticationOptionsFragment"
@@ -36,6 +23,13 @@
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_signupSigninOptionsFragment_to_email_SignUpFragment"
+            app:destination="@id/email_SignUpFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -46,4 +40,35 @@
         android:name="com.newsta.android.ui.authentication.SigninFragment"
         android:label="SigninFragment"
         />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.newsta.android.ui.SplashFragment"
+        android:label="SplashFragment" >
+        <action
+            android:id="@+id/action_splashFragment_to_signupSigninOptionsFragment"
+            app:destination="@id/signupSigninOptionsFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/email_SignUpFragment"
+        android:name="com.newsta.android.ui.authentication.Email_SignUpFragment"
+        android:label="fragment_email__sign_up"
+        tools:layout="@layout/fragment_email__sign_up" >
+        <action
+            android:id="@+id/action_email_SignUpFragment_to_password_SignUpFragment"
+            app:destination="@id/password_SignUpFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/password_SignUpFragment"
+        android:name="com.newsta.android.ui.authentication.Password_SignUpFragment"
+        android:label="Password_SignUpFragment" />
 </navigation>

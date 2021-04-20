@@ -43,7 +43,7 @@ class SignUpFragment : Fragment() {
         binding.btnSignup.setOnClickListener {
             val email = binding.inputUsername.text.toString()
             val password = binding.inputPassword.text.toString()
-            viewModel.signUp(email, password)
+            viewModel.signUp()
         }
 
         return binding.root

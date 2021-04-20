@@ -1,19 +1,27 @@
 package com.newsta.android.ui.authentication
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
 import com.newsta.android.R
-import com.newsta.android.ui.authentication.AuthenticationOptionsFragment
 import com.newsta.android.databinding.FragmentSignupSigninOptionsBinding
+import java.util.*
 
 
 class AuthenticationOptionsFragment : Fragment() {
 
+
+    private lateinit var callbackManager: CallbackManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +33,7 @@ class AuthenticationOptionsFragment : Fragment() {
 
         binding.btnSignup3.setOnClickListener {
             val action =
-                AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToSignUpFragment()
+                AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToEmailSignUpFragment()
             findNavController().navigate(action)
         }
 
@@ -34,8 +42,46 @@ class AuthenticationOptionsFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+
+          callbackManager = CallbackManager.Factory.create();
+
+
+        val EMAIL = "email"
+
+        val loginButton = binding.loginButton
+        loginButton.setReadPermissions(Arrays.asList(EMAIL))
+         loginButton.setFragment(this);
+
+        // Callback registration
+        // If you are using in a fragment, call loginButton.setFragment(this);
+
+        // Callback registration
+        loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
+            override fun onSuccess(loginResult: LoginResult?) {
+                Toast.makeText(requireActivity(), loginResult.toString(), Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onCancel() {
+                Toast.makeText(requireActivity(), "cancel", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onError(exception: FacebookException) {
+                Toast.makeText(requireActivity(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
+        })
+
         return binding.root
 
+    }
+
+
+     override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+        callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
 

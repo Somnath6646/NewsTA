@@ -1,16 +1,16 @@
 package com.newsta.android.remote.services
 
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import com.newsta.android.remote.data.SignupRequest
+import com.newsta.android.responses.LoginResponse
+import okhttp3.RequestBody
+import retrofit2.http.*
 
 interface AuthenticationService {
 
-    @FormUrlEncoded
+    @Headers("Accept: application/json")
     @POST("signup/email")
     suspend fun signup(
-        @Field("email") email:String,
-        @Field("password") password:String
+        @Body signupRequest: SignupRequest
     ): LoginResponse
 
 }

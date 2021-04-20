@@ -17,6 +17,7 @@ abstract class BaseFragment <T: ViewDataBinding/*, VM: ViewModel*/>: Fragment(){
     //protected lateinit var viewModel: VM
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,6 +30,7 @@ abstract class BaseFragment <T: ViewDataBinding/*, VM: ViewModel*/>: Fragment(){
             false
         )
         //viewModel = ViewModelProvider(requireActivity()).get(getViewModel())
+
         return binding.root
     }
 
