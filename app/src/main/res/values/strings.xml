@@ -15,5 +15,5 @@
     <string name="text_btn_signup">SIGN UP</string>
     <string name="text_btn_signin">SIGN IN</string>
     <string name="heading_signin_fragment">Welcome Back</string>
-    <string name="descr_heading_signin">Sign in with your NewsTA account for\nlatest catchup of news</string>
+    <string name="descr_heading_signin">Sign in with your NewsTA account for latest catchup of news</string>
 </resources>
