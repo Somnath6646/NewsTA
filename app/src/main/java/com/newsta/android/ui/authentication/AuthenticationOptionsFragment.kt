@@ -2,10 +2,12 @@ package com.newsta.android.ui.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -29,7 +31,11 @@ class AuthenticationOptionsFragment : Fragment() {
     ): View? {
 
         val binding = DataBindingUtil.inflate<FragmentSignupSigninOptionsBinding>(inflater,
-            R.layout.fragment_signup_signin_options, container, false )
+            R.layout.fragment_signup_signin_options, container, false)
+
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+
+        ViewCompat.setTransitionName(binding.imageView, "logoTransition")
 
         binding.btnSignup3.setOnClickListener {
             val action =

@@ -25,28 +25,19 @@ constructor(private val authRepository: AuthRepository,
     val signupResponse: LiveData <Resource<LoginResponse>>
     get() = _signupResponse
 
-
     @Bindable
     val email = MutableLiveData<String>("")
 
     @Bindable
     val password = MutableLiveData<String>("")
 
-    fun signUp(){
-
+    fun signUp() {
         viewModelScope.launch {
-
            _signupResponse.value =  authRepository.signup(SignupRequest(email.value!!, password = password.value!!))
         }
-
     }
 
-    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
-
-    }
-
-    override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
-
-    }
+    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
+    override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 
 }

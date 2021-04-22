@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.commit
+import androidx.navigation.ActivityNavigatorExtras
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSplashBinding
@@ -21,7 +24,9 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
         object : CountDownTimer(2000, 1000){
             override fun onFinish() {
                 val action = SplashFragmentDirections.actionSplashFragmentToSignupSigninOptionsFragment()
-                findNavController().navigate(action)
+                val extras = FragmentNavigatorExtras(binding.logo to "logoTransition")
+
+                findNavController().navigate(action, extras)
             }
 
             override fun onTick(millisUntilFinished: Long) {

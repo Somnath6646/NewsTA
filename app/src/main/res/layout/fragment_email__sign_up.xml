@@ -136,9 +136,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:letterSpacing="0.15"
-            android:text="NEXT"
-
-            />
+            android:text="NEXT" />
     </androidx.cardview.widget.CardView>
 
 

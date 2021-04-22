@@ -47,10 +47,8 @@
         <action
             android:id="@+id/action_splashFragment_to_signupSigninOptionsFragment"
             app:destination="@id/signupSigninOptionsFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
