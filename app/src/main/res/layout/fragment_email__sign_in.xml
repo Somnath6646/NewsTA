@@ -10,11 +10,12 @@
             type="com.newsta.android.ui.authentication.AuthenticationViewmodel" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.authentication.signup.Password_SignUpFragment"
-        android:background="@color/bg_color">
+        android:background="@color/bg_color"
+        tools:context=".ui.authentication.signin.Email_SignInFragment">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_guidline"
@@ -62,19 +63,18 @@
             style="@style/TextActionBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Account"
+            android:text="Login"
             app:layout_constraintBottom_toBottomOf="@+id/btn_back"
             app:layout_constraintEnd_toEndOf="@id/right_guidline"
             app:layout_constraintStart_toStartOf="@id/left_guidline"
             app:layout_constraintTop_toBottomOf="@id/top_guidline" />
 
         <TextView
-            android:id="@+id/heading_password_signup"
+            android:id="@+id/heading_email_signin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/left_guidline"
-            android:text="Password"
-            android:textSize="28sp"
+            android:text="Email"
             app:layout_constraintTop_toBottomOf="@id/btn_back"
             android:layout_marginTop="24dp"
             android:textColor="@color/colorText"
@@ -82,31 +82,39 @@
             />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldPassword"
-            style="@style/PasswordFieldStyle"
+            android:id="@+id/textFieldEmail"
+            style="@style/TextFieldStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/left_guidline"
             app:layout_constraintEnd_toEndOf="@id/right_guidline"
-            app:layout_constraintTop_toBottomOf="@id/heading_password_signup"
+            app:layout_constraintTop_toBottomOf="@id/heading_email_signin"
             android:layout_marginTop="18dp"
             android:layout_marginBottom="10dp"
-            android:hint="Enter your password">
+            android:hint="Enter your email">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_password"
+                android:id="@+id/input_email"
+                android:text="@={viewModel.email}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.password}"
-                android:inputType="textPassword" />
+                android:inputType="textPersonName" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
+        <TextView
+            android:id="@+id/descr_heading_signin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorText"
+            app:layout_constraintTop_toBottomOf="@id/textFieldEmail"
+            app:layout_constraintStart_toEndOf="@id/left_guidline"
+            android:text="You'll need to verify this email later" />
 
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/btn_signup"
+            android:id="@+id/btn_next"
             style="@style/Ctabutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -120,14 +128,14 @@
             android:paddingBottom="10dp"
             app:layout_constraintEnd_toEndOf="@id/right_guidline"
             app:layout_constraintStart_toStartOf="@id/left_guidline"
-            app:layout_constraintTop_toBottomOf="@id/textFieldPassword">
+            app:layout_constraintTop_toBottomOf="@id/descr_heading_signin">
 
             <TextView
                 style="@style/Ctabuttontextstyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:letterSpacing="0.15"
-                android:text="SIGN UP"
+                android:text="NEXT"
 
                 />
         </androidx.cardview.widget.CardView>

@@ -1,4 +1,4 @@
-package com.newsta.android.ui.authentication
+package com.newsta.android.ui.authentication.signup
 
 
 import android.accounts.AccountManager
@@ -7,18 +7,15 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.GoogleAuthUtil
-import com.google.android.gms.common.AccountPicker
-import com.google.android.gms.common.AccountPicker.AccountChooserOptions
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentEmailSignUpBinding
+import com.newsta.android.ui.authentication.AuthenticationViewmodel
 import com.newsta.android.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 
 
 @AndroidEntryPoint
@@ -71,7 +68,7 @@ class Email_SignUpFragment : BaseFragment<FragmentEmailSignUpBinding>() {
 
     fun navigateToPasswordFragment() {
         val action =
-            Email_SignUpFragmentDirections.actionEmailSignUpFragmentToPasswordSignUpFragment()
+                Email_SignUpFragmentDirections.actionEmailSignUpFragmentToPasswordSignUpFragment()
         findNavController().navigate(action)
     }
 

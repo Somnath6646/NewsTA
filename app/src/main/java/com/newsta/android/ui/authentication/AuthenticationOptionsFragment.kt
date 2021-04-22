@@ -38,7 +38,7 @@ class AuthenticationOptionsFragment : Fragment() {
         }
 
         binding.btnSignin.setOnClickListener {
-            val action = AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToSigninFragment()
+            val action = AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToEmailSignInFragment()
             findNavController().navigate(action)
         }
 

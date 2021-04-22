@@ -6,7 +6,6 @@
         <item name="colorPrimaryDark">@color/bg_color</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="fontFamily">@font/segoeui</item>
-        <item name="alertDialogTheme">@style/Theme.MaterialComponents.Light.Dialog.Alert</item>
 
     </style>
 

@@ -1,8 +1,9 @@
 package com.newsta.android.remote.services
 
+import com.newsta.android.remote.data.SigninRequest
 import com.newsta.android.remote.data.SignupRequest
-import com.newsta.android.responses.LoginResponse
-import okhttp3.RequestBody
+import com.newsta.android.responses.SigninResponse
+import com.newsta.android.responses.SignupResponse
 import retrofit2.http.*
 
 interface AuthenticationService {
@@ -11,6 +12,13 @@ interface AuthenticationService {
     @POST("signup/email")
     suspend fun signup(
         @Body signupRequest: SignupRequest
-    ): LoginResponse
+    ): SignupResponse
+
+
+    @Headers("Accept: application/json")
+    @POST("login/email")
+    suspend fun signin(
+            @Body signupRequest: SigninRequest
+    ): SigninResponse
 
 }

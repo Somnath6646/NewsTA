@@ -10,36 +10,16 @@
         android:name="com.newsta.android.ui.authentication.AuthenticationOptionsFragment"
         android:label="SignupSigninOptionsFragment" >
         <action
-            android:id="@+id/action_signupSigninOptionsFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-        <action
-            android:id="@+id/action_signupSigninOptionsFragment_to_signinFragment"
-            app:destination="@id/signinFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-        <action
             android:id="@+id/action_signupSigninOptionsFragment_to_email_SignUpFragment"
             app:destination="@id/email_SignUpFragment"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_signupSigninOptionsFragment_to_email_SignInFragment"
+            app:destination="@id/email_SignInFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/signUpFragment"
-        android:name="com.newsta.android.ui.authentication.SignUpFragment"
-        android:label="SignUpFragment" />
-    <fragment
-        android:id="@+id/signinFragment"
-        android:name="com.newsta.android.ui.authentication.SigninFragment"
-        android:label="SigninFragment"
-        />
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.newsta.android.ui.SplashFragment"
@@ -56,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/email_SignUpFragment"
-        android:name="com.newsta.android.ui.authentication.Email_SignUpFragment"
+        android:name="com.newsta.android.ui.authentication.signup.Email_SignUpFragment"
         android:label="fragment_email__sign_up"
         tools:layout="@layout/fragment_email__sign_up" >
         <action
@@ -69,6 +49,22 @@
     </fragment>
     <fragment
         android:id="@+id/password_SignUpFragment"
-        android:name="com.newsta.android.ui.authentication.Password_SignUpFragment"
+        android:name="com.newsta.android.ui.authentication.signup.Password_SignUpFragment"
         android:label="Password_SignUpFragment" />
+    <fragment
+        android:id="@+id/email_SignInFragment"
+        android:name="com.newsta.android.ui.authentication.signin.Email_SignInFragment"
+        android:label="Email_SignInFragment" >
+        <action
+            android:id="@+id/action_email_SignInFragment_to_password_SignInFragment"
+            app:destination="@id/password_SignInFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/password_SignInFragment"
+        android:name="com.newsta.android.ui.authentication.signin.Password_SignInFragment"
+        android:label="Password_SignInFragment" />
 </navigation>

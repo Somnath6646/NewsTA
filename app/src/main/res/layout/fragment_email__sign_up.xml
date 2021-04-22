@@ -15,7 +15,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color"
-    tools:context=".ui.authentication.Email_SignUpFragment">
+    tools:context=".ui.authentication.signup.Email_SignUpFragment">
 
    <androidx.constraintlayout.widget.Guideline
        android:id="@+id/left_guidline"
