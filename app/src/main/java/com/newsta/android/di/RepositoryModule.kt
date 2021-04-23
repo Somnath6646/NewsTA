@@ -1,7 +1,9 @@
 package com.newsta.android.di
 
 import com.newsta.android.remote.services.AuthenticationService
+import com.newsta.android.remote.services.NewsService
 import com.newsta.android.repository.AuthRepository
+import com.newsta.android.repository.NewsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,4 +19,11 @@ object RepositoryModule {
     fun provideAuthRepostory(authenticationService: AuthenticationService): AuthRepository{
         return AuthRepository(authenticationService)
     }
+
+    @Singleton
+    @Provides
+    fun provideNewsRepository(newsService: NewsService): NewsRepository {
+        return NewsRepository(newsService)
+    }
+
 }

@@ -16,4 +16,5 @@
     <string name="heading_signin_fragment">Welcome Back</string>
     <string name="descr_heading_signin">Sign in with your NewsTA account for latest catchup of news</string>
     <string name="password_strength_message">Password should contain uppercase and lowercase characters, digits and/or special characters and must be 8 characters long</string>
+    <string name="newsta">Newsta</string>
 </resources>

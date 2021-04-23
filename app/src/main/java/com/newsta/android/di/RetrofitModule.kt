@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.newsta.android.BuildConfig
 import com.newsta.android.remote.services.AuthenticationService
+import com.newsta.android.remote.services.NewsService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,4 +54,13 @@ object RetrofitModule {
             .build()
             .create(AuthenticationService::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideNewsService(retrofit: Retrofit.Builder): NewsService {
+        return retrofit
+                .build()
+                .create(NewsService::class.java)
+    }
+
 }
