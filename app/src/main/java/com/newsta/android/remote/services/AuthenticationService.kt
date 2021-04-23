@@ -1,6 +1,7 @@
 package com.newsta.android.remote.services
 
 import com.newsta.android.remote.data.SignInRequest_Social
+import com.newsta.android.remote.data.SignUpRequest_Social
 import com.newsta.android.remote.data.SigninRequest
 import com.newsta.android.remote.data.SignupRequest
 import com.newsta.android.responses.SigninResponse
@@ -17,10 +18,10 @@ interface AuthenticationService {
 
 
     @Headers("Accept: application/json")
-    @POST("signin/si")
+    @POST("signup/si")
     suspend fun signup(
-            @Body signupRequest: SignInRequest_Social
-    ): SigninResponse
+            @Body signupRequest: SignUpRequest_Social
+    ): SignupResponse
 
 
 
@@ -32,9 +33,9 @@ interface AuthenticationService {
 
 
     @Headers("Accept: application/json")
-    @POST("signin/si")
+    @POST("login/si")
     suspend fun signin(
-            @Body signupRequest: SignInRequest_Social
+            @Body signinRequest: SignInRequest_Social
     ): SigninResponse
 
 }

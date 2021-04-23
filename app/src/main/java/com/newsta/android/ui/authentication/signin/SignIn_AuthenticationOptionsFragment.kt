@@ -1,17 +1,15 @@
-package com.newsta.android.ui.authentication.signup
+package com.newsta.android.ui.authentication.signin
 
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,37 +20,36 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginResult
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
-import com.newsta.android.databinding.FragmentSignupOptionsBinding
+import com.newsta.android.databinding.FragmentSignInAuthenticationOptionsBinding
 import com.newsta.android.remote.data.Resource
 import com.newsta.android.ui.authentication.AuthenticationViewmodel
 import com.newsta.android.ui.base.BaseFragment
 import java.util.*
 
-
-class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsBinding>() {
+class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenticationOptionsBinding>() {
 
 
     private lateinit var callbackManager: CallbackManager
     val viewModel by activityViewModels<AuthenticationViewmodel>()
 
-    override fun getFragmentView(): Int = R.layout.fragment_signup_options
+
+
+    override fun getFragmentView(): Int = R.layout.fragment_sign_in__authentication_options
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-
-        ViewCompat.setTransitionName(binding.imageView, "logoTransition")
-
-        binding.btnSignup.setOnClickListener {
-            val action =
-                    SignUp_AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToEmailSignUpFragment()
+        binding.btnSignInEmail.setOnClickListener {
+            val action = SignIn_AuthenticationOptionsFragmentDirections.actionSignInAuthenticationOptionsFragmentToEmailSignInFragment()
             findNavController().navigate(action)
         }
 
+        binding.btnSignup.setOnClickListener {
+            val action = SignIn_AuthenticationOptionsFragmentDirections.actionSignInAuthenticationOptionsFragmentToSignupSigninOptionsFragment()
+            findNavController().navigate(action)
+        }
 
-
-          callbackManager = CallbackManager.Factory.create();
+        callbackManager = CallbackManager.Factory.create();
 
 
         val EMAIL = "email"
@@ -72,7 +69,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
         })
 
 
-        viewModel.signupResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.signinResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it.getContentIfNotHandled().let {
                 when(it) {
                     is Resource.Success -> {
@@ -111,14 +108,14 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
 
         val loginButton = binding.loginButton
         loginButton.setReadPermissions(Arrays.asList(EMAIL))
-         loginButton.setFragment(this);
+        loginButton.setFragment(this);
 
 
         loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
             override fun onSuccess(loginResult: LoginResult?) {
                 if (loginResult != null) {
                     Log.i("Facebook Signin", loginResult.accessToken.token)
-                    viewModel.signUp(accessToken = loginResult.accessToken.token, iss = "facebook")
+                    viewModel.signIn(accessToken = loginResult.accessToken.token, iss = "facebook")
 
                 }else{
                     Log.i("Facebook Signin", "null")
@@ -134,31 +131,23 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
             }
         })
 
-        binding.btnSignin.setOnClickListener {
-            val action = SignUp_AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToSignInAuthenticationOptionsFragment()
-            findNavController().navigate(action)
-        }
-
-
     }
 
 
     fun navigateToMainFragment(){
-        val action = SignUp_AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToLandingFragment()
+        val action = SignIn_AuthenticationOptionsFragmentDirections.actionSignInAuthenticationOptionsFragmentToLandingFragment()
         findNavController().navigate(action)
     }
 
 
-     override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
+    override fun onActivityResult(
+            requestCode: Int,
+            resultCode: Int,
+            data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager.onActivityResult(requestCode, resultCode, data)
     }
-
-
 
 
 }

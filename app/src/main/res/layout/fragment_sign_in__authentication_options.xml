@@ -7,31 +7,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_color"
-        tools:context=".ui.authentication.signup.SignUp_AuthenticationOptionsFragment">
+        tools:context=".ui.authentication.signin.SignIn_AuthenticationOptionsFragment">
 
-         <ImageView
+        <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:src="@drawable/ic_logo"
             android:transitionName="logoTransition"
-            app:layout_constraintBottom_toTopOf="@+id/btn_signup"
+
+            app:layout_constraintBottom_toTopOf="@+id/btn_signInEmail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.25"
-             />
+            app:layout_constraintWidth_percent="0.25" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/btn_signup"
+            android:id="@+id/btn_signInEmail"
             style="@style/Ctabutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
-            app:layout_constraintBottom_toTopOf="@id/btn_fb_sign_up"
+            app:layout_constraintBottom_toTopOf="@id/btn_fb_sign_in"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -39,13 +39,13 @@
                 style="@style/Ctabuttontextstyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Easy Sign up"
+                android:text="Easy Sign in"
 
                 />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/btn_fb_sign_up"
+            android:id="@+id/btn_fb_sign_in"
             style="@style/Ctabutton"
             app:cardBackgroundColor="#4866AB"
             android:layout_width="0dp"
@@ -54,7 +54,7 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btn_google_signup"
+            app:layout_constraintBottom_toTopOf="@id/btn_google_signin"
             app:layout_constraintStart_toStartOf="parent">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                     style="@style/Ctabuttontextstyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Sign up with facebook"
+                    android:text="Sign in with facebook"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -89,7 +89,7 @@
 
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/btn_google_signup"
+            android:id="@+id/btn_google_signin"
             style="@style/Ctabutton"
             app:cardBackgroundColor="@android:color/holo_red_light"
             android:layout_width="0dp"
@@ -97,7 +97,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
-            app:layout_constraintBottom_toTopOf="@id/btn_signin"
+            app:layout_constraintBottom_toTopOf="@id/btn_signup"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -105,18 +105,18 @@
                 style="@style/Ctabuttontextstyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sign up with Google"
+                android:text="Sign in with Google"
 
                 />
         </androidx.cardview.widget.CardView>
 
         <TextView
-            android:id="@+id/btn_signin"
+            android:id="@+id/btn_signup"
             style="@style/Ctabuttontextstyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="28dp"
-            android:text="Log in"
+            android:text="Create your account"
             android:textColor="@color/colorText"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

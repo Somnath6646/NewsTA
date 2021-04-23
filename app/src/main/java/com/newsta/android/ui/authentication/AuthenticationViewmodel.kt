@@ -5,10 +5,7 @@ import androidx.databinding.Observable
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.newsta.android.remote.data.Resource
-import com.newsta.android.remote.data.SignInRequest_Social
-import com.newsta.android.remote.data.SigninRequest
-import com.newsta.android.remote.data.SignupRequest
+import com.newsta.android.remote.data.*
 import com.newsta.android.repository.AuthRepository
 import com.newsta.android.responses.SigninResponse
 import com.newsta.android.responses.SignupResponse
@@ -74,6 +71,12 @@ constructor(private val authRepository: AuthRepository,
     fun signIn(accessToken: String, iss: String){
         viewModelScope.launch{
             _signinResponse.value = Event(authRepository.signin(SignInRequest_Social(iss = iss, access_token = accessToken)))
+        }
+    }
+
+    fun signUp(accessToken: String, iss: String){
+        viewModelScope.launch{
+            _signupResponse.value = Event(authRepository.signup(SignUpRequest_Social(iss = iss, access_token = accessToken)))
         }
     }
 
