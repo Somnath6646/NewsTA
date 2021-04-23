@@ -1,4 +1,4 @@
-package com.newsta.android.ui.authentication
+package com.newsta.android.ui.authentication.signup
 
 
 import android.app.AlertDialog
@@ -24,8 +24,11 @@ import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentPasswordSignUpBinding
 import com.newsta.android.remote.data.Resource
+import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.ui.authentication.signin.Password_SignInFragment
 import com.newsta.android.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_landing.*
 
 @AndroidEntryPoint
 class Password_SignUpFragment : BaseFragment<FragmentPasswordSignUpBinding>() {
@@ -60,46 +63,79 @@ class Password_SignUpFragment : BaseFragment<FragmentPasswordSignUpBinding>() {
         }
 
         binding.btnBack.setOnClickListener {
-            findNavController().popBackStack()
-            viewModel.password.value = ""
+           goBack()
         }
 
         viewModel.password.observe(viewLifecycleOwner, Observer { password ->
             Log.i("password", "$password -----> Strength: ${passwordStrength(password)}")
         })
 
-        viewModel.signupResponse.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Resource.Success -> {
-                    Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
+
+        viewModel.navigate.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled().let {
+                if(it!=null){
+                when(it){
+                    "Landing" -> {
+                    navigateToMainFragment()
+                }
+                }
                 }
 
-                is Resource.Failure -> {
-                    Toast.makeText(requireContext(), "Signup Faliure ${it.errorCode}", Toast.LENGTH_SHORT).show()
+            }
 
-                    val dialog = Dialog(requireContext())
-                    val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
-                    dialog.setContentView(dialogBinding.root)
-                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        })
 
-                    dialog.setContentView(R.layout.auth_dialog)
-                    when(it.errorCode) {
-                        400 -> {
-                            dialogBinding.message.text = "Account with this email already exists"
-                            dialogBinding.buttonText.text = "Try Again"
-                            dialogBinding.button.setOnClickListener { v ->
-                                findNavController().popBackStack()
-                            }
-                            dialog.show()
-                        }
+        viewModel.signupResponse.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled().let {
+                when(it) {
+                    is Resource.Success -> {
+                        Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
+
+                        println("ACcessToken ${it.data.data}")
+                        viewModel.saveToken(it.data.data)
+
+
                     }
 
+                    is Resource.Failure -> {
+
+                        val dialog = Dialog(requireContext())
+                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
+                        dialog.setContentView(dialogBinding.root)
+                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                        when(it.errorCode) {
+                            400 -> {
+                                dialogBinding.message.text = "Account with this email already exists"
+                                dialogBinding.buttonText.text = "Try Again"
+                                dialogBinding.button.setOnClickListener {
+                                    dialog.dismiss()
+                                    goBack()
+                                }
+                                dialog.show()
+                            }
+                        }
+
+                    }
                 }
             }
+
         })
 
         showPasswordStrength()
 
+    }
+
+
+    fun goBack(){
+        findNavController().popBackStack()
+        viewModel.password.value = ""
+
+    }
+
+    fun navigateToMainFragment(){
+        val action = Password_SignUpFragmentDirections.actionPasswordSignUpFragmentToLandingFragment()
+        findNavController().navigate(action)
     }
 
     private fun showPasswordStrength() {

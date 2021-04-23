@@ -6,7 +6,8 @@
         <item name="colorPrimaryDark">@color/bg_color</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="fontFamily">@font/segoeui</item>
-        <item name="materialAlertDialogTheme">@style/Theme.MaterialComponents.DayNight.Dialog.Alert</item>
+        <item name="alertDialogTheme">@style/Theme.MaterialComponents.DayNight.Dialog.Alert</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="Cardviewripple" parent="CardView">

@@ -1,5 +1,6 @@
 package com.newsta.android.repository
 
+import com.newsta.android.remote.data.SignInRequest_Social
 import com.newsta.android.remote.data.SigninRequest
 import com.newsta.android.remote.data.SignupRequest
 import com.newsta.android.remote.services.AuthenticationService
@@ -15,11 +16,16 @@ class AuthRepository (
         api.signup(signupRequest)
     }
 
-
     suspend fun signin(
             signinRequest: SigninRequest
     ) = safeApiCall {
         api.signin(signinRequest)
+    }
+
+    suspend fun signin(
+            signinRequestSI: SignInRequest_Social
+    ) = safeApiCall {
+        api.signin(signinRequestSI)
     }
 
 

@@ -7,18 +7,34 @@
 
     <fragment
         android:id="@+id/signupSigninOptionsFragment"
-        android:name="com.newsta.android.ui.authentication.AuthenticationOptionsFragment"
+        android:name="com.newsta.android.ui.authentication.signup.SignUp_AuthenticationOptionsFragment"
         android:label="SignupSigninOptionsFragment" >
         <action
             android:id="@+id/action_signupSigninOptionsFragment_to_email_SignUpFragment"
             app:destination="@id/email_SignUpFragment"
+            app:popUpTo="@id/email_SignUpFragment"
+            app:popUpToInclusive="true"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
         <action
             android:id="@+id/action_signupSigninOptionsFragment_to_email_SignInFragment"
-            app:destination="@id/email_SignInFragment" />
+            app:destination="@id/email_SignInFragment"
+            app:popUpTo="@id/email_SignInFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_signupSigninOptionsFragment_to_landingFragment"
+            app:destination="@id/landingFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in"
+            app:popUpTo="@id/nav_graph"
+
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -30,6 +46,15 @@
             app:enterAnim="@anim/fade_in"
             app:popEnterAnim="@anim/fade_in"
             app:popUpTo="@id/nav_graph"
+
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_landingFragment"
+            app:destination="@id/landingFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in"
+            app:popUpTo="@id/nav_graph"
+
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -43,12 +68,23 @@
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
+            app:popUpTo="@id/password_SignUpFragment"
+            app:popUpToInclusive="true"
             app:popExitAnim="@anim/out_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/password_SignUpFragment"
         android:name="com.newsta.android.ui.authentication.signup.Password_SignUpFragment"
-        android:label="Password_SignUpFragment" />
+        android:label="Password_SignUpFragment" >
+        <action
+            android:id="@+id/action_password_SignUpFragment_to_landingFragment"
+            app:destination="@id/landingFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popUpTo="@id/nav_graph"
+
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/email_SignInFragment"
         android:name="com.newsta.android.ui.authentication.signin.Email_SignInFragment"
@@ -59,10 +95,25 @@
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
+            app:popUpTo="@id/password_SignInFragment"
+            app:popUpToInclusive="true"
             app:popExitAnim="@anim/out_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/password_SignInFragment"
         android:name="com.newsta.android.ui.authentication.signin.Password_SignInFragment"
-        android:label="Password_SignInFragment" />
+        android:label="Password_SignInFragment" >
+        <action
+            android:id="@+id/action_password_SignInFragment_to_landingFragment"
+            app:destination="@id/landingFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popUpTo="@id/nav_graph"
+
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/landingFragment"
+        android:name="com.newsta.android.ui.landing.LandingFragment"
+        android:label="LandingFragment" />
 </navigation>

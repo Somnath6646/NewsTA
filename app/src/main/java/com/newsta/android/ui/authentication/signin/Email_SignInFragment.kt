@@ -6,7 +6,11 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
+import android.util.Patterns
+import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -50,11 +54,26 @@ class Email_SignInFragment : BaseFragment<FragmentEmailSignInBinding>() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
             viewModel.email.value = ""
+            viewModel.password.value =""
         }
 
         binding.btnNext.setOnClickListener {
             navigateToPasswordFragment()
         }
+
+        binding.inputEmail.addTextChangedListener {  text: Editable? ->
+
+            val email = text.toString()
+            setNextButtonDisabled(!isEmailValid(email))
+
+        }
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.email.value = ""
+        viewModel.password.value = ""
     }
 
 
@@ -66,11 +85,38 @@ class Email_SignInFragment : BaseFragment<FragmentEmailSignInBinding>() {
         }
     }
 
+
     fun navigateToPasswordFragment() {
         val action =
                 Email_SignInFragmentDirections.actionEmailSignInFragmentToPasswordSignInFragment()
         findNavController().navigate(action)
     }
+
+    private fun isEmailValid(email: String?) = !email.isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
+    private fun validateEmail(email: String?) {
+        if(isEmailValid(email)) {
+            navigateToPasswordFragment()
+        } else {
+            Toast.makeText(context, "Enter a valid email", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+    private fun setNextButtonDisabled(isDisabled: Boolean) {
+        if(isDisabled) {
+            binding.btnNext.alpha = 0.5f
+            binding.btnNext.isEnabled = false
+        } else {
+            binding.btnNext.alpha = 1f
+            binding.btnNext.isEnabled = true
+        }
+    }
+
+
+
+
 
     override fun getFragmentView(): Int = R.layout.fragment_email__sign_in
 

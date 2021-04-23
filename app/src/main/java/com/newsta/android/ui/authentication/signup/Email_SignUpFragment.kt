@@ -1,4 +1,4 @@
-package com.newsta.android.ui.authentication
+package com.newsta.android.ui.authentication.signup
 
 
 import android.accounts.AccountManager
@@ -17,6 +17,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentEmailSignUpBinding
+import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.ui.authentication.signup.Email_SignUpFragmentDirections
 import com.newsta.android.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -55,6 +57,7 @@ class Email_SignUpFragment : BaseFragment<FragmentEmailSignUpBinding>() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
             viewModel.email.value = ""
+            viewModel.password.value = ""
         }
 
         binding.btnNext.setOnClickListener {
@@ -68,6 +71,13 @@ class Email_SignUpFragment : BaseFragment<FragmentEmailSignUpBinding>() {
 
         }
 
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.email.value = ""
+        viewModel.password.value = ""
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
