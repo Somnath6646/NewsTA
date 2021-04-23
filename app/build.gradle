@@ -103,4 +103,6 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     implementation "androidx.datastore:datastore-preferences:1.0.0-beta01"
 
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 }
