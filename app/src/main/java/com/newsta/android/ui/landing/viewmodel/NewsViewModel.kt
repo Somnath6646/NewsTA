@@ -28,7 +28,7 @@ class NewsViewModel
     fun getAllNews() {
 
         viewModelScope.launch {
-            _newsResponse.value = Event(newsRepository.getAllNews(NewsRequest(NewstaApp.access_token!!, "newsta", 0, "2021-03-17T18:30:00.000Z")))
+            _newsResponse.value = Event(newsRepository.getAllNews(NewsRequest(NewstaApp.access_token!!, "newsta", 10000, "2021-04-11")))
         }
 
     }

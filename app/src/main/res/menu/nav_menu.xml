@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="Options">
+
+        <menu>
+
+            <item
+                android:id="@+id/settings"
+                android:title="Settings" />
+
+            <item
+                android:id="@+id/log_out"
+                android:title="Log out" />
+
+        </menu>
+
+    </item>
+
+    <item android:title="Settings">
+
+        <menu>
+
+            <item
+                android:id="@+id/modeSwitch"
+                android:title="Dark mode"
+                app:actionLayout="@layout/mode_switch" />
+
+        </menu>
+
+    </item>
+
+</menu>
