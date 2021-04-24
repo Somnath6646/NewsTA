@@ -86,16 +86,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
 
-        binding.sideNavDrawer.setNavigationItemSelectedListener { item ->
-
-            when(item.itemId) {
-
-
-
-            }
-
-        }
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -129,6 +119,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
             }
         })
+
+        setUpNavigationDrawer()
 
     }
 
