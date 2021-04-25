@@ -20,202 +20,91 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentPasswordSignUpBinding
 import com.newsta.android.remote.data.Resource
 import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.ui.authentication.base.PasswordFragment
 import com.newsta.android.ui.authentication.signin.Password_SignInFragment
 import com.newsta.android.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_landing.*
 
 @AndroidEntryPoint
-class Password_SignUpFragment : BaseFragment<FragmentPasswordSignUpBinding>() {
+class Password_SignUpFragment : PasswordFragment<FragmentPasswordSignUpBinding>(){
 
-    val viewModel by activityViewModels<AuthenticationViewmodel>()
+    override fun getPasswordInputEditText(): TextInputEditText = binding.inputPassword
 
-    private val strengthWeak = 0
-    private val strengthModerate = 1
-    private val strengthStrong = 2
-    private val strengthVeryStrong = 3
+    override fun getPasswordInputEditLayout(): TextInputLayout = binding.textFieldPassword
 
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        binding.viewModel = viewModel
-
-        binding.lifecycleOwner = this
-
-        binding.btnSignup.setOnClickListener {
-            println("Email122 ${viewModel.email.value}")
-            Log.i("password", "${viewModel.password.value.toString()} -----> Strength: ${passwordStrength(viewModel.password.value.toString())}")
-            
-            if(validatePassword(viewModel.password.value)) {
-                viewModel.signUp()
-            } else {
-                Toast.makeText(context, "Enter a strong password", Toast.LENGTH_SHORT).show()
-                binding.passwordMessage.visibility = View.VISIBLE
-            }
-            
-        }
-
-        binding.btnBack.setOnClickListener {
-           goBack()
-        }
-
-        viewModel.password.observe(viewLifecycleOwner, Observer { password ->
-            Log.i("password", "$password -----> Strength: ${passwordStrength(password)}")
-        })
-
-
-        viewModel.navigate.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled().let {
-                if(it!=null){
-                when(it){
-                    "Landing" -> {
-                    navigateToMainFragment()
-                }
-                }
-                }
-
-            }
-
-        })
-
-        viewModel.signupResponse.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled().let {
-                when(it) {
-                    is Resource.Success -> {
-                        Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
-
-                        println("ACcessToken ${it.data.data}")
-                        viewModel.saveToken(it.data.data)
-
-
-                    }
-
-                    is Resource.Failure -> {
-
-                        val dialog = Dialog(requireContext())
-                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
-                        dialog.setContentView(dialogBinding.root)
-                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-                        when(it.errorCode) {
-                            400 -> {
-                                dialogBinding.message.text = "Account with this email already exists"
-                                dialogBinding.buttonText.text = "Try Again"
-                                dialogBinding.button.setOnClickListener {
-                                    dialog.dismiss()
-                                    goBack()
-                                }
-                                dialog.show()
-                            }
-                        }
-
-                    }
-                }
-            }
-
-        })
-
-        showPasswordStrength()
-
-    }
-
-
-    fun goBack(){
-        findNavController().popBackStack()
-        viewModel.password.value = ""
-
-    }
-
-    fun navigateToMainFragment(){
+    override fun navigateToMainFragment() {
         val action = Password_SignUpFragmentDirections.actionPasswordSignUpFragmentToLandingFragment()
         findNavController().navigate(action)
     }
 
-    private fun showPasswordStrength() {
-        binding.inputPassword.addTextChangedListener { text: Editable? ->
+    override fun getBackButtonView(): View = binding.btnBack
 
-            val password = text.toString()
-            val strength = passwordStrength(password)
+    override fun getCTAButtonView(): View = binding.btnSignup
 
-            when(strength) {
-
-                strengthWeak -> {
-                    binding.textFieldPassword.setHintTextColor(ColorStateList.valueOf(resources.getColor(R.color.password_weak)))
-                    binding.textFieldPassword.hint = "Weak"
-                }
-
-                strengthModerate -> {
-                    binding.textFieldPassword.setHintTextColor(ColorStateList.valueOf(resources.getColor(R.color.password_moderate)))
-                    binding.textFieldPassword.hint = "Moderate"
-                }
-
-                strengthStrong -> {
-                    binding.textFieldPassword.setHintTextColor(ColorStateList.valueOf(resources.getColor(R.color.password_strong)))
-                    binding.textFieldPassword.hint = "Strong"
-                }
-
-                strengthVeryStrong -> {
-                    binding.textFieldPassword.setHintTextColor(ColorStateList.valueOf(resources.getColor(R.color.password_very_strong)))
-                    binding.textFieldPassword.hint = "Very strong"
-                }
-
-            }
-
+    override fun getCTAButtonAction() {
+        if(validatePassword(viewModel.password.value)) {
+            viewModel.signUp()
+        } else {
+            Toast.makeText(context, "Enter a strong password", Toast.LENGTH_SHORT).show()
+            binding.passwordMessage.visibility = View.VISIBLE
         }
-    }
-    
-    private fun passwordStrength(passwordToCheck: String?): Int {
-        
-        var hasSpecial = false
-        var hasDigit = false
-        var hasUppercase = false
-        var hasLowercase = false
-        
-        var strength = 0
-        
-        val password = passwordToCheck
-        password?.forEach { c ->
-            
-            if (!hasSpecial && !c.isLetterOrDigit()) {
-                strength++
-                hasSpecial = true
-            } else {
-                if (!hasDigit && c.isDigit()) {
-                    strength++
-                    hasDigit = true
-                } else {
-                    if (!hasUppercase && c.isUpperCase()) {
-                        strength++
-                        hasUppercase = true
-                    } else if (!hasLowercase && c.isLowerCase()) {
-                        hasLowercase = true
-                    }
-                }
-            }
-            
-        }
-        
-        return strength
-        
-    }
-
-    private fun validatePassword(password: String?): Boolean {
-        val strength = passwordStrength(password)
-        if(!password.isNullOrEmpty()) {
-            if(password.length >= 8 && strength >= strengthStrong) {
-                return true
-            }
-        }
-        return false
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_password__sign_up
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
+        viewModel.signupResponse.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled().let {
+
+                when(it){
+                    is Resource.Success -> {
+                        viewModel.saveToken(accessToken = it.data.data)
+                    }
+
+                    is Resource.Failure -> {
+
+
+                        when(it.errorCode) {
+                            400 -> {
+                                val dialog = Dialog(requireContext())
+                                val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
+                                dialog.setContentView(dialogBinding.root)
+
+                                println("Abhi hai $dialogBinding")
+
+                                dialogBinding.message.text = "User already registered"
+                                dialogBinding.buttonText.text = "Try Again"
+                                dialogBinding.button.setOnClickListener { v ->
+                                    dialog.dismiss()
+                                    findNavController().popBackStack()
+                                }
+
+                                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+                                dialog.show()
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        })
+
+
+    }
 
 }
