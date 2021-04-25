@@ -1,12 +1,14 @@
 package com.newsta.android.utils.models
 
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
-@Entity
+@Parcelize
 data class Event(
     @ColumnInfo(name = "created_at")
     @SerializedName("created_at")
@@ -30,4 +32,4 @@ data class Event(
     @ColumnInfo(name = "updated_at")
     @SerializedName("updated_at")
     val updatedAt: Long = 0L
-)
+) : Parcelable

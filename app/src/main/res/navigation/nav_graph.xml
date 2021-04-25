@@ -149,5 +149,11 @@
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.newsta.android.ui.landing.DetailsFragment"
-        android:label="DetailsFragment" />
+        android:label="DetailsFragment">
+
+        <argument
+            android:name="data"
+            app:argType="com.newsta.android.utils.models.Data" />
+
+    </fragment>
 </navigation>

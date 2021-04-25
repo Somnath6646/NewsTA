@@ -3,10 +3,12 @@ package com.newsta.android.ui.landing
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
@@ -28,7 +30,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private fun setUpAdapter() {
 
-        adapter = NewsAdapter()
+        adapter = NewsAdapter { data: Data -> openDetails(data) }
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -64,6 +66,11 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             }
         }
     }*/
+
+    private fun openDetails(data: Data) {
+        val bundle = bundleOf("data" to data)
+        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
