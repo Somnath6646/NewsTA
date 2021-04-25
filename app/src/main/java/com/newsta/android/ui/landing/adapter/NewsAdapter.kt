@@ -6,12 +6,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.R
 import com.newsta.android.databinding.NewsItemBinding
-import com.newsta.android.utils.models.Data
+import com.newsta.android.utils.models2.NewsItem
 import com.squareup.picasso.Picasso
 
 class NewsAdapter : RecyclerView.Adapter<NewsViewHolder>() {
 
-    private val stories = ArrayList<Data>()
+    private val stories = ArrayList<NewsItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -25,7 +25,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsViewHolder>() {
         holder.bind(stories[position])
     }
 
-    fun addAll(storiesResponse: ArrayList<Data>) {
+    fun addAll(storiesResponse: ArrayList<NewsItem>) {
         stories.clear()
         stories.addAll(storiesResponse)
         notifyDataSetChanged()
@@ -35,7 +35,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsViewHolder>() {
 
 class NewsViewHolder(private val binding: NewsItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(data: Data) {
+    fun bind(data: NewsItem) {
 
         binding.title.text = data.title
         binding.sources.text = "${data.numArticles.toString()} sources"

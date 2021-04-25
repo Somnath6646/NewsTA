@@ -1,7 +1,7 @@
 package com.newsta.android.responses
 
-import com.newsta.android.utils.models.Data
 import com.google.gson.annotations.SerializedName
+import com.newsta.android.utils.models2.Data
 
 data class NewsResponse(
         @SerializedName("data")
