@@ -10,6 +10,7 @@ import com.newsta.android.remote.data.Resource
 import com.newsta.android.repository.NewsRepository
 import com.newsta.android.responses.NewsResponse
 import com.newsta.android.utils.Event
+import com.newsta.android.utils.models.Data
 import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.launch
 
@@ -32,6 +33,8 @@ class NewsViewModel
         }
 
     }
+
+    //suspend fun insertNewsToDatabase(data: ArrayList<Data>) = newsRepository.insertNewsToDatabase(data)
 
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}

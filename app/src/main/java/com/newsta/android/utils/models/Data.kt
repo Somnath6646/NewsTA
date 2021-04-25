@@ -1,25 +1,22 @@
 package com.newsta.android.utils.models
 
 
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "newsta_database")
 data class Data(
+    @ColumnInfo(name = "category")
     @SerializedName("category")
-    val category: Int,
-    @SerializedName("created_at")
-    val createdAt: String,
-    @SerializedName("event_id")
-    val eventId: Int,
-    @SerializedName("img_url")
-    val imgUrl: String,
-    @SerializedName("num_articles")
-    val numArticles: Int,
+    val category: Int = 0,
+    @Embedded(prefix = "events")
+    @SerializedName("events")
+    val events: List<Event> = listOf(),
+    @ColumnInfo(name = "story_id")
+    @PrimaryKey(autoGenerate = false)
     @SerializedName("story_id")
-    val storyId: Int,
-    @SerializedName("summary")
-    val summary: String,
-    @SerializedName("title")
-    val title: String,
-    @SerializedName("updated_at")
-    val updatedAt: String
+    val storyId: Int = 0
 )

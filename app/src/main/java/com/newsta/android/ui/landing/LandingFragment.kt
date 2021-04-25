@@ -6,10 +6,8 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.beust.klaxon.Klaxon
-import com.beust.klaxon.Parser
-import com.google.gson.Gson
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentLandingBinding
@@ -17,12 +15,9 @@ import com.newsta.android.remote.data.Resource
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
-import com.newsta.android.utils.models2.List
-import com.newsta.android.utils.models2.NewsItem
+import com.newsta.android.utils.models.Data
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_landing.view.*
-import org.json.JSONObject
-import java.lang.StringBuilder
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LandingFragment : BaseFragment<FragmentLandingBinding>() {
@@ -36,32 +31,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         adapter = NewsAdapter()
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-    }
-
-    private fun getListFromString(stringJson: String): List {
-
-        val stringList = "{\"list\": $stringJson}"
-
-        val gson = Gson()
-
-        /*val jsonObject = gson.toJson(stringList)
-
-        println("JSON OBJECT: $jsonObject")*/
-
-        /*val j2 = JSONObject(stringList)
-
-        println("JSON OBJECT 2: $j2")*/
-
-        val stList = StringBuilder(stringList)
-
-        val list = Klaxon().parse<List>(stringList)
-
-        //val list = Gson().fromJson(jsonObject, List::class.java)
-
-        println("LIST: $list")
-
-        return list!!
 
     }
 
@@ -88,6 +57,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     }
 
+    /*fun addNewsToDatabase(stories: ArrayList<Data>) {
+        viewModel.viewModelScope.launch {
+            if(viewModel.insertNewsToDatabase(stories) != 0L) {
+                println("NEWS ADDED TO DATABASE")
+            }
+        }
+    }*/
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -104,8 +81,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                     is Resource.Success -> {
                         if (!it.data.data.isNullOrEmpty()) {
-                            //adapter.addAll(getListFromString(it.data.data[0].list).list)
-                            //println("News: ${it.data.data}")
+                            adapter.addAll(it.data.data)
                         } else {
                             println("News Response is NULL")
                         }
