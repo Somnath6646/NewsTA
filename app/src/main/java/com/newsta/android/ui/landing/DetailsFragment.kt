@@ -5,20 +5,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.R
+import com.newsta.android.databinding.FragmentDetailsBinding
+import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.ui.landing.adapter.TimelineAdapter
 
-class DetailsFragment : Fragment() {
+class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        binding.recyclerViewTimelineEvents.adapter = TimelineAdapter()
+        binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
+
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_details, container, false)
-    }
+    override fun getFragmentView(): Int = R.layout.fragment_details
 
 }
