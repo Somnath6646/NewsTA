@@ -6,7 +6,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.R
 import com.newsta.android.databinding.ItemTimelineEventsBinding
-import com.newsta.android.utils.models2.NewsItem
 import com.squareup.picasso.Picasso
 
 class TimelineAdapter : RecyclerView.Adapter<TimelineViewHolder>() {
@@ -23,16 +22,8 @@ class TimelineAdapter : RecyclerView.Adapter<TimelineViewHolder>() {
 
     }
 
-
-
 }
 
 class TimelineViewHolder(private val binding: ItemTimelineEventsBinding) : RecyclerView.ViewHolder(binding.root) {
-
-    fun bind(data: NewsItem) {
-
-
-
-    }
 
 }
