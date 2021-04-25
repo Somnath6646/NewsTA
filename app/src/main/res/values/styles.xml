@@ -96,9 +96,23 @@
         <item name="boxStrokeWidthFocused">0dp</item>
     </style>
 
-    <style name="BigHeading">
-        <item name="fontFamily">@font/segoeuib</item>
+    <style name="BigHeading" parent="BlackBoldText">
         <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="DetailPageHeading" parent="BlackBoldText">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+
+    <style name="DetailPageSummary" >
+        <item name="android:textSize">18sp</item>
+
+        <item name="android:textColor">@color/colorText</item>
+    </style>
+
+    <style name="BlackBoldText">
+        <item name="fontFamily">@font/segoeuib</item>
         <item name="android:textColor">@color/colorText</item>
     </style>
 
