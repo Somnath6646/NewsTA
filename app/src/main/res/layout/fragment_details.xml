@@ -41,7 +41,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintGuide_percent="0.02"
+                app:layout_constraintGuide_percent="0.025"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
@@ -94,9 +94,8 @@
             <ImageView
                 android:id="@+id/coverimg_event"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="217dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintHeight_percent="0.21"
                 android:src="@drawable/sample_news_cover"
                 app:layout_constraintBottom_toTopOf="@id/updated_at_event"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -107,8 +106,7 @@
                 android:id="@+id/updated_at_event"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textSize="12sp"
+                android:layout_marginTop="8dp"
                 android:text="Updated today at 13:11:35"
                 app:layout_constraintBottom_toTopOf="@id/summary_event"
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
@@ -148,8 +146,10 @@
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
                 app:layout_constraintTop_toBottomOf="@id/text_timline" />
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
 
 </layout>
