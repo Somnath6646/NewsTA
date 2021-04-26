@@ -110,15 +110,12 @@
                     app:tabMode="scrollable"
                     app:tabPaddingEnd="12dp"
                     app:tabPaddingTop="1dp"
-
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="24dp"
                     app:layout_constraintBottom_toTopOf="@id/recycler_view"
                     app:tabRippleColor="@android:color/transparent"
                     app:tabSelectedTextColor="@color/colorPrimary"
-                    app:tabTextAppearance="@style/tab_text"
-
-                    />
+                    app:tabTextAppearance="@style/tab_text" />
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/pager"

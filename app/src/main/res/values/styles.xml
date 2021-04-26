@@ -48,7 +48,7 @@
 
     <style name="Ctabuttontextstyle">
         <item name="fontFamily">@font/segoeuib</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:paddingTop">14dp</item>
         <item name="android:paddingBottom">14dp</item>
         <item name="android:textColor">@color/colorWhite</item>
