@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
@@ -33,6 +34,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             .load(data.events[0].imgUrl)
             .into(binding.coverimgEvent)
 
+        binding.btnBack.setOnClickListener { findNavController().popBackStack() }
+
     }
 
     private fun setUpAdapter() {
@@ -40,6 +43,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         adapter = TimelineAdapter()
         binding.recyclerViewTimelineEvents.adapter = adapter
         binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
 
         adapter.addAll(data.events as ArrayList)
 

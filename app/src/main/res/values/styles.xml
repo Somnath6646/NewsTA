@@ -101,14 +101,18 @@
     </style>
 
     <style name="DetailPageHeading" parent="BlackBoldText">
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
-
     <style name="DetailPageSummary" >
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">16sp</item>
 
         <item name="android:textColor">@color/colorText</item>
+    </style>
+
+    <style name="NewsAdapterText">
+        <item name="android:fontFamily">@font/seguisb</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="BlackBoldText">
