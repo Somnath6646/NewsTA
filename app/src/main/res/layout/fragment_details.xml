@@ -94,7 +94,7 @@
             <ImageView
                 android:id="@+id/coverimg_event"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="217dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/sample_news_cover"
                 app:layout_constraintBottom_toTopOf="@id/updated_at_event"

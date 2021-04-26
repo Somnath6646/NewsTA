@@ -1,10 +1,12 @@
 package com.newsta.android.ui.landing
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
@@ -121,6 +123,18 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         super.onActivityCreated(savedInstanceState)
 
         data = requireArguments().getParcelable<Data>("data")!!
+
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.btnShare.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/web"
+            intent.putExtra(Intent.EXTRA_TEXT, data.events[0].title + "\n"+data.events[0].summary)
+            val shareIntent = Intent.createChooser(intent, "Share via")
+            startActivity(shareIntent)
+        }
 
         initViews()
         setUpAdapter()

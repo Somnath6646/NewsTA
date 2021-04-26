@@ -118,7 +118,12 @@
         android:label="LandingFragment" >
         <action
             android:id="@+id/action_landingFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment" />
+            app:destination="@id/detailsFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/signIn_AuthenticationOptionsFragment"
