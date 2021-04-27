@@ -15,11 +15,13 @@ import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.NewstaApp
@@ -38,9 +40,11 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
-    private val viewModel: NewsViewModel by viewModels()
+    private val viewModel: NewsViewModel by activityViewModels()
 
     private lateinit var adapter: NewsAdapter
+
+    private var scrollState = 0
 
     private fun setUpAdapter() {
 
@@ -48,12 +52,27 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                scrollState += dy
+                println("SCROLL STATE: $scrollState")
+                viewModel.newsScrollState.value = scrollState
+                super.onScrolled(recyclerView, dx, dy)
+            }
+
+        })
+
     }
 
     private fun setUpNavigationDrawer() {
 
         binding.navDrawer.setOnClickListener {
-            if(binding.drawerLayout.isDrawerOpen(GravityCompat.START))
+            if (binding.drawerLayout.isDrawerOpen(GravityCompat.START))
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
             else
                 binding.drawerLayout.openDrawer(GravityCompat.START)
@@ -64,12 +83,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         val view = binding.sideNavDrawer.menu.getItem(1).subMenu.getItem(0).actionView
         val modeSwitch = view.findViewById<SwitchCompat>(R.id.switchCompatMode)
 
-
         binding.sideNavDrawer.setNavigationItemSelectedListener {
-            when(it.itemId){
+            when (it.itemId) {
                 R.id.log_out -> {
                     val dialog = Dialog(requireContext())
-                    val dialogBinding = DataBindingUtil.inflate<LogoutDialogBinding>(LayoutInflater.from(requireContext()), R.layout.logout_dialog, null, false)
+                    val dialogBinding = DataBindingUtil.inflate<LogoutDialogBinding>(
+                        LayoutInflater.from(requireContext()), R.layout.logout_dialog, null, false
+                    )
                     dialog.setContentView(dialogBinding.root)
 
                     println("Abhi hai $dialogBinding")
@@ -92,7 +112,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         }
 
         modeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked)
+            if (isChecked)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -109,10 +129,10 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     }*/
 
     private fun openDetails(data: Data) {
-        val bundle = bundleOf("data" to data)
+        println("SCROLL Y: ${scrollState}")
+        val bundle = bundleOf("data" to data, "scroll" to scrollState)
         findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)
     }
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -121,16 +141,25 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         setUpAdapter()
 
-        viewModel.getAllNews()
+        binding.lifecycleOwner = requireActivity()
 
         viewModel.newsResponse.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled().let {
 
-                when(it) {
+                when (it) {
 
                     is Resource.Success -> {
                         if (!it.data.data.isNullOrEmpty()) {
-                            adapter.addAll(it.data.data)
+                            val res = adapter.addAll(it.data.data)
+                            if(res) {
+
+                                val scroll = viewModel.scrollState.value ?: 19
+
+                                println("SCROLL IN VIEWMODEL: $scroll")
+                                binding.recyclerView.scrollToPosition(scroll)
+                            }
+                            else
+                                println("ERROL IN SCROLL SETTING")
                         } else {
                             println("News Response is NULL")
                         }
@@ -153,33 +182,30 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     }
 
-
-
     private fun setUpTabLayout() {
         TabLayoutMediator(binding.tabLayout, binding.pager,
-                TabLayoutMediator.TabConfigurationStrategy { tab, position ->
-                    tab.customView = when (position) {
-                        0 -> addCustomView(
-                                "All News", 16f,
-                                Color.WHITE
-                        )
-                        1 -> addCustomView("General")
-                        2 -> addCustomView("Technology")
-                        3 -> addCustomView("Business")
-                        4 -> addCustomView("Health")
-                        5 -> addCustomView("Science")
-                        6 -> addCustomView("Entertainment")
-                        7 -> addCustomView("Sports")
-                        else -> addCustomView("null")
-                    }
+            TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+                tab.customView = when (position) {
+                    0 -> addCustomView(
+                        "All News", 16f,
+                        Color.WHITE
+                    )
+                    1 -> addCustomView("General")
+                    2 -> addCustomView("Technology")
+                    3 -> addCustomView("Business")
+                    4 -> addCustomView("Health")
+                    5 -> addCustomView("Science")
+                    6 -> addCustomView("Entertainment")
+                    7 -> addCustomView("Sports")
+                    else -> addCustomView("null")
+                }
 
 
-                }).attach()
+            }).attach()
 
         binding.tabLayout.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {
 
-            }
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
 
@@ -203,7 +229,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-
 
                 tab?.view?.children?.forEach {
                     if (it is LinearLayout) {
@@ -229,11 +254,10 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     }
 
-
     fun addCustomView(
-            title: String,
-            size: Float = 14f,
-            color: Int = R.color.colorText
+        title: String,
+        size: Float = 14f,
+        color: Int = R.color.colorText
     ): View {
         val view = layoutInflater.inflate(R.layout.item_tab, binding.tabLayout, false)
         val titleTextView = view.findViewById<TextView>(R.id.title)
@@ -243,9 +267,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
             if (color == Color.WHITE) {
                 (view.findViewById<CardView>(R.id.cardView)).setCardBackgroundColor(
-                        resources.getColor(
-                                R.color.colorPrimary
-                        )
+                    resources.getColor(
+                        R.color.colorPrimary
+                    )
                 )
                 setTextColor(color)
             } else {
@@ -259,11 +283,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     }
 
 
-
     private fun createPagerAdapter(): ViewPagerAdapter =
-            ViewPagerAdapter(requireActivity())
+        ViewPagerAdapter(requireActivity())
 
+    override fun getFragmentView(): Int = R.layout.fragment_landing
 
-    override fun getFragmentView(): Int  = R.layout.fragment_landing
+    override fun onDestroy() {
+        println("DESTROYED*****")
+        super.onDestroy()
+    }
 
 }

@@ -23,6 +23,11 @@ class NewsViewModel
     val newsResponse: LiveData<Event<Resource<NewsResponse>>>
         get() = _newsResponse
 
+    val newsScrollState = MutableLiveData<Int>()
+
+    val scrollState: LiveData<Int>
+        get() = newsScrollState
+
     private val _newsResponse = MutableLiveData<Event<Resource<NewsResponse>>>()
 
     fun getAllNews() {
@@ -31,6 +36,10 @@ class NewsViewModel
             _newsResponse.value = Event(newsRepository.getAllNews(NewsRequest(NewstaApp.access_token!!, "newsta", 10000, "2021-04-11")))
         }
 
+    }
+
+    init {
+        getAllNews()
     }
 
     //suspend fun insertNewsToDatabase(data: ArrayList<Data>) = newsRepository.insertNewsToDatabase(data)

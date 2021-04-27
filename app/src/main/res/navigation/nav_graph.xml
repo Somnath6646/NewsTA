@@ -109,7 +109,6 @@
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popUpTo="@id/nav_graph"
-
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -122,8 +121,7 @@
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"
-            app:popUpToInclusive="true"/>
+            app:popExitAnim="@anim/out_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/signIn_AuthenticationOptionsFragment"
@@ -159,6 +157,11 @@
         <argument
             android:name="data"
             app:argType="com.newsta.android.utils.models.Data" />
+
+        <argument
+            android:name="scroll"
+            app:argType="integer"
+            android:defaultValue="0" />
 
     </fragment>
 </navigation>

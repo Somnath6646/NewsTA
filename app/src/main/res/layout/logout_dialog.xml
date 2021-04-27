@@ -37,7 +37,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:padding="16dp"
                     android:layout_marginBottom="24dp">
                     <androidx.cardview.widget.CardView
@@ -56,17 +58,19 @@
                             android:layout_height="wrap_content"
                             android:letterSpacing="0.15"
                             android:textAllCaps="true"
+                            android:layout_marginHorizontal="48dp"
                             android:text="Cancel" />
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/btn_logout"
+                        android:layout_marginTop="16dp"
                         style="@style/Ctabutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
                         android:layout_weight="1"
-                        app:cardBackgroundColor="@color/colorSecondary"
+                        app:cardBackgroundColor="@android:color/transparent"
                         android:layout_marginHorizontal="12dp"
                         android:paddingBottom="10dp">
 
