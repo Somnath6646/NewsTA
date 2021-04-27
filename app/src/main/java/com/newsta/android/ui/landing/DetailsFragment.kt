@@ -6,33 +6,43 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.TimelineAdapter
+import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import com.newsta.android.ui.landing.viewmodel.NewsViewModel_AssistedFactory
+import com.newsta.android.utils.Event
 import com.newsta.android.utils.models.Data
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
 
+@AndroidEntryPoint
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private lateinit var data: Data
+    private var scrollState: Int = 0
+
+    private val viewModel: NewsViewModel by activityViewModels()
 
     private lateinit var adapter: TimelineAdapter
 
     private fun initViews() {
 
-        binding.titleEvent.text = data.events[0].title
+        binding.titleEvent.text = data.events.last().title
 
-        binding.summaryEvent.text = data.events[0].summary
+        binding.summaryEvent.text = data.events.last().summary
 
-        setDate(data.events[0].updatedAt)
+        setDate(data.events.last().updatedAt)
 
         Picasso.get()
-            .load(data.events[0].imgUrl)
+            .load(data.events.last().imgUrl)
             .into(binding.coverimgEvent)
 
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
@@ -126,6 +136,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         super.onActivityCreated(savedInstanceState)
 
         data = requireArguments().getParcelable<Data>("data")!!
+        scrollState = requireArguments().getInt("scroll")
+
+        viewModel.newsScrollState.value = scrollState
+
+        binding.lifecycleOwner = requireActivity()
 
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
@@ -134,7 +149,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         binding.btnShare.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/web"
-            intent.putExtra(Intent.EXTRA_TEXT, data.events[0].title + "\n"+data.events[0].summary)
+            intent.putExtra(Intent.EXTRA_TEXT, data.events.last().title + "\n"+data.events.last().summary)
             val shareIntent = Intent.createChooser(intent, "Share via")
             startActivity(shareIntent)
         }

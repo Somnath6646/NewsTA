@@ -28,10 +28,11 @@ class NewsAdapter(private val onClick: (Data) -> Unit) : RecyclerView.Adapter<Ne
         holder.bind(stories[position])
     }
 
-    fun addAll(storiesResponse: ArrayList<Data>) {
+    fun addAll(storiesResponse: ArrayList<Data>): Boolean {
         stories.clear()
         stories.addAll(storiesResponse)
         notifyDataSetChanged()
+        return true
     }
 
 }
