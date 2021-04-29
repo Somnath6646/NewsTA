@@ -11,23 +11,22 @@ import retrofit2.http.Body
 import java.lang.Exception
 
 
-class StoryRepository (
-        private val storiesDao: StoriesDAO,
-        private val newsService: NewsService
-)  {
+class StoryRepository(
+    private val storiesDao: StoriesDAO,
+    private val newsService: NewsService
+) {
 
-
-    suspend fun getAllStories(@Body newsRequest: NewsRequest): Flow<DataState<List<Story>>> = flow{
+    suspend fun getAllStories(@Body newsRequest: NewsRequest): Flow<DataState<List<Story>>> = flow {
         emit(DataState.Loading)
         try {
             val remoteNewsResponse = newsService.getAllNews(newsRequest)
             val stories = remoteNewsResponse.data
+            emit(DataState.Sucess(stories))
             storiesDao.deleteAllStories()
             storiesDao.insertStories(stories as List<Story>)
             val cachedStories = storiesDao.getAllStories()
-            if (cachedStories != null) {emit(DataState.Sucess(cachedStories))
-            }
-        }catch (e: Exception){
+            emit(DataState.Sucess(cachedStories))
+        } catch (e: Exception) {
             val cachedStories = storiesDao.getAllStories()
             if (cachedStories != null) {
                 if (cachedStories.isEmpty()) emit(DataState.Error(e))

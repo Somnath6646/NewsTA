@@ -116,7 +116,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         println("Access token: ${NewstaApp.access_token}")
 
-
         setUpAdapter()
 
         binding.lifecycleOwner = requireActivity()
@@ -160,7 +159,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     7 -> addCustomView("Sports")
                     else -> addCustomView("null")
                 }
-
 
             }).attach()
 

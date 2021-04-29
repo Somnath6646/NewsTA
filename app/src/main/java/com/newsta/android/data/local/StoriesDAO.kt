@@ -17,5 +17,4 @@ interface StoriesDAO {
     @Query("DELETE FROM ${Story.TABLE_NAME}")
     suspend fun deleteAllStories()
 
-
 }

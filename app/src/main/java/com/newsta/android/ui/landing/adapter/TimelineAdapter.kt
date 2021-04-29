@@ -31,6 +31,7 @@ class TimelineAdapter : RecyclerView.Adapter<TimelineViewHolder>() {
     fun addAll(eventList: ArrayList<Event>) {
         events.clear()
         events.addAll(eventList)
+        events.sortBy { event -> event.updatedAt }
         notifyDataSetChanged()
     }
 
