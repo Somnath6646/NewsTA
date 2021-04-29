@@ -1,18 +1,21 @@
 package com.newsta.android.data.local
 
-/*
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.newsta.android.utils.models.Data
+import com.newsta.android.utils.models.Story
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-@TypeConverters(Converters::class)
 interface StoriesDAO {
 
-    @Insert
-    suspend fun insertStories(stories: ArrayList<Data>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertStories(stories: List<Story>)
 
-    @Query("SELECT * FROM newsta_database")
-    fun getAllStories(): LiveData<List<Data>>
+    @Query("SELECT * FROM ${Story.TABLE_NAME}")
+    suspend fun getAllStories(): List<Story>
 
-}*/
+    @Query("DELETE FROM ${Story.TABLE_NAME}")
+    suspend fun deleteAllStories()
+
+
+}

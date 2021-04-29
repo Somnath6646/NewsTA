@@ -2,12 +2,7 @@ package com.newsta.android.ui.landing
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.R
@@ -15,18 +10,17 @@ import com.newsta.android.databinding.FragmentDetailsBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.TimelineAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
-import com.newsta.android.ui.landing.viewmodel.NewsViewModel_AssistedFactory
-import com.newsta.android.utils.Event
-import com.newsta.android.utils.models.Data
+import com.newsta.android.utils.models.Story
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.InternalCoroutinesApi
 import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
-    private lateinit var data: Data
+    private lateinit var story: Story
     private var scrollState: Int = 0
 
     private val viewModel: NewsViewModel by activityViewModels()
@@ -35,14 +29,14 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun initViews() {
 
-        binding.titleEvent.text = data.events.last().title
+        binding.titleEvent.text = story.events.last().title
 
-        binding.summaryEvent.text = data.events.last().summary
+        binding.summaryEvent.text = story.events.last().summary
 
-        setDate(data.events.last().updatedAt)
+        setDate(story.events.last().updatedAt)
 
         Picasso.get()
-            .load(data.events.last().imgUrl)
+            .load(story.events.last().imgUrl)
             .into(binding.coverimgEvent)
 
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
@@ -56,7 +50,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
 
-        adapter.addAll(data.events as ArrayList)
+        adapter.addAll(story.events as ArrayList)
 
     }
 
@@ -135,10 +129,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        data = requireArguments().getParcelable<Data>("data")!!
+        story = requireArguments().getParcelable<Story>("data")!!
         scrollState = requireArguments().getInt("scroll")
 
-        viewModel.newsScrollState.value = scrollState
 
         binding.lifecycleOwner = requireActivity()
 
@@ -149,7 +142,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         binding.btnShare.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/web"
-            intent.putExtra(Intent.EXTRA_TEXT, data.events.last().title + "\n"+data.events.last().summary)
+            intent.putExtra(Intent.EXTRA_TEXT, story.events.last().title + "\n"+story.events.last().summary)
             val shareIntent = Intent.createChooser(intent, "Share via")
             startActivity(shareIntent)
         }

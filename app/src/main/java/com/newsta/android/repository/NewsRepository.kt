@@ -2,7 +2,6 @@ package com.newsta.android.repository
 
 import com.newsta.android.remote.data.NewsRequest
 import com.newsta.android.remote.services.NewsService
-import com.newsta.android.utils.models.Data
 
 class NewsRepository(private val api: NewsService) : BaseRepository() {
 

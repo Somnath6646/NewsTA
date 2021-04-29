@@ -6,15 +6,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.R
 import com.newsta.android.databinding.NewsItemBinding
-import com.newsta.android.utils.models.Data
+import com.newsta.android.utils.models.Story
 import com.squareup.picasso.Picasso
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class NewsAdapter(private val onClick: (Data) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
+class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
 
-    private val stories = ArrayList<Data>()
+    private val stories = ArrayList<Story>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -28,8 +27,11 @@ class NewsAdapter(private val onClick: (Data) -> Unit) : RecyclerView.Adapter<Ne
         holder.bind(stories[position])
     }
 
-    fun addAll(storiesResponse: ArrayList<Data>): Boolean {
+    fun addAll(storiesResponse: ArrayList<Story>): Boolean {
         stories.clear()
+        storiesResponse.sortBy {
+            story ->  story.storyId
+        }
         stories.addAll(storiesResponse)
         notifyDataSetChanged()
         return true
@@ -37,11 +39,21 @@ class NewsAdapter(private val onClick: (Data) -> Unit) : RecyclerView.Adapter<Ne
 
 }
 
-class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: (Data) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: (Story) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(data: Data) {
+    fun bind(story: Story) {
 
-        val event = data.events.last()
+        var max=0L
+        var indexOfEvent = story.events.size - 1
+        for (eventIndex in story.events.indices){
+            val event = story.events[eventIndex]
+            if(event.updatedAt > max){
+                max = event.updatedAt
+                indexOfEvent = eventIndex
+            }
+        }
+
+        val event = story.events[indexOfEvent]
 
         binding.title.text = event.title
         binding.sources.text = "${event.numArticles.toString()} sources"
@@ -51,11 +63,11 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
             .load(event.imgUrl)
             .into(binding.image)
 
-        setDate(data.events[0].updatedAt)
+        setDate(event.updatedAt)
 
         println("Width = ${binding.image.width}")
 
-        binding.root.setOnClickListener { onClick(data) }
+        binding.root.setOnClickListener { onClick(story) }
 
     }
 
@@ -67,9 +79,7 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
 
         val calendar = Calendar.getInstance()
 
-        println(
-            " YEAR:  ${updatedAt.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)} ${updatedAt.get(Calendar.YEAR)} ${calendar.get(Calendar.YEAR)}"
-        )
+        println(" YEAR:  ${updatedAt.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)} ${updatedAt.get(Calendar.YEAR)} ${calendar.get(Calendar.YEAR)}")
         println(" MONTH:  ${updatedAt.get(Calendar.MONTH) == calendar.get(Calendar.MONTH)}  ${updatedAt.get(Calendar.MONTH)} ${calendar.get(Calendar.MONTH)}")
         println(" DAY_OF_MONTH:  ${updatedAt.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH)} ${updatedAt.get(Calendar.DAY_OF_MONTH)} ${calendar.get(Calendar.DAY_OF_MONTH)}")
 

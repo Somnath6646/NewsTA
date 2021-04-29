@@ -1,6 +1,5 @@
 package com.newsta.android.di
 
-/*
 import android.content.Context
 import androidx.room.Room
 import com.newsta.android.data.local.Converters
@@ -24,9 +23,8 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context,
             StoriesDatabase::class.java,
-            "newsta_database"
+            StoriesDatabase.DATABASE_NAME
         )
-            .addTypeConverter(Converters())
             .build()
     }
 
@@ -36,4 +34,4 @@ object DatabaseModule {
         return storiesDatabase.storiesDao()
     }
 
-}*/
+}

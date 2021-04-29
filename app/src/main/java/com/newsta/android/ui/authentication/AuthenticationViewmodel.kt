@@ -9,7 +9,7 @@ import com.newsta.android.remote.data.*
 import com.newsta.android.repository.AuthRepository
 import com.newsta.android.responses.SigninResponse
 import com.newsta.android.responses.SignupResponse
-import com.newsta.android.utils.Event
+import com.newsta.android.utils.Indicator
 import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.launch
 
@@ -20,24 +20,24 @@ constructor(private val authRepository: AuthRepository,
             private val prefrences: UserPrefrences,
             @Assisted private val savedStateHandle: SavedStateHandle): ViewModel(), Observable {
 
-    private val _signupResponse: MutableLiveData<Event<Resource<SignupResponse>>> = MutableLiveData()
+    private val _signupResponse: MutableLiveData<Indicator<Resource<SignupResponse>>> = MutableLiveData()
 
-    val signupResponse: LiveData <Event<Resource<SignupResponse>>>
+    val signupResponse: LiveData <Indicator<Resource<SignupResponse>>>
         get() = _signupResponse
 
     val userPrefrences: UserPrefrences
         get() = prefrences
 
 
-    private val _signinResponse: MutableLiveData<Event<Resource<SigninResponse>>> = MutableLiveData()
+    private val _signinResponse: MutableLiveData<Indicator<Resource<SigninResponse>>> = MutableLiveData()
 
 
-    private val _navigate: MutableLiveData<Event<String>> = MutableLiveData()
+    private val _navigate: MutableLiveData<Indicator<String>> = MutableLiveData()
 
-    val navigate: LiveData<Event<String>>
+    val navigate: LiveData<Indicator<String>>
     get() = _navigate
 
-    val signinResponse: LiveData <Event<Resource<SigninResponse>>>
+    val signinResponse: LiveData <Indicator<Resource<SigninResponse>>>
         get() = _signinResponse
 
 
@@ -51,7 +51,7 @@ constructor(private val authRepository: AuthRepository,
 
         viewModelScope.launch {
 
-            _signupResponse.value = Event(authRepository.signup(SignupRequest(email.value!!, password = password.value!!)))
+            _signupResponse.value = Indicator(authRepository.signup(SignupRequest(email.value!!, password = password.value!!)))
         }
 
 
@@ -62,7 +62,7 @@ constructor(private val authRepository: AuthRepository,
 
         viewModelScope.launch {
 
-            _signinResponse.value =  Event(authRepository.signin(SigninRequest(email.value!!, password = password.value!!)))
+            _signinResponse.value =  Indicator(authRepository.signin(SigninRequest(email.value!!, password = password.value!!)))
         }
 
     }
@@ -70,13 +70,13 @@ constructor(private val authRepository: AuthRepository,
 
     fun signIn(accessToken: String, iss: String){
         viewModelScope.launch{
-            _signinResponse.value = Event(authRepository.signin(SignInRequest_Social(iss = iss, access_token = accessToken)))
+            _signinResponse.value = Indicator(authRepository.signin(SignInRequest_Social(iss = iss, access_token = accessToken)))
         }
     }
 
     fun signUp(accessToken: String, iss: String){
         viewModelScope.launch{
-            _signupResponse.value = Event(authRepository.signup(SignUpRequest_Social(iss = iss, access_token = accessToken)))
+            _signupResponse.value = Indicator(authRepository.signup(SignUpRequest_Social(iss = iss, access_token = accessToken)))
         }
     }
 
@@ -84,7 +84,7 @@ constructor(private val authRepository: AuthRepository,
 
         viewModelScope.launch {
             userPrefrences.saveAccessToken(accessToken)
-            _navigate.value = Event("Landing")
+            _navigate.value = Indicator("Landing")
         }
 
     }

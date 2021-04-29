@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -16,29 +17,27 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentLandingBinding
 import com.newsta.android.databinding.LogoutDialogBinding
-import com.newsta.android.remote.data.Resource
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
-import com.newsta.android.utils.models.Data
+import com.newsta.android.utils.models.DataState
+import com.newsta.android.utils.models.Story
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LandingFragment : BaseFragment<FragmentLandingBinding>() {
+
+
 
     private val viewModel: NewsViewModel by activityViewModels()
 
@@ -48,24 +47,10 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private fun setUpAdapter() {
 
-        adapter = NewsAdapter { data: Data -> openDetails(data) }
+        adapter = NewsAdapter { story: Story -> openDetails(story) }
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                scrollState += dy
-                println("SCROLL STATE: $scrollState")
-                viewModel.newsScrollState.value = scrollState
-                super.onScrolled(recyclerView, dx, dy)
-            }
-
-        })
 
     }
 
@@ -120,17 +105,10 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     }
 
-    /*fun addNewsToDatabase(stories: ArrayList<Data>) {
-        viewModel.viewModelScope.launch {
-            if(viewModel.insertNewsToDatabase(stories) != 0L) {
-                println("NEWS ADDED TO DATABASE")
-            }
-        }
-    }*/
 
-    private fun openDetails(data: Data) {
+    private fun openDetails(story: Story) {
         println("SCROLL Y: ${scrollState}")
-        val bundle = bundleOf("data" to data, "scroll" to scrollState)
+        val bundle = bundleOf("data" to story, "scroll" to scrollState)
         findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)
     }
 
@@ -139,40 +117,27 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         println("Access token: ${NewstaApp.access_token}")
 
+
         setUpAdapter()
 
         binding.lifecycleOwner = requireActivity()
 
-        viewModel.newsResponse.observe(viewLifecycleOwner, Observer { event ->
-            event.getContentIfNotHandled().let {
-
-                when (it) {
-
-                    is Resource.Success -> {
-                        if (!it.data.data.isNullOrEmpty()) {
-                            val res = adapter.addAll(it.data.data)
-                            if(res) {
-
-                                val scroll = viewModel.scrollState.value ?: 19
-
-                                println("SCROLL IN VIEWMODEL: $scroll")
-                                binding.recyclerView.scrollToPosition(scroll)
-                            }
-                            else
-                                println("ERROL IN SCROLL SETTING")
-                        } else {
-                            println("News Response is NULL")
-                        }
-                    }
-
-                    is Resource.Failure -> {
-                        println("News Response failure $it")
-                    }
-
+        viewModel.newsDataState.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is DataState.Sucess<List<Story>?> -> {
+                    Log.i("newsDataState", " success")
+                    adapter.addAll(it.data as ArrayList<Story>)
                 }
-
+                is DataState.Error -> {
+                    Log.i("newsDataState", " errror ${it.exception.localizedMessage}")
+                }
+                is DataState.Loading -> {
+                    Log.i("newsDataState", " loding")
+                }
             }
         })
+
+
 
 
         setUpNavigationDrawer()

@@ -75,6 +75,7 @@ class Password_SignUpFragment : PasswordFragment<FragmentPasswordSignUpBinding>(
 
                     is Resource.Failure -> {
 
+                        Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show()
 
                         when(it.errorCode) {
                             400 -> {

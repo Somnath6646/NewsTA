@@ -6,36 +6,34 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.newsta.android.NewstaApp
 import com.newsta.android.remote.data.NewsRequest
-import com.newsta.android.remote.data.Resource
-import com.newsta.android.repository.NewsRepository
-import com.newsta.android.responses.NewsResponse
-import com.newsta.android.utils.Event
+import com.newsta.android.repository.StoryRepository
+import com.newsta.android.utils.models.DataState
+import com.newsta.android.utils.models.Story
 import com.newsta.android.utils.prefrences.UserPrefrences
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-
 class NewsViewModel
-    @ViewModelInject
-    constructor(private val newsRepository: NewsRepository,
-                private val preferences: UserPrefrences,
-                @Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(), Observable {
+@ViewModelInject
+constructor(private val newsRepository: StoryRepository,
+            private val preferences: UserPrefrences,
+            @Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(), Observable {
 
-    val newsResponse: LiveData<Event<Resource<NewsResponse>>>
-        get() = _newsResponse
+    private val _newsDataState = MutableLiveData<DataState<List<Story>>>()
 
-    val newsScrollState = MutableLiveData<Int>()
-
-    val scrollState: LiveData<Int>
-        get() = newsScrollState
-
-    private val _newsResponse = MutableLiveData<Event<Resource<NewsResponse>>>()
+    val newsDataState: LiveData<DataState<List<Story>>> = _newsDataState
 
     fun getAllNews() {
 
         viewModelScope.launch {
-            _newsResponse.value = Event(newsRepository.getAllNews(NewsRequest(NewstaApp.access_token!!, "newsta", 10000, "2021-04-11")))
-        }
+            val request = NewsRequest(NewstaApp.access_token!!, "newsta", 1, "2021-04-11")
+            newsRepository.getAllStories(newsRequest = request)
+                    .onEach {
 
+                        _newsDataState.value = it
+                    }
+                    .launchIn(viewModelScope)
+        }
     }
 
     init {
@@ -48,3 +46,4 @@ class NewsViewModel
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 
 }
+

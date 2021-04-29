@@ -13,6 +13,10 @@ sealed class Resource<out T>{
             val errorCode: Int?,
             val errorBody: Throwable?
     ): Resource<Nothing>()
+
+    data class Failed(
+            val message: String
+    )
 }
 
 data class ErrorBody(

@@ -10,26 +10,18 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Event(
-    @ColumnInfo(name = "created_at")
     @SerializedName("created_at")
     val createdAt: Long = 0L,
-    @ColumnInfo(name = "event_id")
     @SerializedName("event_id")
-    @PrimaryKey(autoGenerate = false)
     val eventId: Int = 0,
-    @ColumnInfo(name = "img_url")
     @SerializedName("img_url")
-    val imgUrl: String = "",
-    @ColumnInfo(name = "num_articles")
+    val imgUrl: String? = "",
     @SerializedName("num_articles")
-    val numArticles: Int = 0,
-    @ColumnInfo(name = "summary")
+    val numArticles: Int? = 0,
     @SerializedName("summary")
-    val summary: String = "",
-    @ColumnInfo(name = "title")
+    val summary: String? = "",
     @SerializedName("title")
-    val title: String = "",
-    @ColumnInfo(name = "updated_at")
+    val title: String? = "",
     @SerializedName("updated_at")
     val updatedAt: Long = 0L
 ) : Parcelable
