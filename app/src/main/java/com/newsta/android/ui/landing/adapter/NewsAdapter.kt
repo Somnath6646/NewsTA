@@ -29,7 +29,7 @@ class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<N
 
     fun addAll(storiesResponse: ArrayList<Story>): Boolean {
         stories.clear()
-        storiesResponse.sortBy {
+        storiesResponse.sortByDescending {
             story ->  story.storyId
         }
         stories.addAll(storiesResponse)
@@ -43,27 +43,17 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
 
     fun bind(story: Story) {
 
-        var max=0L
-        var indexOfEvent = story.events.size - 1
-        for (eventIndex in story.events.indices){
-            val event = story.events[eventIndex]
-            if(event.updatedAt > max){
-                max = event.updatedAt
-                indexOfEvent = eventIndex
-            }
-        }
+        story.events.sortedByDescending { events -> events.updatedAt }
 
-        val event = story.events[indexOfEvent]
+        val event = story.events[0]
 
         binding.title.text = event.title
         binding.sources.text = "${event.numArticles.toString()} sources"
-        binding.time.text = event.updatedAt.toString()
+        binding.time.text = setTime(event.updatedAt)
 
         Picasso.get()
             .load(event.imgUrl)
             .into(binding.image)
-
-        setDate(event.updatedAt)
 
         println("Width = ${binding.image.width}")
 
@@ -71,68 +61,48 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
 
     }
 
-    private fun setDate(millis: Long) {
+    private fun setTime(updatedAt: Long): String {
 
-        val updatedAt = Calendar.getInstance()
+        val time = System.currentTimeMillis()
+
+        val diff = time - updatedAt
+
+        val seconds: Long = diff / 1000
         
-        updatedAt.timeInMillis = millis
+        val minutes: Int = (seconds / 60).toInt()
 
-        val calendar = Calendar.getInstance()
-
-        println(" YEAR:  ${updatedAt.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)} ${updatedAt.get(Calendar.YEAR)} ${calendar.get(Calendar.YEAR)}")
-        println(" MONTH:  ${updatedAt.get(Calendar.MONTH) == calendar.get(Calendar.MONTH)}  ${updatedAt.get(Calendar.MONTH)} ${calendar.get(Calendar.MONTH)}")
-        println(" DAY_OF_MONTH:  ${updatedAt.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH)} ${updatedAt.get(Calendar.DAY_OF_MONTH)} ${calendar.get(Calendar.DAY_OF_MONTH)}")
-
-        if (updatedAt.get(Calendar.MONTH) == calendar.get(Calendar.MONTH)) {
-
-            if (updatedAt.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH)) {
-
-                if (updatedAt.get(Calendar.HOUR_OF_DAY) == calendar.get(Calendar.HOUR_OF_DAY)) {
-
-                    println("${calendar.get(Calendar.MINUTE)} - ${updatedAt.get(Calendar.MINUTE)}")
-
-                    val minutes =
-                        Math.abs(calendar.get(Calendar.MINUTE) - updatedAt.get(Calendar.MINUTE))
-
-                    binding.time.text = "$minutes minutes ago"
-
-                } else {
-
-                    println("${calendar.get(Calendar.HOUR_OF_DAY)} - ${updatedAt.get(Calendar.HOUR_OF_DAY)}")
-
-                    val hours = Math.abs(
-                        calendar.get(Calendar.HOUR_OF_DAY) - updatedAt.get(Calendar.HOUR_OF_DAY)
-                    )
-
-                    binding.time.text = "$hours hours ago"
-
-                }
-
-            } else if (updatedAt.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH) - 1) {
-
-
-                val hours =
-                    calendar.get(Calendar.HOUR_OF_DAY) - updatedAt.get(Calendar.HOUR_OF_DAY)
-
-                if (hours > 0)
-                    binding.time.text = "$hours minutes ago"
-                else {
-                    binding.time.text = "1 day ago"
-                }
-
-            } else {
-                val days =
-                    calendar.get(Calendar.DAY_OF_MONTH) - updatedAt.get(Calendar.DAY_OF_MONTH)
-
-                binding.time.text = "$days days ago"
-            }
-
+        val hours: Int = minutes / 60
+        val days: Int = hours / 24
+        val months: Int = days / 30
+        val years: Int = months / 12
+        
+        if (minutes <= 30) {
+            return "Few minutes ago"
+        }
+        else if (minutes > 30 && minutes < 60) {
+            return "Less than an hour ago"
         } else {
 
-            val months =
-                calendar.get(Calendar.HOUR_OF_DAY) - updatedAt.get(Calendar.HOUR_OF_DAY)
-
-            binding.time.text = "$months months ago"
+            if (hours == 1)
+                return "An hour ago"
+            else if (hours > 1 && hours < 24) {
+                return "$hours hours ago"
+            } else {
+                if (days >= 1 && days < 30) {
+                    return "$days days ago"
+                } else {
+                    if (months >= 1 && months < 12) {
+                        return "$months months ago"
+                    } else {
+                        if (years == 1)
+                            return "An year ago"
+                        else if (years > 1)
+                            return "$years years ago"
+                        else
+                            return "Time unknown"
+                    }
+                }
+            }
 
         }
 

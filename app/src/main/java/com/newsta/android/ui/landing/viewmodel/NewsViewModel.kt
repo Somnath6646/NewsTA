@@ -26,7 +26,7 @@ constructor(private val newsRepository: StoryRepository,
     fun getAllNews() {
 
         viewModelScope.launch {
-            val request = NewsRequest(NewstaApp.access_token!!, "newsta", 1, "2021-04-11")
+            val request = NewsRequest(NewstaApp.access_token!!, "newsta", 3000, "2021-04-11")
             newsRepository.getAllStories(newsRequest = request)
                     .onEach {
 
@@ -46,4 +46,3 @@ constructor(private val newsRepository: StoryRepository,
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 
 }
-

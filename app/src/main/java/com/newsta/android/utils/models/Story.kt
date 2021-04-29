@@ -13,16 +13,16 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(tableName = TABLE_NAME)
 data class Story(
-        @ColumnInfo(name = "category")
+    @ColumnInfo(name = "category")
     @SerializedName("category")
     val category: Int,
-        @SerializedName("events")
-     val events: List<Event>,
-        @ColumnInfo(name = "story_id")
+    @SerializedName("events")
+    val events: List<Event>,
+    @ColumnInfo(name = "story_id")
     @PrimaryKey(autoGenerate = false)
     @SerializedName("story_id")
     val storyId: Int
-) : Parcelable{
+) : Parcelable {
     companion object {
         const val TABLE_NAME = "newsta_stories"
     }

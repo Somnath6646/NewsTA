@@ -10,10 +10,10 @@ import com.newsta.android.databinding.FragmentDetailsBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.TimelineAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import com.newsta.android.utils.models.Event
 import com.newsta.android.utils.models.Story
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.InternalCoroutinesApi
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -33,7 +33,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         binding.summaryEvent.text = story.events.last().summary
 
-        setDate(story.events.last().updatedAt)
+        binding.updatedAtEvent.text = "Updated ${setTime(story.events.last().updatedAt)}"
 
         Picasso.get()
             .load(story.events.last().imgUrl)
@@ -50,77 +50,52 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
 
-        adapter.addAll(story.events as ArrayList)
+        adapter.addAll(ArrayList<Event>(story.events))
 
     }
 
-    private fun setDate(millis: Long) {
+    private fun setTime(updatedAt: Long): String {
 
-        val updatedAt = Calendar.getInstance()
+        val time = System.currentTimeMillis()
 
-        updatedAt.timeInMillis = millis
+        val diff = time - updatedAt
 
-        val calendar = Calendar.getInstance()
+        val seconds: Long = diff / 1000
 
-        println(
-            " YEAR:  ${updatedAt.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)} ${updatedAt.get(
-                Calendar.YEAR)} ${calendar.get(Calendar.YEAR)}"
-        )
-        println(" MONTH:  ${updatedAt.get(Calendar.MONTH) == calendar.get(Calendar.MONTH)}  ${updatedAt.get(
-            Calendar.MONTH)} ${calendar.get(Calendar.MONTH)}")
-        println(" DAY_OF_MONTH:  ${updatedAt.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH)} ${updatedAt.get(
-            Calendar.DAY_OF_MONTH)} ${calendar.get(Calendar.DAY_OF_MONTH)}")
+        val minutes: Int = (seconds / 60).toInt()
 
-        if (updatedAt.get(Calendar.MONTH) == calendar.get(Calendar.MONTH)) {
+        val hours: Int = minutes / 60
+        val days: Int = hours / 24
+        val months: Int = days / 30
+        val years: Int = months / 12
 
-            if (updatedAt.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH)) {
-
-                if (updatedAt.get(Calendar.HOUR_OF_DAY) == calendar.get(Calendar.HOUR_OF_DAY)) {
-
-                    println("Updated ${calendar.get(Calendar.MINUTE)} - ${updatedAt.get(Calendar.MINUTE)}")
-
-                    val minutes =
-                        Math.abs(calendar.get(Calendar.MINUTE) - updatedAt.get(Calendar.MINUTE))
-
-                    binding.updatedAtEvent.text = "Updated $minutes minutes ago"
-
-                } else {
-
-                    println("Updated ${calendar.get(Calendar.HOUR_OF_DAY)} - ${updatedAt.get(Calendar.HOUR_OF_DAY)}")
-
-                    val hours = Math.abs(
-                        calendar.get(Calendar.HOUR_OF_DAY) - updatedAt.get(Calendar.HOUR_OF_DAY)
-                    )
-
-                    binding.updatedAtEvent.text = "Updated $hours hours ago"
-
-                }
-
-            } else if (updatedAt.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH) - 1) {
-
-
-                val hours =
-                    calendar.get(Calendar.HOUR_OF_DAY) - updatedAt.get(Calendar.HOUR_OF_DAY)
-
-                if (hours > 0)
-                    binding.updatedAtEvent.text = "Updated $hours minutes ago"
-                else {
-                    binding.updatedAtEvent.text = "1 day ago"
-                }
-
-            } else {
-                val days =
-                    calendar.get(Calendar.DAY_OF_MONTH) - updatedAt.get(Calendar.DAY_OF_MONTH)
-
-                binding.updatedAtEvent.text = "Updated $days days ago"
-            }
-
+        if (minutes <= 30) {
+            return "Few minutes ago"
+        }
+        else if (minutes > 30 && minutes < 60) {
+            return "Less than an hour ago"
         } else {
 
-            val months =
-                calendar.get(Calendar.HOUR_OF_DAY) - updatedAt.get(Calendar.HOUR_OF_DAY)
-
-            binding.updatedAtEvent.text = "Updated $months months ago"
+            if (hours == 1)
+                return "An hour ago"
+            else if (hours > 1 && hours < 24) {
+                return "$hours hours ago"
+            } else {
+                if (days >= 1 && days < 30) {
+                    return "$days days ago"
+                } else {
+                    if (months >= 1 && months < 12) {
+                        return "$months months ago"
+                    } else {
+                        if (years == 1)
+                            return "An year ago"
+                        else if (years > 1)
+                            return "$years years ago"
+                        else
+                            return "Time unknown"
+                    }
+                }
+            }
 
         }
 
@@ -132,7 +107,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         story = requireArguments().getParcelable<Story>("data")!!
         scrollState = requireArguments().getInt("scroll")
 
-
         binding.lifecycleOwner = requireActivity()
 
         binding.btnBack.setOnClickListener {
@@ -142,7 +116,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         binding.btnShare.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/web"
-            intent.putExtra(Intent.EXTRA_TEXT, story.events.last().title + "\n"+story.events.last().summary)
+            intent.putExtra(Intent.EXTRA_TEXT, story.events.last().title + "\n" +story.events.last().summary)
             val shareIntent = Intent.createChooser(intent, "Share via")
             startActivity(shareIntent)
         }

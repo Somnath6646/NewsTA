@@ -12,25 +12,23 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 
-class UserPrefrences (
-        context: Context
-){
+class UserPrefrences(
+    context: Context
+) {
 
 
     private val applicationContext = context.applicationContext
 
 
-
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 
-
     val accessToken: Flow<String?> = applicationContext.dataStore.data
-            .map { preferences ->
-                preferences[ACCESS_TOKEN]
-            }
+        .map { preferences ->
+            preferences[ACCESS_TOKEN]
+        }
 
-     suspend fun saveAccessToken(accessToken: String) {
+    suspend fun saveAccessToken(accessToken: String) {
 
         applicationContext.dataStore.edit { settings ->
             settings[ACCESS_TOKEN] = accessToken
@@ -38,10 +36,7 @@ class UserPrefrences (
     }
 
 
-
-
-
-    companion object{
+    companion object {
         val ACCESS_TOKEN = stringPreferencesKey("access token")
     }
 }

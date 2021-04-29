@@ -79,7 +79,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                     println("Abhi hai $dialogBinding")
 
-
                     dialogBinding.btnCancel.setOnClickListener { v ->
                         dialog.dismiss()
                     }
@@ -136,9 +135,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 }
             }
         })
-
-
-
 
         setUpNavigationDrawer()
 
