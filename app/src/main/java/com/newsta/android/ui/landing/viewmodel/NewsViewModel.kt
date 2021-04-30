@@ -6,8 +6,12 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.newsta.android.NewstaApp
 import com.newsta.android.remote.data.NewsRequest
+import com.newsta.android.remote.data.NewsSourceRequest
 import com.newsta.android.repository.StoryRepository
+import com.newsta.android.responses.NewsResponse
+import com.newsta.android.responses.NewsSourceResponse
 import com.newsta.android.utils.models.DataState
+import com.newsta.android.utils.models.NewsSource
 import com.newsta.android.utils.models.Story
 import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.flow.*
@@ -26,7 +30,7 @@ constructor(private val newsRepository: StoryRepository,
     fun getAllNews() {
 
         viewModelScope.launch {
-            val request = NewsRequest(NewstaApp.access_token!!, "newsta", 3000, "2021-04-11")
+            val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, 3000, "2021-04-11")
             newsRepository.getAllStories(newsRequest = request)
                     .onEach {
 
@@ -38,6 +42,19 @@ constructor(private val newsRepository: StoryRepository,
 
     init {
         getAllNews()
+    }
+
+    private val _sources = MutableLiveData<NewsSourceResponse>()
+    val sources: LiveData<NewsSourceResponse>
+        get() = _sources
+
+    fun getSources(storyId: Int, eventId: Int) {
+
+        viewModelScope.launch {
+            val request = NewsSourceRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, eventId)
+            _sources.value = newsRepository.getSources(request)
+        }
+
     }
 
     //suspend fun insertNewsToDatabase(data: ArrayList<Data>) = newsRepository.insertNewsToDatabase(data)

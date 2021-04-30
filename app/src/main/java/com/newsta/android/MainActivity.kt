@@ -30,11 +30,15 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.userPrefrences.maxStoryId.asLiveData().observe(this, Observer { maxStoryId ->
+            if (maxStoryId != null) {
+                NewstaApp.max_story_id = maxStoryId
+                NewstaApp.setMaxStoryId(maxStoryId)
+
+                Log.i("MainActivity", (maxStoryId == NewstaApp.getMaxStoryId()).toString())
+            }
+        })
+
     }
-
-
-
-
-
 
 }

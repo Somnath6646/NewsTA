@@ -120,6 +120,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         binding.lifecycleOwner = requireActivity()
 
+        println("VIEWMODEL: $viewModel")
+
         viewModel.newsDataState.observe(viewLifecycleOwner, Observer {
             when(it){
                 is DataState.Sucess<List<Story>?> -> {

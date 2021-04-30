@@ -16,6 +16,9 @@ data class Story(
     @ColumnInfo(name = "category")
     @SerializedName("category")
     val category: Int,
+    @ColumnInfo(name = "updated_at")
+    @SerializedName("updated_at")
+    val updatedAt: Long,
     @SerializedName("events")
     val events: List<Event>,
     @ColumnInfo(name = "story_id")

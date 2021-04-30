@@ -2,6 +2,7 @@ package com.newsta.android.ui.landing.adapter
 
 import android.icu.text.DateFormat
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -12,14 +13,17 @@ import java.lang.String.format
 import java.util.*
 import kotlin.collections.ArrayList
 
-class TimelineAdapter : RecyclerView.Adapter<TimelineViewHolder>() {
+var size = 0
+var pos = 0
+
+class TimelineAdapter(private val onClick: (Event) -> Unit) : RecyclerView.Adapter<TimelineViewHolder>() {
 
     private val events = ArrayList<Event>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimelineViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = DataBindingUtil.inflate<ItemTimelineEventsBinding>(inflater, R.layout.item_timeline_events , parent, false)
-        return TimelineViewHolder(binding)
+        return TimelineViewHolder(binding, onClick)
     }
 
     override fun getItemCount(): Int = events.size
@@ -31,15 +35,26 @@ class TimelineAdapter : RecyclerView.Adapter<TimelineViewHolder>() {
     fun addAll(eventList: ArrayList<Event>) {
         events.clear()
         events.addAll(eventList)
-        events.sortBy { event -> event.updatedAt }
+        size = events.size
+        pos = 0
+        notifyDataSetChanged()
+    }
+
+    fun replace(initial: Event, final: Event) {
+        val position = events.indexOf(initial)
+        events.set(position, final)
+        size = events.size
+        pos = 0
         notifyDataSetChanged()
     }
 
 }
 
-class TimelineViewHolder(private val binding: ItemTimelineEventsBinding) : RecyclerView.ViewHolder(binding.root) {
+class TimelineViewHolder(private val binding: ItemTimelineEventsBinding, private val onClick: (Event) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(event: Event) {
+
+        println("POSITION: $pos SIZE: $size")
 
         binding.titleEventsTimeline.text = event.title
 
@@ -49,6 +64,16 @@ class TimelineViewHolder(private val binding: ItemTimelineEventsBinding) : Recyc
         val date = "${calendar.get(Calendar.DAY_OF_MONTH)} ${getMonth(calendar.get(Calendar.MONTH))}"
 
         binding.dateEventsTimeline.text = date
+        
+        if(pos == 0)
+            binding.upperAttacherEventsTimeline.visibility = View.INVISIBLE
+
+        pos++
+
+        if(pos == size)
+            binding.downAttacherEventsTimeline.visibility = View.INVISIBLE
+
+        binding.root.setOnClickListener { onClick(event) }
 
     }
 

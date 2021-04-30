@@ -2,8 +2,11 @@ package com.newsta.android.repository
 
 import com.newsta.android.data.local.StoriesDAO
 import com.newsta.android.remote.data.NewsRequest
+import com.newsta.android.remote.data.NewsSourceRequest
 import com.newsta.android.remote.services.NewsService
+import com.newsta.android.responses.NewsResponse
 import com.newsta.android.utils.models.DataState
+import com.newsta.android.utils.models.NewsSource
 import com.newsta.android.utils.models.Story
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -34,4 +37,7 @@ class StoryRepository(
             }
         }
     }
+
+    suspend fun getSources(sourceRequest: NewsSourceRequest) = newsService.getSource(sourceRequest)
+
 }

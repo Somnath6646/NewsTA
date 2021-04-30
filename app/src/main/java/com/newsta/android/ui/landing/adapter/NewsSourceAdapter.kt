@@ -5,57 +5,48 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.R
-import com.newsta.android.databinding.NewsItemBinding
-import com.newsta.android.utils.models.Story
+import com.newsta.android.databinding.SourcesItemBinding
+import com.newsta.android.utils.models.NewsSource
 import com.squareup.picasso.Picasso
-import java.util.*
-import kotlin.collections.ArrayList
 
-class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
+class NewsSourceAdapter(private val onClick: (NewsSource) -> Unit) : RecyclerView.Adapter<NewsSourceViewHolder>() {
 
-    private val stories = ArrayList<Story>()
+    private val sources = ArrayList<NewsSource>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsSourceViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = DataBindingUtil.inflate<NewsItemBinding>(inflater, R.layout.news_item, parent, false)
-        return NewsViewHolder(binding, onClick)
+        val binding = DataBindingUtil.inflate<SourcesItemBinding>(inflater, R.layout.sources_item, parent, false)
+        return NewsSourceViewHolder(binding, onClick)
     }
 
-    override fun getItemCount(): Int = stories.size
+    override fun getItemCount(): Int = sources.size
 
-    override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
-        holder.bind(stories[position])
+    override fun onBindViewHolder(holder: NewsSourceViewHolder, position: Int) {
+        holder.bind(sources[position])
     }
 
-    fun addAll(storiesResponse: ArrayList<Story>): Boolean {
-        stories.clear()
-        storiesResponse.sortByDescending {
-            story ->  story.updatedAt
-        }
-        stories.addAll(storiesResponse)
+    fun addAll(sourcesResponse: ArrayList<NewsSource>): Boolean {
+        sources.clear()
+        sources.addAll(sourcesResponse)
         notifyDataSetChanged()
         return true
     }
 
 }
 
-class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: (Story) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+class NewsSourceViewHolder(private val binding: SourcesItemBinding, private val onClick: (NewsSource) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(story: Story) {
+    fun bind(source: NewsSource) {
 
-        story.events.sortedByDescending { events -> events.updatedAt }
-
-        val event = story.events[0]
-
-        binding.title.text = event.title
-        binding.sources.text = "${event.numArticles.toString()} sources"
-        binding.time.text = setTime(story.updatedAt)
+        binding.title.text = source.title
 
         Picasso.get()
-            .load(event.imgUrl)
+            .load(source.imgUrl)
             .into(binding.image)
 
-        binding.root.setOnClickListener { onClick(story) }
+        println("Width = ${binding.image.width}")
+
+        binding.root.setOnClickListener { onClick(source) }
 
     }
 
@@ -65,15 +56,19 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
 
         val diff = time - updatedAt
 
+        println("DIFF:   $diff")
+        println("TIME:   $time")
+        println("UPDATED_AT:   $updatedAt")
+
         val seconds: Long = diff / 1000
-        
+
         val minutes: Int = (seconds / 60).toInt()
 
         val hours: Int = minutes / 60
         val days: Int = hours / 24
         val months: Int = days / 30
         val years: Int = months / 12
-        
+
         if (minutes <= 30) {
             return "Few minutes ago"
         }
