@@ -2,6 +2,7 @@ package com.newsta.android.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
 import kotlinx.coroutines.flow.Flow
 
@@ -16,5 +17,14 @@ interface StoriesDAO {
 
     @Query("DELETE FROM ${Story.TABLE_NAME}")
     suspend fun deleteAllStories()
+
+    @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE story_id = (SELECT MAX(story_id) FROM ${Story.TABLE_NAME})")
+    suspend fun getMaxStory(): Story
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSavedStory(story: SavedStory)
+
+    @Query("SELECT * FROM ${SavedStory.TABLE_NAME}")
+    suspend fun getAllSavedStories(): List<SavedStory>
 
 }

@@ -84,6 +84,7 @@ constructor(private val authRepository: AuthRepository,
 
         viewModelScope.launch {
             userPrefrences.saveAccessToken(accessToken)
+            userPrefrences.isDatabaseEmpty(true)
             _navigate.value = Indicator("Landing")
         }
 

@@ -26,20 +26,20 @@ class UserPrefrences(context: Context) {
         }
     }
     
-    val maxStoryId: Flow<Int?> = applicationContext.dataStore.data
+    val isDatabaseEmpty: Flow<Boolean?> = applicationContext.dataStore.data
         .map { preferences ->
-            preferences[MAX_STORY_ID]
+            preferences[IS_DATABASE_EMPTY]
         }
 
-    suspend fun maxStoryId(maxStoryId: Int) {
+    suspend fun isDatabaseEmpty(isDatabaseEmpty: Boolean) {
         applicationContext.dataStore.edit { settings ->
-            settings[MAX_STORY_ID] = maxStoryId
+            settings[IS_DATABASE_EMPTY] = isDatabaseEmpty
         }
     }
 
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("access token")
-        val MAX_STORY_ID = intPreferencesKey("max_story_id")
+        val IS_DATABASE_EMPTY = booleanPreferencesKey("is_database_empty")
     }
 
 }

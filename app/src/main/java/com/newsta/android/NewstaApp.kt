@@ -1,7 +1,6 @@
 package com.newsta.android
 
 import android.app.Application
-import com.facebook.AccessToken
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.newsta.android.utils.prefrences.UserPrefrences
@@ -23,11 +22,11 @@ class NewstaApp : Application() {
             this.access_token = accessToken
         }
 
-        var max_story_id: Int? = 0
+        var is_database_empty: Boolean? = true
 
-        fun getMaxStoryId(): Int? = max_story_id
-        fun setMaxStoryId(maxStoryId: Int) {
-            this.max_story_id = maxStoryId
+        fun getIsDatabaseEmpty(): Boolean? = is_database_empty
+        fun setIsDatabaseEmpty(isDatabaseEmpty: Boolean) {
+            this.is_database_empty = isDatabaseEmpty
         }
 
     }

@@ -44,13 +44,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="15 Nov"
-            android:textSize="18sp"
-            style="@style/BlackBoldText"
+            android:textSize="12sp"
+            android:layout_marginBottom="2dp"
+            style="@style/TimelineTime"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/point_timline"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginHorizontal="15dp"
-            />
+            android:layout_marginHorizontal="15dp" />
 
     <TextView
         android:id="@+id/title_events_timeline"
@@ -60,6 +60,8 @@
         android:layout_marginTop="2dp"
         android:paddingBottom="20dp"
         android:text="What happened?"
+        android:textSize="14sp"
+        android:textStyle="bold"
         android:textColor="@color/colorText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/point_timline"

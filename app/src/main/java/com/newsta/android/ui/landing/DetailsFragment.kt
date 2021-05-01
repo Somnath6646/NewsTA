@@ -1,7 +1,6 @@
 package com.newsta.android.ui.landing
 
 import android.app.Activity
-import android.content.ComponentName
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
@@ -21,14 +20,11 @@ import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.NewsSourceAdapter
 import com.newsta.android.ui.landing.adapter.TimelineAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
-import com.newsta.android.utils.models.Event
-import com.newsta.android.utils.models.NewsSource
-import com.newsta.android.utils.models.Story
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.collections.ArrayList
-import androidx.core.app.ShareCompat
 import androidx.core.view.drawToBitmap
+import com.newsta.android.utils.models.*
 
 @AndroidEntryPoint
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
@@ -48,8 +44,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         event = story.events.first()
 
-        viewModel.getSources(story.storyId, event.eventId)
-
         println("Story: ${story.storyId} Event: ${event.eventId}")
 
         showEventData(event)
@@ -66,19 +60,21 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
 
-        binding.btnShare.setOnClickListener {
-            shareImage()
-        }
+        binding.btnShare.setOnClickListener { shareImage() }
+
+        binding.btnDownload.setOnClickListener { saveStory() }
 
     }
 
     private fun showEventData(event: Event) {
 
+        viewModel.getSources(story.storyId, event.eventId)
+
         binding.titleEvent.text = event.title
 
         binding.summaryEvent.text = event.summary
 
-        binding.updatedAtEvent.text = "Updated ${setTime(story.updatedAt)}"
+        binding.updatedAtEvent.text = "${setTime(story.updatedAt)}"
 
         Picasso.get()
             .load(event.imgUrl)
@@ -94,7 +90,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
 
         val timelineEvents = ArrayList<Event>(story.events)
-        timelineEvents.remove(story.events[0])
 
         timelineAdapter.addAll(timelineEvents)
 
@@ -116,7 +111,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     private fun timelineOnClick(timelineEvent: Event) {
 
         showEventData(timelineEvent)
-        timelineAdapter.replace(timelineEvent, event)
         event = timelineEvent
         binding.scrollView.smoothScrollTo(0, 0)
 
@@ -169,6 +163,26 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     }
 
+    private fun saveStory() {
+
+        viewModel.saveStory((story as? SavedStory)!!)
+
+        viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is DataState.Success<SavedStory> -> {
+                    binding.btnDownload.setImageResource(R.drawable.ic_downloaded)
+                }
+                is DataState.Error -> {
+                    println("NEWS SAVE ERROR")
+                }
+                is DataState.Loading -> {
+                    println("NEWS SAVING")
+                }
+            }
+        })
+
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -201,7 +215,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     }
 
     private fun shareImage() {
-        val imageUri = binding.constraintLayout.drawToBitmap().let { bitmap ->
+        val imageUri = binding.constraintLayout.drawToBitmap().let { bitmap: Bitmap ->
             saveBitmap(requireActivity(), bitmap)
         }
         val intent = Intent(Intent.ACTION_SEND)

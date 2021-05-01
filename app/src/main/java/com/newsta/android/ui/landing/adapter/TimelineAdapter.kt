@@ -59,7 +59,7 @@ class TimelineViewHolder(private val binding: ItemTimelineEventsBinding, private
         binding.titleEventsTimeline.text = event.title
 
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = event.updatedAt
+        calendar.timeInMillis = event.createdAt
 
         val date = "${calendar.get(Calendar.DAY_OF_MONTH)} ${getMonth(calendar.get(Calendar.MONTH))}"
 

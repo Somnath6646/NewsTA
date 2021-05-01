@@ -27,14 +27,12 @@ class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<N
         holder.bind(stories[position])
     }
 
-    fun addAll(storiesResponse: ArrayList<Story>): Boolean {
-        stories.clear()
+    fun addAll(storiesResponse: ArrayList<Story>) {
         storiesResponse.sortByDescending {
             story ->  story.updatedAt
         }
         stories.addAll(storiesResponse)
         notifyDataSetChanged()
-        return true
     }
 
 }
@@ -48,7 +46,7 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
         val event = story.events[0]
 
         binding.title.text = event.title
-        binding.sources.text = "${event.numArticles.toString()} sources"
+        binding.timeline.text = if(story.events.size > 1) "View timeline" else ""
         binding.time.text = setTime(story.updatedAt)
 
         Picasso.get()

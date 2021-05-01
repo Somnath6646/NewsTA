@@ -7,19 +7,19 @@ import androidx.lifecycle.*
 import com.newsta.android.NewstaApp
 import com.newsta.android.remote.data.NewsRequest
 import com.newsta.android.remote.data.NewsSourceRequest
-import com.newsta.android.repository.StoryRepository
-import com.newsta.android.responses.NewsResponse
+import com.newsta.android.repository.StoriesRepository
 import com.newsta.android.responses.NewsSourceResponse
 import com.newsta.android.utils.models.DataState
-import com.newsta.android.utils.models.NewsSource
+import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
 import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 class NewsViewModel
 @ViewModelInject
-constructor(private val newsRepository: StoryRepository,
+constructor(private val newsRepository: StoriesRepository,
             private val preferences: UserPrefrences,
             @Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(), Observable {
 
@@ -27,21 +27,29 @@ constructor(private val newsRepository: StoryRepository,
 
     val newsDataState: LiveData<DataState<List<Story>>> = _newsDataState
 
-    fun getAllNews() {
+    fun getAllNews(storyId: Int = 0, maxDateTime: Long) {
+
+        val maxDate = SimpleDateFormat("dd-MM-yyyy").format(maxDateTime)
 
         viewModelScope.launch {
-            val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, 3000, "2021-04-11")
+            val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, maxDate)
             newsRepository.getAllStories(newsRequest = request)
                     .onEach {
-
                         _newsDataState.value = it
                     }
                     .launchIn(viewModelScope)
         }
+
     }
 
-    init {
-        getAllNews()
+    fun getNewsFromDatabase() {
+
+        viewModelScope.launch {
+            newsRepository.getNewsFromDatabase().onEach {
+                _newsDataState.value = it
+            }.launchIn(viewModelScope)
+        }
+
     }
 
     private val _sources = MutableLiveData<NewsSourceResponse>()
@@ -55,6 +63,22 @@ constructor(private val newsRepository: StoryRepository,
             _sources.value = newsRepository.getSources(request)
         }
 
+    }
+
+    private val _saveNewsState = MutableLiveData<DataState<SavedStory>>()
+    val saveNewsState: LiveData<DataState<SavedStory>>
+        get() = _saveNewsState
+
+    fun saveStory(story: SavedStory) {
+        viewModelScope.launch {
+            newsRepository.saveStory(story)
+        }
+    }
+
+    fun changeDatabaseState(isDatabaseEmpty: Boolean) {
+        viewModelScope.launch {
+            preferences.isDatabaseEmpty(isDatabaseEmpty)
+        }
     }
 
     //suspend fun insertNewsToDatabase(data: ArrayList<Data>) = newsRepository.insertNewsToDatabase(data)

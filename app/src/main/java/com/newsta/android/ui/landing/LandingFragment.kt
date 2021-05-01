@@ -38,7 +38,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
 
-
     private val viewModel: NewsViewModel by activityViewModels()
 
     private lateinit var adapter: NewsAdapter
@@ -111,6 +110,19 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)
     }
 
+    private fun getNews() {
+
+        if(NewstaApp.is_database_empty!!) {
+            println("API ------>        ${NewstaApp.is_database_empty!!}")
+            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+            viewModel.getAllNews(0, days3)
+        } else {
+            println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
+            viewModel.getNewsFromDatabase()
+        }
+
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -122,17 +134,28 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         println("VIEWMODEL: $viewModel")
 
+        getNews()
+
         viewModel.newsDataState.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is DataState.Sucess<List<Story>?> -> {
+            when (it) {
+                is DataState.Success<List<Story>?> -> {
                     Log.i("newsDataState", " success")
+                    binding.refreshLayout.isRefreshing = false
+                    viewModel.changeDatabaseState(isDatabaseEmpty = false)
                     adapter.addAll(it.data as ArrayList<Story>)
                 }
                 is DataState.Error -> {
-                    Log.i("newsDataState", " errror ${it.exception.localizedMessage}")
+                    Log.i("newsDataState", " errror ${it.exception}")
+                    binding.refreshLayout.isRefreshing = false
                 }
                 is DataState.Loading -> {
                     Log.i("newsDataState", " loding")
+                    binding.refreshLayout.isRefreshing = true
+                }
+                is DataState.Extra<List<Story>?> -> {
+                    val story = it.data?.get(0)!!
+                    Log.i("newsDataState", " EXTRA ${story.storyId} ${story.updatedAt} ${story.category} ${story.events}")
+                    viewModel.getAllNews(story.storyId, story.updatedAt)
                 }
             }
         })
@@ -149,16 +172,17 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                 tab.customView = when (position) {
                     0 -> addCustomView(
-                        "All News", 16f,
+                        "National", 16f,
                         Color.WHITE
                     )
-                    1 -> addCustomView("General")
-                    2 -> addCustomView("Technology")
-                    3 -> addCustomView("Business")
-                    4 -> addCustomView("Health")
-                    5 -> addCustomView("Science")
+                    1 -> addCustomView("World")
+                    2 -> addCustomView("Business")
+                    3 -> addCustomView("Technology")
+                    4 -> addCustomView("Sports")
+                    5 -> addCustomView("Lifestyle")
                     6 -> addCustomView("Entertainment")
-                    7 -> addCustomView("Sports")
+                    7 -> addCustomView("Local")
+                    8 -> addCustomView("Others")
                     else -> addCustomView("null")
                 }
 

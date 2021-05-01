@@ -92,13 +92,14 @@
                     app:layout_constraintEnd_toStartOf="@id/end_guideline"
                     app:layout_constraintTop_toBottomOf="@id/top_guideline" />
 
-
-
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="24dp"
                     android:animateLayoutChanges="true"
+                    app:layout_constraintBottom_toTopOf="@id/refresh_layout"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/nav_guideline"
@@ -110,9 +111,6 @@
                     app:tabMode="scrollable"
                     app:tabPaddingEnd="12dp"
                     app:tabPaddingTop="1dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="24dp"
-                    app:layout_constraintBottom_toTopOf="@id/recycler_view"
                     app:tabRippleColor="@android:color/transparent"
                     app:tabSelectedTextColor="@color/colorPrimary"
                     app:tabTextAppearance="@style/tab_text" />
@@ -127,14 +125,21 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/refresh_layout"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/end_guideline"
                     app:layout_constraintStart_toEndOf="@id/start_guideline"
-                    app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+                    app:layout_constraintTop_toBottomOf="@id/tabLayout">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

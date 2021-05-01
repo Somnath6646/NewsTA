@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import com.newsta.android.databinding.ActivityMainBinding
@@ -30,12 +29,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.userPrefrences.maxStoryId.asLiveData().observe(this, Observer { maxStoryId ->
-            if (maxStoryId != null) {
-                NewstaApp.max_story_id = maxStoryId
-                NewstaApp.setMaxStoryId(maxStoryId)
+        viewModel.userPrefrences.isDatabaseEmpty.asLiveData().observe(this, Observer { isDatabaseEmpty ->
+            if (isDatabaseEmpty != null) {
+                NewstaApp.is_database_empty = isDatabaseEmpty
+                NewstaApp.setIsDatabaseEmpty(isDatabaseEmpty)
 
-                Log.i("MainActivity", (maxStoryId == NewstaApp.getMaxStoryId()).toString())
+                Log.i("MainActivity", (isDatabaseEmpty == NewstaApp.getIsDatabaseEmpty()).toString())
             }
         })
 
