@@ -1,6 +1,7 @@
 package com.newsta.android.repository
 
 import com.newsta.android.data.local.StoriesDAO
+import com.newsta.android.remote.data.CategoryRequest
 import com.newsta.android.remote.data.NewsRequest
 import com.newsta.android.remote.data.NewsSourceRequest
 import com.newsta.android.remote.services.NewsService
@@ -55,6 +56,10 @@ class StoriesRepository(
                 val maxStory = storiesDao.getMaxStory()
                 emit(DataState.Extra(listOf(maxStory)))
             }
+            if(remoteNewsResponse.statusCode == 200)
+                println("SUCCESSFUL RESPONSE")
+            else
+                println(" ERROR: ${remoteNewsResponse.statusCode}")
         } catch (e: Exception) {
             val cachedStories = storiesDao.getAllStories()
             if (cachedStories != null) {
@@ -77,5 +82,23 @@ class StoriesRepository(
         }
 
     }
+
+    suspend fun getFilteredStories(category: Int): Flow<DataState<List<Story>>> = flow {
+
+        emit(DataState.Loading)
+
+        try {
+
+            val filteredStories = storiesDao.getFilteredStories(category)
+            emit(DataState.Success(filteredStories))
+            print("EMITTED FILTERED")
+
+        } catch (e: Exception) {
+
+        }
+
+    }
+
+    suspend fun getCategories(categoryRequest: CategoryRequest) = newsService.getCategories(categoryRequest)
 
 }

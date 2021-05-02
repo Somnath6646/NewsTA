@@ -1,4 +1,4 @@
-package com.newsta.android.ui.landing
+package com.newsta.android.ui.details
 
 import android.app.Activity
 import android.content.ContentValues
@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
+import androidx.core.view.drawToBitmap
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -17,13 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
 import com.newsta.android.ui.base.BaseFragment
-import com.newsta.android.ui.landing.adapter.NewsSourceAdapter
-import com.newsta.android.ui.landing.adapter.TimelineAdapter
+import com.newsta.android.ui.details.adapter.NewsSourceAdapter
+import com.newsta.android.ui.details.adapter.TimelineAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.collections.ArrayList
-import androidx.core.view.drawToBitmap
 import com.newsta.android.utils.models.*
 
 @AndroidEntryPoint
@@ -40,9 +40,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun initViews() {
 
-        story.events.sortedByDescending { event -> event.updatedAt }
-
-        event = story.events.first()
+        event = story.events.last()
 
         println("Story: ${story.storyId} Event: ${event.eventId}")
 
@@ -84,7 +82,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun setUpAdapters() {
 
-        timelineAdapter = TimelineAdapter { event -> timelineOnClick(event) }
+        timelineAdapter =
+            TimelineAdapter { event ->
+                timelineOnClick(event)
+            }
         binding.recyclerViewTimelineEvents.adapter = timelineAdapter
         binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
@@ -93,7 +94,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         timelineAdapter.addAll(timelineEvents)
 
-        sourcesAdapter = NewsSourceAdapter { source -> openNewsUrl(source) }
+        sourcesAdapter =
+            NewsSourceAdapter { source ->
+                openNewsUrl(source)
+            }
         binding.recyclerViewSourceEvents.adapter = sourcesAdapter
         binding.recyclerViewSourceEvents.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewSourceEvents.isNestedScrollingEnabled = false

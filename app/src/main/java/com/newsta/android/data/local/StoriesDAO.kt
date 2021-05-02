@@ -27,4 +27,7 @@ interface StoriesDAO {
     @Query("SELECT * FROM ${SavedStory.TABLE_NAME}")
     suspend fun getAllSavedStories(): List<SavedStory>
 
+    @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE category = (SELECT :category FROM ${Story.TABLE_NAME})")
+    suspend fun getFilteredStories(category: Int): List<Story>
+
 }

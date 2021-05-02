@@ -1,40 +1,32 @@
-package com.newsta.android.ui
+package com.newsta.android.ui.splash
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.commit
-import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
-import androidx.navigation.ActivityNavigatorExtras
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSplashBinding
 import com.newsta.android.ui.base.BaseFragment
-import com.newsta.android.utils.prefrences.UserPrefrences
+import com.newsta.android.ui.landing.viewmodel.NewsViewModel
 
 class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
+    private val viewModel: NewsViewModel by activityViewModels()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
-        object : CountDownTimer(2000, 1000){
+        object : CountDownTimer(2000, 1000) {
             override fun onFinish() {
 
 
-                if(NewstaApp.getAccessToken() != null){
+                if (NewstaApp.getAccessToken() != null) {
                     //navtomainfragment
+                    viewModel.getCategories()
                     navigateToMainFragment()
-                }else{
+                } else {
                     //navtoauthenticationoptionsfragment
                     navigateToAuthenticationOptionsFragment()
                 }
@@ -49,18 +41,15 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
     }
 
-
-
-    fun navigateToMainFragment(){
-        val action = SplashFragmentDirections.actionSplashFragmentToLandingFragment()
+    fun navigateToMainFragment() {
+        val action =
+            SplashFragmentDirections.actionSplashFragmentToLandingFragment()
         findNavController().navigate(action)
     }
 
-
-
-
-    fun navigateToAuthenticationOptionsFragment(){
-        val action = SplashFragmentDirections.actionSplashFragmentToSignupSigninOptionsFragment()
+    fun navigateToAuthenticationOptionsFragment() {
+        val action =
+            SplashFragmentDirections.actionSplashFragmentToSignupSigninOptionsFragment()
         val extras = FragmentNavigatorExtras(binding.logo to "logoTransition")
 
         findNavController().navigate(action, extras)

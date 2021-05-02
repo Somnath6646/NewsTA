@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bg_color"
-            tools:context=".ui.landing.DetailsFragment">
+            tools:context=".ui.details.DetailsFragment">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/left_guidline"

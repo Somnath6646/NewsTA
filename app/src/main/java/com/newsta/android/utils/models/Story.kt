@@ -20,7 +20,7 @@ data class Story(
     @SerializedName("updated_at")
     val updatedAt: Long,
     @SerializedName("events")
-    val events: List<Event>,
+    var events: List<Event>,
     @ColumnInfo(name = "story_id")
     @PrimaryKey(autoGenerate = false)
     @SerializedName("story_id")

@@ -1,4 +1,4 @@
-package com.newsta.android.ui.landing.adapter
+package com.newsta.android.ui.details.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -16,7 +16,10 @@ class NewsSourceAdapter(private val onClick: (NewsSource) -> Unit) : RecyclerVie
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsSourceViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = DataBindingUtil.inflate<SourcesItemBinding>(inflater, R.layout.sources_item, parent, false)
-        return NewsSourceViewHolder(binding, onClick)
+        return NewsSourceViewHolder(
+            binding,
+            onClick
+        )
     }
 
     override fun getItemCount(): Int = sources.size

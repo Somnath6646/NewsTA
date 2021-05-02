@@ -1,6 +1,5 @@
-package com.newsta.android.ui.landing.adapter
+package com.newsta.android.ui.details.adapter
 
-import android.icu.text.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.R
 import com.newsta.android.databinding.ItemTimelineEventsBinding
 import com.newsta.android.utils.models.Event
-import java.lang.String.format
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -23,7 +21,10 @@ class TimelineAdapter(private val onClick: (Event) -> Unit) : RecyclerView.Adapt
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimelineViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = DataBindingUtil.inflate<ItemTimelineEventsBinding>(inflater, R.layout.item_timeline_events , parent, false)
-        return TimelineViewHolder(binding, onClick)
+        return TimelineViewHolder(
+            binding,
+            onClick
+        )
     }
 
     override fun getItemCount(): Int = events.size
@@ -35,14 +36,6 @@ class TimelineAdapter(private val onClick: (Event) -> Unit) : RecyclerView.Adapt
     fun addAll(eventList: ArrayList<Event>) {
         events.clear()
         events.addAll(eventList)
-        size = events.size
-        pos = 0
-        notifyDataSetChanged()
-    }
-
-    fun replace(initial: Event, final: Event) {
-        val position = events.indexOf(initial)
-        events.set(position, final)
         size = events.size
         pos = 0
         notifyDataSetChanged()

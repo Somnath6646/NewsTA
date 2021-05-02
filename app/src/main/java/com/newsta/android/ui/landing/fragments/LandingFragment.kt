@@ -1,4 +1,4 @@
-package com.newsta.android.ui.landing
+package com.newsta.android.ui.landing.fragments
 
 import android.app.Dialog
 import android.graphics.Color
@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
@@ -19,7 +20,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.NewstaApp
@@ -27,12 +28,16 @@ import com.newsta.android.R
 import com.newsta.android.databinding.FragmentLandingBinding
 import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.ui.details.adapter.pos
 import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import com.newsta.android.utils.models.Category
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.Story
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class LandingFragment : BaseFragment<FragmentLandingBinding>() {
@@ -40,16 +45,15 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private val viewModel: NewsViewModel by activityViewModels()
 
-    private lateinit var adapter: NewsAdapter
+    private lateinit var adapter: ViewPagerAdapter
 
     private var scrollState = 0
 
     private fun setUpAdapter() {
 
-        adapter = NewsAdapter { story: Story -> openDetails(story) }
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
+        adapter = ViewPagerAdapter(fragmentActivity = requireActivity())
+        binding.pager.adapter = adapter
+        binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
     }
 
@@ -103,28 +107,17 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
 
-    private fun openDetails(story: Story) {
-        println("SCROLL Y: ${scrollState}")
-        val bundle = bundleOf("data" to story, "scroll" to scrollState)
-        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)
-    }
-
-    private fun getNews() {
-
-        if(NewstaApp.is_database_empty!!) {
-            println("API ------>        ${NewstaApp.is_database_empty!!}")
-            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
-            viewModel.getAllNews(0, days3)
-        } else {
-            println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
-            viewModel.getNewsFromDatabase()
+        if(savedInstanceState != null) {
+            println("RETURNED")
+            return null
         }
-
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         println("Access token: ${NewstaApp.access_token}")
 
@@ -134,58 +127,26 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         println("VIEWMODEL: $viewModel")
 
-        getNews()
-
-        viewModel.newsDataState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DataState.Success<List<Story>?> -> {
-                    Log.i("newsDataState", " success")
-                    binding.refreshLayout.isRefreshing = false
-                    viewModel.changeDatabaseState(isDatabaseEmpty = false)
-                    adapter.addAll(it.data as ArrayList<Story>)
-                }
-                is DataState.Error -> {
-                    Log.i("newsDataState", " errror ${it.exception}")
-                    binding.refreshLayout.isRefreshing = false
-                }
-                is DataState.Loading -> {
-                    Log.i("newsDataState", " loding")
-                    binding.refreshLayout.isRefreshing = true
-                }
-                is DataState.Extra<List<Story>?> -> {
-                    val story = it.data?.get(0)!!
-                    Log.i("newsDataState", " EXTRA ${story.storyId} ${story.updatedAt} ${story.category} ${story.events}")
-                    viewModel.getAllNews(story.storyId, story.updatedAt)
-                }
-            }
+        viewModel.categoryResponse.observe(viewLifecycleOwner, Observer {response ->
+            setUpTabLayout(categories = ArrayList(response.data))
         })
 
         setUpNavigationDrawer()
 
-        binding.pager.adapter = createPagerAdapter()
-        setUpTabLayout()
+        return binding.root
 
     }
 
-    private fun setUpTabLayout() {
+    private fun setUpTabLayout(categories: ArrayList<Category>) {
         TabLayoutMediator(binding.tabLayout, binding.pager,
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                 tab.customView = when (position) {
                     0 -> addCustomView(
-                        "National", 16f,
+                        categories[position].category.capitalize(Locale.ROOT), 16f,
                         Color.WHITE
                     )
-                    1 -> addCustomView("World")
-                    2 -> addCustomView("Business")
-                    3 -> addCustomView("Technology")
-                    4 -> addCustomView("Sports")
-                    5 -> addCustomView("Lifestyle")
-                    6 -> addCustomView("Entertainment")
-                    7 -> addCustomView("Local")
-                    8 -> addCustomView("Others")
-                    else -> addCustomView("null")
+                    else -> addCustomView(categories[position].category.capitalize(Locale.ROOT))
                 }
-
             }).attach()
 
         binding.tabLayout.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -215,7 +176,11 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
-                tab?.view?.children?.forEach {
+                println("TAB POSITION: ${tab!!.position}")
+
+                viewModel.setCategoryState(tab.position)
+
+                tab.view.children.forEach {
                     if (it is LinearLayout) {
                         val view1 = it.getChildAt(0)
 
@@ -226,7 +191,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                         if (view2 is TextView) {
                             view2.post {
-                                view2.setTextSize(16f)
+                                view2.textSize = 16f
                                 view2.setTextColor(Color.WHITE)
                             }
                         }
@@ -239,7 +204,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     }
 
-    fun addCustomView(
+    private fun addCustomView(
         title: String,
         size: Float = 14f,
         color: Int = R.color.colorText
@@ -266,10 +231,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         return view
     }
-
-
-    private fun createPagerAdapter(): ViewPagerAdapter =
-        ViewPagerAdapter(requireActivity())
 
     override fun getFragmentView(): Int = R.layout.fragment_landing
 

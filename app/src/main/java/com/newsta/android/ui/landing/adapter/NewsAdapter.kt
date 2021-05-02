@@ -8,8 +8,8 @@ import com.newsta.android.R
 import com.newsta.android.databinding.NewsItemBinding
 import com.newsta.android.utils.models.Story
 import com.squareup.picasso.Picasso
-import java.util.*
-import kotlin.collections.ArrayList
+
+private var category = 0
 
 class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
 
@@ -24,7 +24,9 @@ class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<N
     override fun getItemCount(): Int = stories.size
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
-        holder.bind(stories[position])
+        val story = stories[position]
+        if(story.category == category)
+            holder.bind(story)
     }
 
     fun addAll(storiesResponse: ArrayList<Story>) {
@@ -32,6 +34,12 @@ class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<N
             story ->  story.updatedAt
         }
         stories.addAll(storiesResponse)
+        println("LIST SIZE ${stories.size}")
+        notifyDataSetChanged()
+    }
+
+    fun setCategory(categoryState: Int) {
+        category = categoryState
         notifyDataSetChanged()
     }
 
@@ -41,12 +49,12 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
 
     fun bind(story: Story) {
 
-        story.events.sortedByDescending { events -> events.updatedAt }
+        val events = story.events.sortedByDescending { events -> events.updatedAt }
 
-        val event = story.events[0]
+        val event = events.last()
 
         binding.title.text = event.title
-        binding.timeline.text = if(story.events.size > 1) "View timeline" else ""
+        binding.timeline.text = if(events.size > 1) "View timeline" else ""
         binding.time.text = setTime(story.updatedAt)
 
         Picasso.get()

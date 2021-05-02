@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.newsta.android.ui.SplashFragment"
+        android:name="com.newsta.android.ui.splash.SplashFragment"
         android:label="SplashFragment" >
         <action
             android:id="@+id/action_splashFragment_to_signupSigninOptionsFragment"
@@ -113,7 +113,7 @@
     </fragment>
     <fragment
         android:id="@+id/landingFragment"
-        android:name="com.newsta.android.ui.landing.LandingFragment"
+        android:name="com.newsta.android.ui.landing.fragments.LandingFragment"
         android:label="LandingFragment" >
         <action
             android:id="@+id/action_landingFragment_to_detailsFragment"
@@ -151,17 +151,12 @@
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.newsta.android.ui.landing.DetailsFragment"
+        android:name="com.newsta.android.ui.details.DetailsFragment"
         android:label="DetailsFragment">
 
         <argument
             android:name="data"
             app:argType="com.newsta.android.utils.models.Story" />
-
-        <argument
-            android:name="scroll"
-            app:argType="integer"
-            android:defaultValue="0" />
 
     </fragment>
 </navigation>

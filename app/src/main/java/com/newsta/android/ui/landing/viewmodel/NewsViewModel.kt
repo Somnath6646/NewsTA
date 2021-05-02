@@ -5,9 +5,11 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.newsta.android.NewstaApp
+import com.newsta.android.remote.data.CategoryRequest
 import com.newsta.android.remote.data.NewsRequest
 import com.newsta.android.remote.data.NewsSourceRequest
 import com.newsta.android.repository.StoriesRepository
+import com.newsta.android.responses.CategoryResponse
 import com.newsta.android.responses.NewsSourceResponse
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.SavedStory
@@ -52,6 +54,19 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
+    private fun getNewsOnInit() {
+
+        if(NewstaApp.is_database_empty!!) {
+            println("API ------>        ${NewstaApp.is_database_empty!!}")
+            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+            getAllNews(0, days3)
+        } else {
+            println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
+            getNewsFromDatabase()
+        }
+
+    }
+
     private val _sources = MutableLiveData<NewsSourceResponse>()
     val sources: LiveData<NewsSourceResponse>
         get() = _sources
@@ -81,7 +96,30 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    //suspend fun insertNewsToDatabase(data: ArrayList<Data>) = newsRepository.insertNewsToDatabase(data)
+    private val _categoryResponse = MutableLiveData<CategoryResponse>()
+    val categoryResponse: LiveData<CategoryResponse>
+        get() = _categoryResponse
+
+    fun getCategories() {
+
+        viewModelScope.launch {
+            _categoryResponse.value = newsRepository.getCategories(CategoryRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA))
+        }
+
+    }
+
+    private val _categoryState = MutableLiveData<Int>()
+    val categoryState: LiveData<Int>
+        get() = _categoryState
+
+    fun setCategoryState(categoryState: Int) {
+        _categoryState.value = categoryState
+    }
+
+    init {
+        getNewsOnInit()
+        setCategoryState(0)
+    }
 
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
