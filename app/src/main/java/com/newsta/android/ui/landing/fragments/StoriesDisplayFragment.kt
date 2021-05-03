@@ -57,7 +57,8 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     Log.i("newsDataState", " success")
                     binding.refreshLayout.isRefreshing = false
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
-                    adapter.addAll(it.data as ArrayList<Story>)
+                    val filteredStories = it.data?.filter { story: Story -> story.category == categoryState }
+                    adapter.addAll(ArrayList<Story>(filteredStories))
                 }
                 is DataState.Error -> {
                     Log.i("newsDataState", " errror ${it.exception}")

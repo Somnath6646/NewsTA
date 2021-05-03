@@ -74,11 +74,27 @@ class StoriesRepository(
     suspend fun saveStory(story: SavedStory): Flow<DataState<SavedStory>> = flow {
 
         emit(DataState.Loading)
+
         try {
             storiesDao.insertSavedStory(story)
             emit(DataState.Success(story))
         } catch (e: Exception) {
             emit(DataState.Error("Error in Saved story"))
+        }
+
+    }
+
+    suspend fun getSavedStories(): Flow<DataState<List<SavedStory>>> = flow {
+
+        emit(DataState.Loading)
+
+        try {
+
+            val savedStories = storiesDao.getSavedStories()
+            emit(DataState.Success(savedStories))
+
+        } catch (e: Exception) {
+            emit(DataState.Error("Error in fetching saved stories"))
         }
 
     }

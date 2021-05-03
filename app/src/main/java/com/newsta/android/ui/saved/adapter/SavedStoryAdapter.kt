@@ -1,4 +1,4 @@
-package com.newsta.android.ui.landing.adapter
+package com.newsta.android.ui.saved.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,30 +6,31 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.R
 import com.newsta.android.databinding.NewsItemBinding
+import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
 import com.squareup.picasso.Picasso
 
 private var category = 0
 
-class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
+class SavedStoryAdapter(private val onClick: (SavedStory) -> Unit) : RecyclerView.Adapter<SavedStoryViewHolder>() {
 
-    private val stories = ArrayList<Story>()
+    private val stories = ArrayList<SavedStory>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedStoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = DataBindingUtil.inflate<NewsItemBinding>(inflater, R.layout.news_item, parent, false)
-        return NewsViewHolder(binding, onClick)
+        return SavedStoryViewHolder(binding, onClick)
     }
 
     override fun getItemCount(): Int = stories.size
 
-    override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SavedStoryViewHolder, position: Int) {
         holder.bind(stories[position])
     }
 
-    fun addAll(storiesResponse: ArrayList<Story>) {
+    fun addAll(storiesResponse: ArrayList<SavedStory>) {
         storiesResponse.sortByDescending {
-            story ->  story.updatedAt
+                story ->  story.updatedAt
         }
         stories.addAll(storiesResponse)
         println("LIST SIZE ${stories.size}")
@@ -43,9 +44,9 @@ class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<N
 
 }
 
-class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: (Story) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+class SavedStoryViewHolder(private val binding: NewsItemBinding, private val onClick: (SavedStory) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(story: Story) {
+    fun bind(story: SavedStory) {
 
         val events = story.events.sortedByDescending { events -> events.updatedAt }
 

@@ -86,7 +86,9 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun saveStory(story: SavedStory) {
         viewModelScope.launch {
-            newsRepository.saveStory(story)
+            newsRepository.saveStory(story).onEach {
+                _saveNewsState.value = it
+            }.launchIn(viewModelScope)
         }
     }
 
@@ -114,6 +116,18 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun setCategoryState(categoryState: Int) {
         _categoryState.value = categoryState
+    }
+
+    private val _savedStoriesState = MutableLiveData<DataState<List<SavedStory>>>()
+    val savedStoriesState: LiveData<DataState<List<SavedStory>>>
+        get() = _savedStoriesState
+
+    fun getSavedStories() {
+        viewModelScope.launch {
+            newsRepository.getSavedStories().onEach {
+                _savedStoriesState.value = it
+            }.launchIn(viewModelScope)
+        }
     }
 
     init {

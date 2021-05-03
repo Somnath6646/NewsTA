@@ -1,4 +1,4 @@
-package com.newsta.android.ui.details
+package com.newsta.android.ui.details.fragment
 
 import android.app.Activity
 import android.content.ContentValues
@@ -169,21 +169,16 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun saveStory() {
 
-        viewModel.saveStory((story as? SavedStory)!!)
+        println("SAVING STORY")
 
-        viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is DataState.Success<SavedStory> -> {
-                    binding.btnDownload.setImageResource(R.drawable.ic_downloaded)
-                }
-                is DataState.Error -> {
-                    println("NEWS SAVE ERROR")
-                }
-                is DataState.Loading -> {
-                    println("NEWS SAVING")
-                }
-            }
-        })
+        val savedStory = SavedStory(
+            storyId = story.storyId,
+            category = story.category,
+            updatedAt = story.updatedAt,
+            events = story.events
+        )
+
+        viewModel.saveStory(savedStory)
 
     }
 
@@ -201,19 +196,25 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         println("VIEWMODEL: $viewModel")
 
-        binding.btnShare.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "text/web"
-            intent.putExtra(Intent.EXTRA_TEXT, event.title + "\n" + event.summary)
-            val shareIntent = Intent.createChooser(intent, "Share via")
-            startActivity(shareIntent)
-        }
-
         initViews()
 
         viewModel.sources.observe(viewLifecycleOwner, Observer { response ->
             val data = response.data
             sourcesAdapter.addAll(ArrayList(data))
+        })
+
+        viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is DataState.Success<SavedStory> -> {
+                    binding.btnDownload.setImageResource(R.drawable.ic_downloaded)
+                }
+                is DataState.Error -> {
+                    println("NEWS SAVE ERROR")
+                }
+                is DataState.Loading -> {
+                    println("NEWS SAVING")
+                }
+            }
         })
 
     }

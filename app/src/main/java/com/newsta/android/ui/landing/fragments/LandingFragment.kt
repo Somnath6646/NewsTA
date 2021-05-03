@@ -92,6 +92,12 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     dialog.show()
                     true
                 }
+
+                R.id.saved -> {
+                    findNavController().navigate(R.id.action_landingFragment_to_savedStoriesFragment)
+                    true
+                }
+
                 else -> {
                     false
                 }

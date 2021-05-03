@@ -122,6 +122,13 @@
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_landingFragment_to_savedStoriesFragment"
+            app:destination="@id/savedStoriesFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right" />
     </fragment>
     <fragment
         android:id="@+id/signIn_AuthenticationOptionsFragment"
@@ -151,12 +158,20 @@
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.newsta.android.ui.details.DetailsFragment"
+        android:name="com.newsta.android.ui.details.fragment.DetailsFragment"
         android:label="DetailsFragment">
 
         <argument
             android:name="data"
             app:argType="com.newsta.android.utils.models.Story" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/savedStoriesFragment"
+        android:name="com.newsta.android.ui.saved.fragment.SavedStoriesFragment"
+        android:label="SavedStoriesFragment" >
+        <action
+            android:id="@+id/action_savedStoriesFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
     </fragment>
 </navigation>
