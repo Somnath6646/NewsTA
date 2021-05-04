@@ -43,7 +43,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
         binding.refreshLayout.setOnRefreshListener {
             viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
-            viewModel.updateNews(minStory.storyId, minStory.updatedAt)
+            viewModel.updateNews(maxStory.storyId, maxStory.updatedAt)
         }
         viewModel.getMaxAndMinStory()
         println("FRAGMENT INITIALIZED")

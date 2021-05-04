@@ -20,6 +20,7 @@ import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.*
 
 class NewsViewModel
 @ViewModelInject
@@ -200,7 +201,12 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun getMaxDate(maxDateTime: Long) = SimpleDateFormat("dd-MM-yyyy").format(maxDateTime)
+    private fun getMaxDate(maxDateTime: Long): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        val date = sdf.format(maxDateTime)
+        println("DATE: $date")
+        return date
+    }
 
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
