@@ -63,7 +63,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/btn_logout"
+                        android:id="@+id/btn_action"
                         android:layout_marginTop="16dp"
                         style="@style/Ctabutton"
                         android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
                         android:paddingBottom="10dp">
 
                         <TextView
-                            android:id="@+id/button_text2"
+                            android:id="@+id/button_text_action"
                             style="@style/Ctabuttontextstyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

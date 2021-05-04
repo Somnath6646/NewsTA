@@ -21,16 +21,20 @@ interface StoriesDAO {
     @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE story_id = (SELECT MAX(story_id) FROM ${Story.TABLE_NAME})")
     suspend fun getMaxStory(): Story
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSavedStory(story: SavedStory)
+    @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE story_id = (SELECT MIN(story_id) FROM ${Story.TABLE_NAME})")
+    suspend fun getMinStory(): Story
 
-    @Query("SELECT * FROM ${SavedStory.TABLE_NAME}")
-    suspend fun getAllSavedStories(): List<SavedStory>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSavedStory(story: SavedStory): Long
 
     @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE category = (SELECT :category FROM ${Story.TABLE_NAME})")
     suspend fun getFilteredStories(category: Int): List<Story>
 
     @Query("SELECT * FROM ${SavedStory.TABLE_NAME}")
     suspend fun getSavedStories(): List<SavedStory>
+
+    @Delete
+    suspend fun deleteSavedStory(savedStory: SavedStory): Int
+
 
 }

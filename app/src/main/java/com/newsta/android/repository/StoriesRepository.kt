@@ -54,7 +54,8 @@ class StoriesRepository(
             emit(DataState.Success(stories))
             storiesDao.insertStories(stories as List<Story>).let {
                 val maxStory = storiesDao.getMaxStory()
-                emit(DataState.Extra(listOf(maxStory)))
+                val minStory = storiesDao.getMinStory()
+                emit(DataState.Extra(listOf(maxStory, minStory)))
             }
             if(remoteNewsResponse.statusCode == 200)
                 println("SUCCESSFUL RESPONSE")
@@ -69,6 +70,41 @@ class StoriesRepository(
         }
     }
 
+    suspend fun updateExistingStories(@Body newsRequest: NewsRequest): Flow<DataState<List<Story>>> = flow {
+
+        emit(DataState.Loading)
+
+        try {
+
+            val updateResponse = newsService.getExistingNews(newsRequest)
+            val stories = updateResponse.data
+            storiesDao.insertStories(stories)
+            emit(DataState.Success(stories)).let {
+                val maxStory = storiesDao.getMaxStory()
+                val minStory = storiesDao.getMinStory()
+                emit(DataState.Extra(listOf(maxStory, minStory)))
+            }
+
+        } catch (e: Exception) {
+            emit(DataState.Error("Error in updating the stories"))
+        }
+
+    }
+
+    suspend fun getMaxAndMinStory(): Flow<DataState<List<Story>>> = flow {
+
+        emit(DataState.Loading)
+
+        try {
+            val maxStory = storiesDao.getMaxStory()
+            val minStory = storiesDao.getMinStory()
+            emit(DataState.Success(listOf(maxStory, minStory)))
+        } catch (e: Exception) {
+            emit(DataState.Error("Error in getting min max stories"))
+        }
+
+    }
+
     suspend fun getSources(sourceRequest: NewsSourceRequest) = newsService.getSource(sourceRequest)
 
     suspend fun saveStory(story: SavedStory): Flow<DataState<SavedStory>> = flow {
@@ -76,10 +112,13 @@ class StoriesRepository(
         emit(DataState.Loading)
 
         try {
-            storiesDao.insertSavedStory(story)
-            emit(DataState.Success(story))
+            val isSaved = storiesDao.insertSavedStory(story)
+            if (isSaved > 0)
+                emit(DataState.Success(story))
+            else
+                emit(DataState.Error("Error in saving story"))
         } catch (e: Exception) {
-            emit(DataState.Error("Error in Saved story"))
+            emit(DataState.Error("Error in saving story"))
         }
 
     }
@@ -99,6 +138,24 @@ class StoriesRepository(
 
     }
 
+    suspend fun deleteSavedStory(story: SavedStory): Flow<DataState<SavedStory>> = flow {
+
+        emit(DataState.Loading)
+
+        try {
+
+            val isDeleted = storiesDao.deleteSavedStory(story)
+            if (isDeleted != -1)
+                emit(DataState.Success(story))
+            else
+                emit(DataState.Error("Error in deleting saved story"))
+
+        } catch (e: Exception) {
+            emit(DataState.Error("Error in deleting saved story"))
+        }
+
+    }
+
     suspend fun getFilteredStories(category: Int): Flow<DataState<List<Story>>> = flow {
 
         emit(DataState.Loading)
@@ -106,11 +163,12 @@ class StoriesRepository(
         try {
 
             val filteredStories = storiesDao.getFilteredStories(category)
+            println("DATABASE FILTER: $filteredStories")
             emit(DataState.Success(filteredStories))
             print("EMITTED FILTERED")
 
         } catch (e: Exception) {
-
+            emit(DataState.Error("Error in fetching filtered storiesS"))
         }
 
     }

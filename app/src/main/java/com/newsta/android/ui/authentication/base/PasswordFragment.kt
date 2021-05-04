@@ -19,7 +19,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.newsta.android.R
 import com.newsta.android.ui.authentication.AuthenticationViewmodel
 
-abstract class PasswordFragment <T: ViewDataBinding>: Fragment(){
+abstract class PasswordFragment <T: ViewDataBinding>: Fragment() {
 
     protected lateinit var binding: T
     val viewModel by activityViewModels<AuthenticationViewmodel>()

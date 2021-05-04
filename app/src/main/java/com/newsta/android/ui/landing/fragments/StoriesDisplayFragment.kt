@@ -2,10 +2,6 @@ package com.newsta.android.ui.landing.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -26,6 +22,9 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
     private lateinit var adapter: NewsAdapter
 
     var categoryState = 0
+    private var stories = ArrayList<Story>()
+    private lateinit var maxStory: Story
+    private lateinit var minStory: Story
 
     private fun setUpAdapter() {
 
@@ -40,15 +39,25 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
         findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    private fun initViews() {
 
-        setUpAdapter()
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
+            viewModel.updateNews(minStory.storyId, minStory.updatedAt)
+        }
+        viewModel.getMaxAndMinStory()
+
+    }
+
+    private fun observer() {
 
         viewModel.categoryState.observe(viewLifecycleOwner, Observer { state ->
             println("CATEGORY STATE CHANGED TO: $state")
             adapter.setCategory(state)
             categoryState = state
+            val filteredStories = stories.filter { story: Story -> story.category == state }
+            println("FilteredStories  $filteredStories")
+            adapter.addAll(ArrayList<Story>(filteredStories))
         })
 
         viewModel.newsDataState.observe(viewLifecycleOwner, Observer {
@@ -57,7 +66,9 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     Log.i("newsDataState", " success")
                     binding.refreshLayout.isRefreshing = false
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
-                    val filteredStories = it.data?.filter { story: Story -> story.category == categoryState }
+                    stories = ArrayList(it.data!!)
+                    val filteredStories = stories.filter { story: Story -> story.category == categoryState }
+                    println("FilteredStories  $filteredStories")
                     adapter.addAll(ArrayList<Story>(filteredStories))
                 }
                 is DataState.Error -> {
@@ -69,12 +80,71 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     binding.refreshLayout.isRefreshing = true
                 }
                 is DataState.Extra<List<Story>?> -> {
-                    val story = it.data?.get(0)!!
-                    Log.i("newsDataState", " EXTRA ${story.storyId} ${story.updatedAt} ${story.category} ${story.events}")
-                    viewModel.getAllNews(story.storyId, story.updatedAt)
+                    maxStory = it.data?.first()!!
+                    minStory = it.data.last()!!
+                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    Log.i("newsDataState", " EXTRA MIN ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
                 }
             }
         })
+
+        viewModel.newsUpdateState.observe(viewLifecycleOwner, Observer {
+
+            when (it) {
+                is DataState.Success<List<Story>?> -> {
+                    Log.i("newsDataState", " success")
+                    viewModel.changeDatabaseState(isDatabaseEmpty = false)
+                    stories = ArrayList(it.data!!)
+                    val filteredStories = stories.filter { story: Story -> story.category == categoryState }
+                    println("FilteredStories  $filteredStories")
+                    adapter.addAll(ArrayList<Story>(filteredStories))
+                }
+                is DataState.Error -> {
+                    Log.i("newsDataState", " errror ${it.exception}")
+                }
+                is DataState.Loading -> {
+                    Log.i("newsDataState", " loding")
+                }
+                is DataState.Extra<List<Story>?> -> {
+                    maxStory = it.data?.first()!!
+                    minStory = it.data.last()
+                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
+                    viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
+                }
+            }
+
+        })
+
+        viewModel.minMaxStoryState.observe(viewLifecycleOwner, Observer {
+
+            when (it) {
+                is DataState.Success<List<Story>?> -> {
+                    maxStory = it.data?.first()!!
+                    minStory = it.data.last()
+                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
+                }
+                is DataState.Error -> {
+                    Log.i("newsDataState", " errror ${it.exception}")
+                }
+                is DataState.Loading -> {
+                    Log.i("newsDataState", " loding")
+                }
+                is DataState.Extra<List<Story>?> -> {}
+            }
+
+        })
+
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        setUpAdapter()
+        observer()
+        initViews()
 
     }
 

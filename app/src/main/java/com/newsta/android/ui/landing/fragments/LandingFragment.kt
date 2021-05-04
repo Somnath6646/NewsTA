@@ -17,6 +17,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -84,10 +85,10 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                     dialogBinding.btnCancel.setOnClickListener { v ->
                         dialog.dismiss()
+                        closeNavigationDrawer()
                     }
 
                     dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
 
                     dialog.show()
                     true
@@ -95,6 +96,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                 R.id.saved -> {
                     findNavController().navigate(R.id.action_landingFragment_to_savedStoriesFragment)
+                    closeNavigationDrawer()
                     true
                 }
 
@@ -133,7 +135,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         println("VIEWMODEL: $viewModel")
 
-        viewModel.categoryResponse.observe(viewLifecycleOwner, Observer {response ->
+        viewModel.categoryResponse.observe(viewLifecycleOwner, Observer { response ->
+            println("CATEGORIES ${response.data}")
             setUpTabLayout(categories = ArrayList(response.data))
         })
 
@@ -236,6 +239,12 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         }
 
         return view
+    }
+
+    private fun closeNavigationDrawer() {
+        if(binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+        }
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_landing

@@ -24,7 +24,6 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
                 if (NewstaApp.getAccessToken() != null) {
                     //navtomainfragment
-                    viewModel.getCategories()
                     navigateToMainFragment()
                 } else {
                     //navtoauthenticationoptionsfragment

@@ -1,5 +1,6 @@
 package com.newsta.android.ui.landing.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.databinding.Observable
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
@@ -11,6 +12,7 @@ import com.newsta.android.remote.data.NewsSourceRequest
 import com.newsta.android.repository.StoriesRepository
 import com.newsta.android.responses.CategoryResponse
 import com.newsta.android.responses.NewsSourceResponse
+import com.newsta.android.utils.Indicator
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
@@ -31,10 +33,8 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun getAllNews(storyId: Int = 0, maxDateTime: Long) {
 
-        val maxDate = SimpleDateFormat("dd-MM-yyyy").format(maxDateTime)
-
         viewModelScope.launch {
-            val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, maxDate)
+            val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, getMaxDate(maxDateTime))
             newsRepository.getAllStories(newsRequest = request)
                     .onEach {
                         _newsDataState.value = it
@@ -63,6 +63,34 @@ constructor(private val newsRepository: StoriesRepository,
         } else {
             println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
             getNewsFromDatabase()
+        }
+
+    }
+
+    private val _newsUpdateState = MutableLiveData<DataState<List<Story>>>()
+    val newsUpdateState: LiveData<DataState<List<Story>>>
+        get() = _newsUpdateState
+
+    fun updateNews(storyId: Int, maxDateTime: Long) {
+
+        viewModelScope.launch {
+            newsRepository.updateExistingStories(NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, getMaxDate(maxDateTime))).onEach {
+                _newsUpdateState.value = it
+            }.launchIn(viewModelScope)
+        }
+
+    }
+
+    private val _minMaxStoryState = MutableLiveData<DataState<List<Story>>>()
+    val minMaxStoryState: LiveData<DataState<List<Story>>>
+        get() = _minMaxStoryState
+
+    fun getMaxAndMinStory() {
+
+        viewModelScope.launch {
+            newsRepository.getMaxAndMinStory().onEach {
+                _minMaxStoryState.value = it
+            }.launchIn(viewModelScope)
         }
 
     }
@@ -130,10 +158,49 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
+    private val _savedStoriesDeleteState = MutableLiveData<DataState<SavedStory>>()
+    val savedStoriesDeleteState: LiveData<DataState<SavedStory>>
+        get() = _savedStoriesDeleteState
+
+    fun deleteSavedStory(savedStory: SavedStory) {
+        viewModelScope.launch {
+            newsRepository.deleteSavedStory(savedStory).onEach {
+                _savedStoriesDeleteState.value = it
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    private val _filteredStoriesState = MutableLiveData<DataState<List<Story>>>()
+    val filteredStoriesState: LiveData<DataState<List<Story>>>
+        get() = filteredStoriesState
+
+    fun getFilteredStories(categoryState: Int) {
+
+        viewModelScope.launch {
+            newsRepository.getFilteredStories(categoryState).onEach {
+                _filteredStoriesState.value = it
+            }.launchIn(viewModelScope)
+        }
+
+    }
+
+    private val _toast = MutableLiveData<Indicator<String>>()
+    val toast: LiveData<Indicator<String>>
+        get() = _toast
+
+    fun toast(message: String) {
+        _toast.value = Indicator(message)
+    }
+
     init {
+        getCategories()
         getNewsOnInit()
         setCategoryState(0)
+        getFilteredStories(0)
     }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun getMaxDate(maxDateTime: Long) = SimpleDateFormat("dd-MM-yyyy").format(maxDateTime)
 
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
