@@ -52,7 +52,8 @@ class StoriesRepository(
             val stories = remoteNewsResponse.data
             stories.sortedByDescending { story: Story -> story.updatedAt }
             emit(DataState.Success(stories))
-            storiesDao.insertStories(stories as List<Story>).let {
+            val isInserted = storiesDao.insertStories(stories as List<Story>)
+            if (isInserted[0] > 0) {
                 val maxStory = storiesDao.getMaxStory()
                 val minStory = storiesDao.getMinStory()
                 emit(DataState.Extra(listOf(maxStory, minStory)))
@@ -99,9 +100,7 @@ class StoriesRepository(
             val maxStory = storiesDao.getMaxStory()
             val minStory = storiesDao.getMinStory()
             emit(DataState.Success(listOf(maxStory, minStory)))
-        } catch (e: Exception) {
-            emit(DataState.Error("Error in getting min max stories"))
-        }
+        } catch (e: Exception) {}
 
     }
 

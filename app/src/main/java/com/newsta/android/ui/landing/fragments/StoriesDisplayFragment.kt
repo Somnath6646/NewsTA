@@ -46,6 +46,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
             viewModel.updateNews(minStory.storyId, minStory.updatedAt)
         }
         viewModel.getMaxAndMinStory()
+        println("FRAGMENT INITIALIZED")
 
     }
 
@@ -58,6 +59,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
             val filteredStories = stories.filter { story: Story -> story.category == state }
             println("FilteredStories  $filteredStories")
             adapter.addAll(ArrayList<Story>(filteredStories))
+            viewModel.getMaxAndMinStory()
         })
 
         viewModel.newsDataState.observe(viewLifecycleOwner, Observer {
