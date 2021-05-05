@@ -197,7 +197,6 @@ constructor(private val newsRepository: StoriesRepository,
         getCategories()
         getNewsOnInit()
         setCategoryState(0)
-        getFilteredStories(0)
     }
 
     @SuppressLint("SimpleDateFormat")

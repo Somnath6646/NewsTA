@@ -100,7 +100,9 @@ class StoriesRepository(
             val maxStory = storiesDao.getMaxStory()
             val minStory = storiesDao.getMinStory()
             emit(DataState.Success(listOf(maxStory, minStory)))
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+            println("ERROR IN FETCHING EXTRAS")
+        }
 
     }
 

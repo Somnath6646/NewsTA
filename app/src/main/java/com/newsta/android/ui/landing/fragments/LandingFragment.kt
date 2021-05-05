@@ -154,7 +154,12 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                         categories[position].category.capitalize(Locale.ROOT), 16f,
                         Color.WHITE
                     )
-                    else -> addCustomView(categories[position].category.capitalize(Locale.ROOT))
+                    else -> {
+                        if (position < categories.size)
+                            addCustomView(categories[position].category.capitalize(Locale.ROOT))
+                        else
+                            return@TabConfigurationStrategy
+                    }
                 }
             }).attach()
 
@@ -240,6 +245,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         return view
     }
+
+    private fun returnUnit() = View(requireContext())
 
     private fun closeNavigationDrawer() {
         if(binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
