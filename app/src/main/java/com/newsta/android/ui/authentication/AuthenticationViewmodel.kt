@@ -9,7 +9,7 @@ import com.newsta.android.remote.data.*
 import com.newsta.android.repository.AuthRepository
 import com.newsta.android.responses.SigninResponse
 import com.newsta.android.responses.SignupResponse
-import com.newsta.android.utils.Indicator
+import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.launch
 
@@ -51,7 +51,9 @@ constructor(private val authRepository: AuthRepository,
 
         viewModelScope.launch {
 
-            _signupResponse.value = Indicator(authRepository.signup(SignupRequest(email.value!!, password = password.value!!)))
+            _signupResponse.value = Indicator(
+                authRepository.signup(SignupRequest(email.value!!, password = password.value!!))
+            )
         }
 
 
@@ -62,7 +64,9 @@ constructor(private val authRepository: AuthRepository,
 
         viewModelScope.launch {
 
-            _signinResponse.value =  Indicator(authRepository.signin(SigninRequest(email.value!!, password = password.value!!)))
+            _signinResponse.value = Indicator(
+                authRepository.signin(SigninRequest(email.value!!, password = password.value!!))
+            )
         }
 
     }
@@ -70,13 +74,17 @@ constructor(private val authRepository: AuthRepository,
 
     fun signIn(accessToken: String, iss: String){
         viewModelScope.launch{
-            _signinResponse.value = Indicator(authRepository.signin(SignInRequest_Social(iss = iss, access_token = accessToken)))
+            _signinResponse.value = Indicator(
+                authRepository.signin(SignInRequest_Social(iss = iss, access_token = accessToken))
+            )
         }
     }
 
     fun signUp(accessToken: String, iss: String){
         viewModelScope.launch{
-            _signupResponse.value = Indicator(authRepository.signup(SignUpRequest_Social(iss = iss, access_token = accessToken)))
+            _signupResponse.value = Indicator(
+                authRepository.signup(SignUpRequest_Social(iss = iss, access_token = accessToken))
+            )
         }
     }
 
@@ -85,7 +93,8 @@ constructor(private val authRepository: AuthRepository,
         viewModelScope.launch {
             userPrefrences.saveAccessToken(accessToken)
             userPrefrences.isDatabaseEmpty(true)
-            _navigate.value = Indicator("Landing")
+            _navigate.value =
+                Indicator("Landing")
         }
 
     }

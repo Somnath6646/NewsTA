@@ -12,7 +12,7 @@ import com.newsta.android.remote.data.NewsSourceRequest
 import com.newsta.android.repository.StoriesRepository
 import com.newsta.android.responses.CategoryResponse
 import com.newsta.android.responses.NewsSourceResponse
-import com.newsta.android.utils.Indicator
+import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
@@ -20,7 +20,6 @@ import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
 
 class NewsViewModel
 @ViewModelInject

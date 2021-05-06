@@ -1,4 +1,4 @@
-package com.newsta.android.utils
+package com.newsta.android.utils.helpers
 
 /**
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.
