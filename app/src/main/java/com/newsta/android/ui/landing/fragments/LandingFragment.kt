@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +12,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
-import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -29,13 +26,9 @@ import com.newsta.android.R
 import com.newsta.android.databinding.FragmentLandingBinding
 import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.ui.base.BaseFragment
-import com.newsta.android.ui.details.adapter.pos
-import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
 import com.newsta.android.utils.models.Category
-import com.newsta.android.utils.models.DataState
-import com.newsta.android.utils.models.Story
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
@@ -48,7 +41,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private lateinit var adapter: ViewPagerAdapter
 
-    private var scrollState = 0
+    private lateinit var categories: ArrayList<Category>
+    private var category = 0
 
     private fun setUpAdapter() {
 
@@ -115,16 +109,11 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         if(savedInstanceState != null) {
             println("RETURNED")
-            return null
         }
 
         println("Access token: ${NewstaApp.access_token}")
@@ -137,12 +126,11 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         viewModel.categoryResponse.observe(viewLifecycleOwner, Observer { response ->
             println("CATEGORIES ${response.data}")
-            setUpTabLayout(categories = ArrayList(response.data))
+            categories = ArrayList(response.data)
+            setUpTabLayout(categories = categories)
         })
 
         setUpNavigationDrawer()
-
-        return binding.root
 
     }
 
@@ -150,10 +138,16 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         TabLayoutMediator(binding.tabLayout, binding.pager,
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                 tab.customView = when (position) {
-                    0 -> addCustomView(
-                        categories[position].category.capitalize(Locale.ROOT), 16f,
-                        Color.WHITE
-                    )
+                    0 -> {
+                        if(category == 0) {
+                            addCustomView(
+                                categories[position].category.capitalize(Locale.ROOT), 16f,
+                                Color.WHITE
+                            )
+                        } else {
+                            addCustomView(categories[position].category.capitalize(Locale.ROOT))
+                        }
+                    }
                     else -> {
                         if (position < categories.size)
                             addCustomView(categories[position].category.capitalize(Locale.ROOT))
@@ -165,7 +159,36 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         binding.tabLayout.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+                category = tab!!.position
+
+                println("TAB POSITION: $category")
+
+                viewModel.setCategoryState(category)
+
+                binding.tabLayout.setScrollPosition(category, 0f, true)
+                binding.pager.currentItem = category
+
+                tab.view.children.forEach {
+                    if (it is LinearLayout) {
+                        val view1 = it.getChildAt(0)
+
+                        if (view1 is CardView)
+                            view1.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
+
+                        val view2 = view1.findViewById<TextView>(R.id.title)
+
+                        if (view2 is TextView) {
+                            view2.post {
+                                view2.textSize = 16f
+                                view2.setTextColor(Color.WHITE)
+                            }
+                        }
+                    }
+                }
+
+            }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
 
@@ -190,9 +213,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
-                println("TAB POSITION: ${tab!!.position}")
+                category = tab!!.position
 
-                viewModel.setCategoryState(tab.position)
+                println("TAB POSITION: $category")
+
+                viewModel.setCategoryState(category)
+
+                binding.tabLayout.setScrollPosition(category, 0f, true)
+                binding.pager.currentItem = category
 
                 tab.view.children.forEach {
                     if (it is LinearLayout) {
@@ -246,8 +274,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         return view
     }
 
-    private fun returnUnit() = View(requireContext())
-
     private fun closeNavigationDrawer() {
         if(binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -259,6 +285,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     override fun onDestroy() {
         println("DESTROYED*****")
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        print("RESUMED")
+        val tab = binding.tabLayout.getTabAt(category)
+        tab?.select()
+        super.onResume()
     }
 
 }
