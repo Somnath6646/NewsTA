@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.newsta.android.data.local.StoriesDAO
+import com.newsta.android.NewstaApp
+import com.newsta.android.repository.StoriesRepository
 import java.lang.Exception
 
 class DatabaseClearer
@@ -15,12 +15,14 @@ class DatabaseClearer
     constructor(
         @Assisted context: Context,
         @Assisted parameters: WorkerParameters,
-        private val dao: StoriesDAO
+        private val repository: StoriesRepository
     ) : CoroutineWorker(context, parameters) {
 
     override suspend fun doWork(): Result {
         try {
-            dao.deleteAllStories()
+            repository.deleteAllStories()
+            NewstaApp.is_database_empty = true
+            NewstaApp.setIsDatabaseEmpty(true)
             Log.i("WORK MANAGER", "Called")
             return Result.success()
         } catch (e: Exception) {

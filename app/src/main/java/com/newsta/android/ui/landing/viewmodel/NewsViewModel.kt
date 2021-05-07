@@ -54,7 +54,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    private fun getNewsOnInit() {
+    fun getNewsOnInit() {
 
         if(NewstaApp.is_database_empty!!) {
             println("API ------>        ${NewstaApp.is_database_empty!!}")

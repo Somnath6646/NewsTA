@@ -1,5 +1,6 @@
 package com.newsta.android.repository
 
+import com.newsta.android.NewstaApp
 import com.newsta.android.data.local.StoriesDAO
 import com.newsta.android.remote.data.CategoryRequest
 import com.newsta.android.remote.data.NewsRequest
@@ -171,6 +172,14 @@ class StoriesRepository(
         } catch (e: Exception) {
             emit(DataState.Error("Error in fetching filtered storiesS"))
         }
+
+    }
+
+    suspend fun deleteAllStories() {
+
+        storiesDao.deleteAllStories()
+        NewstaApp.is_database_empty = true
+        NewstaApp.setIsDatabaseEmpty(true)
 
     }
 

@@ -1,7 +1,12 @@
 package com.newsta.android
 
 import android.app.Application
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorkerFactory
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.work.*
@@ -10,6 +15,7 @@ import com.facebook.appevents.AppEventsLogger
 import com.newsta.android.utils.prefrences.UserPrefrences
 import com.newsta.android.utils.workers.DatabaseClearer
 import dagger.hilt.android.HiltAndroidApp
+import java.lang.invoke.ConstantCallSite
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -81,11 +87,11 @@ class NewstaApp : Application(), Configuration.Provider {
                     }
                 }
             }
-
         }
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate() {
         super.onCreate()
         FacebookSdk.sdkInitialize(applicationContext);
@@ -93,13 +99,33 @@ class NewstaApp : Application(), Configuration.Provider {
         setWorks()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setWorks() {
 
-        val periodicDatabaseClearRequest = PeriodicWorkRequestBuilder<DatabaseClearer>(15, TimeUnit.MINUTES).build()
+        val constraints = Constraints.Builder()
+            .setRequiresDeviceIdle(true)
+            .build()
+
+        val periodicDatabaseClearRequest = PeriodicWorkRequestBuilder<DatabaseClearer>(3, TimeUnit.DAYS)
+            .build()
+
         val workManager = WorkManager.getInstance(applicationContext)
         workManager.enqueue(periodicDatabaseClearRequest)
 
         println("METHOD CALLED FOR WORKER")
+
+        workManager.getWorkInfoByIdLiveData(periodicDatabaseClearRequest.id)
+            .observeForever { info ->
+                if(info.state.isFinished) {
+                    Toast.makeText(applicationContext, "Work ${info.state.name}", Toast.LENGTH_SHORT).show()
+                    is_database_empty = true
+                    setIsDatabaseEmpty(true)
+                } else {
+                    Toast.makeText(applicationContext, "Work ${info.state.name}", Toast.LENGTH_SHORT).show()
+                    is_database_empty = true
+                    setIsDatabaseEmpty(true)
+                }
+            }
 
     }
 

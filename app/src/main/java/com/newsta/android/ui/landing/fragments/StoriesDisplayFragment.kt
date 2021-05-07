@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentStoriesDisplayBinding
 import com.newsta.android.ui.base.BaseFragment
@@ -82,6 +83,12 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
                     stories = ArrayList(it.data!!)
                     val filteredStories = stories.filter { story: Story -> story.category == categoryState }
+                    if(filteredStories.isNullOrEmpty()) {
+                        NewstaApp.is_database_empty = true
+                        viewModel.changeDatabaseState(true)
+                        viewModel.getNewsOnInit()
+                        NewstaApp.setIsDatabaseEmpty(true)
+                    }
                     println("FilteredStories  $filteredStories")
                     adapter.addAll(ArrayList<Story>(filteredStories))
                 }
