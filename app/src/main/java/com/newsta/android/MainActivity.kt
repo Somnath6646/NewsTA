@@ -5,10 +5,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import com.newsta.android.databinding.ActivityMainBinding
 import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import com.newsta.android.utils.models.DataState
+import com.newsta.android.utils.models.Story
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,6 +41,15 @@ class MainActivity : AppCompatActivity() {
                 Log.i("MainActivity", (isDatabaseEmpty == NewstaApp.getIsDatabaseEmpty()).toString())
             }
         })
+
+    }
+
+
+    companion object {
+
+        var extras = ArrayList<Story>()
+        lateinit var minStory: Story
+        lateinit var maxStory: Story
 
     }
 

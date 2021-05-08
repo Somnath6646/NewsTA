@@ -6,8 +6,12 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.newsta.android.MainActivity.Companion.extras
+import com.newsta.android.MainActivity.Companion.maxStory
+import com.newsta.android.MainActivity.Companion.minStory
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentStoriesDisplayBinding
@@ -25,9 +29,6 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
     var categoryState = 0
     private var stories = ArrayList<Story>()
-    private var extras = ArrayList<Story>()
-    private var maxStory: Story? = null
-    private var minStory: Story? = null
 
     private fun setUpAdapter() {
 
@@ -139,7 +140,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
         })
 
-        viewModel.minMaxStoryState.observe(viewLifecycleOwner, Observer {
+        viewModel.minMaxStoryState.observe(requireActivity(), Observer {
 
             when (it) {
                 is DataState.Success<List<Story>?> -> {

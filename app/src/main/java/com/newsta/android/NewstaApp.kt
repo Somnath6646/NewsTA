@@ -12,6 +12,7 @@ import androidx.lifecycle.observe
 import androidx.work.*
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
+import com.newsta.android.ui.authentication.AuthenticationViewmodel
 import com.newsta.android.utils.prefrences.UserPrefrences
 import com.newsta.android.utils.workers.DatabaseClearer
 import dagger.hilt.android.HiltAndroidApp
