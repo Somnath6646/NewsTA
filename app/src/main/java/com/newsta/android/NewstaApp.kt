@@ -28,6 +28,7 @@ class NewstaApp : Application(), Configuration.Provider {
     companion object {
 
         const val ISSUER_NEWSTA = "newsta"
+        const val DEFAULT_FONT_SCALE = 1.05f
 
         lateinit var prefrences: UserPrefrences
         var access_token: String? = null
@@ -42,6 +43,13 @@ class NewstaApp : Application(), Configuration.Provider {
         fun getIsDatabaseEmpty(): Boolean? = is_database_empty
         fun setIsDatabaseEmpty(isDatabaseEmpty: Boolean) {
             this.is_database_empty = isDatabaseEmpty
+        }
+
+        var font_scale: Float? = DEFAULT_FONT_SCALE
+
+        fun getFontScale(): Float? = font_scale
+        fun setFontScale(fontScale: Float) {
+            this.font_scale = fontScale
         }
 
         fun setTime(updatedAt: Long): String {
