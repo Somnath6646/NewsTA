@@ -15,9 +15,7 @@ import com.newsta.android.responses.LogoutResponse
 import com.newsta.android.responses.NewsSourceResponse
 import com.newsta.android.responses.SearchStory
 import com.newsta.android.utils.helpers.Indicator
-import com.newsta.android.utils.models.DataState
-import com.newsta.android.utils.models.SavedStory
-import com.newsta.android.utils.models.Story
+import com.newsta.android.utils.models.*
 import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -36,6 +34,15 @@ constructor(private val newsRepository: StoriesRepository,
     private val _newsDataState = MutableLiveData<DataState<List<Story>>>()
 
     val newsDataState: LiveData<DataState<List<Story>>> = _newsDataState
+
+    private val _categoryDataState = MutableLiveData<DataState<List<Category>?>>()
+
+    val categoryDataState: LiveData<DataState<List<Category>?>> = _categoryDataState
+
+    private val _sourcesDataState = MutableLiveData<DataState<List<NewsSource>?>>()
+
+    val sourcesDataState: LiveData<DataState<List<NewsSource>?>> = _sourcesDataState
+
 
     private val _logoutDataState = MutableLiveData<Indicator<DataState<LogoutResponse?>>>()
 
@@ -156,15 +163,15 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    private val _sources = MutableLiveData<NewsSourceResponse>()
-    val sources: LiveData<NewsSourceResponse>
-        get() = _sources
+
 
     fun getSources(storyId: Int, eventId: Int) {
 
         viewModelScope.launch {
             val request = NewsSourceRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, eventId)
-            _sources.value = newsRepository.getSources(request)
+            newsRepository.getSources(request).onEach {
+                _sourcesDataState.value = it
+            }.launchIn(viewModelScope)
         }
 
     }
@@ -187,14 +194,15 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    private val _categoryResponse = MutableLiveData<CategoryResponse>()
-    val categoryResponse: LiveData<CategoryResponse>
-        get() = _categoryResponse
 
     fun getCategories() {
 
+
         viewModelScope.launch {
-            _categoryResponse.value = newsRepository.getCategories(CategoryRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA))
+            val request = CategoryRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA)
+            newsRepository.getCategories(request).onEach {
+                _categoryDataState.value = it
+            }.launchIn(viewModelScope)
         }
 
     }

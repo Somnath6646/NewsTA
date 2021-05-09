@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
@@ -168,10 +169,22 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         }
 
 
-        viewModel.categoryResponse.observe(viewLifecycleOwner, Observer { response ->
-            println("CATEGORIES ${response.data}")
-            categories = ArrayList(response.data)
-            setUpTabLayout(categories = categories)
+
+        viewModel.categoryDataState.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is DataState.Success ->{
+                    Log.i("TAG", "onActivityCreated: CategoryDatState Success")
+                    categories = it.data as ArrayList<Category>
+                    setUpTabLayout(categories = categories)
+                }
+                is DataState.Error -> {
+                    Log.i("TAG", "onActivityCreated: CategoryDatState Error")
+                    Toast.makeText(requireContext(), it.exception, Toast.LENGTH_SHORT).show()
+                }
+                is DataState.Loading -> {
+                    Log.i("TAG", "onActivityCreated: CategoryDatState logading")
+                }
+            }
         })
 
 

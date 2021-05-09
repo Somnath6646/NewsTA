@@ -9,10 +9,9 @@ import com.newsta.android.data.local.StoriesDAO
 import com.newsta.android.remote.data.*
 import com.newsta.android.remote.services.NewsService
 import com.newsta.android.responses.LogoutResponse
+import com.newsta.android.responses.NewsSourceResponse
 import com.newsta.android.responses.SearchStory
-import com.newsta.android.utils.models.DataState
-import com.newsta.android.utils.models.SavedStory
-import com.newsta.android.utils.models.Story
+import com.newsta.android.utils.models.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -182,7 +181,26 @@ class StoriesRepository(
 
     }
 
-    suspend fun getSources(sourceRequest: NewsSourceRequest) = newsService.getSource(sourceRequest)
+    suspend fun getSources(sourceRequest: NewsSourceRequest): Flow<DataState<List<NewsSource>?>> = flow{
+        emit(DataState.Loading)
+        try{
+          val sources =  newsService.getSource(sourceRequest)
+          if(sources.isSuccessful){
+             emit(DataState.Success(sources.body()?.data))
+          }else {
+              val gson = Gson()
+              val type = object : TypeToken<ErrorResponse>() {}.type
+              var errorResponse: ErrorResponse? = gson.fromJson(sources.errorBody()!!.charStream(), type)
+              if (errorResponse != null) {
+                  emit(DataState.Error(errorResponse.detail))
+              }
+          }
+        }catch (e: Exception){
+            if (e is ConnectException){
+                emit(DataState.Error("To see sources connect to internet"))
+            }
+        }
+    }
 
     suspend fun saveStory(story: SavedStory): Flow<DataState<SavedStory>> = flow {
 
@@ -258,13 +276,41 @@ class StoriesRepository(
 
     }
 
-    suspend fun getCategories(categoryRequest: CategoryRequest) = newsService.getCategories(categoryRequest)
+    suspend fun getCategories(categoryRequest: CategoryRequest): Flow<DataState<List<Category>?>> = flow{
+        emit(DataState.Loading)
+        try {
+            val response = newsService.getCategories(categoryRequest)
+            if (response.isSuccessful){
+                emit(DataState.Success(response.body()?.data))
+                response.body()?.data?.let { storiesDao.insertCategories(it) }
+
+
+            }else{
+                val gson = Gson()
+                val type = object : TypeToken<ErrorResponse>() {}.type
+                var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                if (errorResponse != null) {
+                    emit(DataState.Error(errorResponse.detail))
+                }
+            }
+        }catch (e: Exception){
+            val categories = storiesDao.getAllCategories()
+            emit(DataState.Success(categories))
+
+            if (e is ConnectException){
+                emit(DataState.Error("Enjoy Offline Mode :)"))
+            }else{
+                emit(DataState.Error(e.message.toString()))
+            }
+        }
+    }
 
     suspend fun logout(logoutRequest: LogoutRequest): Flow<DataState<LogoutResponse?>> = flow{
         emit(DataState.Loading)
         try{
             val response = newsService.logout(logoutRequest)
             if (response.isSuccessful){
+
                 emit(DataState.Success(response.body()))
             }else{
                 val gson = Gson()
@@ -276,6 +322,12 @@ class StoriesRepository(
             }
 
         }catch (e: Exception){
+
+            if (e is ConnectException){
+                DataState.Error("No network connection")
+            }else{
+                DataState.Error(e.message.toString())
+            }
 
         }
     }

@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import androidx.core.view.drawToBitmap
 import androidx.fragment.app.activityViewModels
@@ -158,9 +159,20 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         initViews()
 
-        viewModel.sources.observe(viewLifecycleOwner, Observer { response ->
-            val data = response.data
-            sourcesAdapter.addAll(ArrayList(data))
+
+
+        viewModel.sourcesDataState.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is DataState.Success -> {
+                    sourcesAdapter.addAll((it.data) as ArrayList)
+                }
+                is DataState.Loading -> {
+                    Log.i("TAG", "onActivityCreated: load horha hai sources ")
+                }
+                is DataState.Error -> {
+                    Log.i("TAG", "onActivityCreated: error h bhai sources me")
+                }
+            }
         })
 
         viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {

@@ -19,11 +19,11 @@ interface NewsService {
 
     @Headers("Accept: application/json")
     @POST("sources")
-    suspend fun getSource(@Body sourceRequest: NewsSourceRequest): NewsSourceResponse
+    suspend fun getSource(@Body sourceRequest: NewsSourceRequest): Response<NewsSourceResponse>
 
     @Headers("Accept: application/json")
     @POST("/categories")
-    suspend fun getCategories(@Body categoryRequest: CategoryRequest): CategoryResponse
+    suspend fun getCategories(@Body categoryRequest: CategoryRequest): Response<CategoryResponse>
 
     //Search
     @Headers("Accept: application/json")
