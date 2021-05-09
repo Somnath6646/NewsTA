@@ -276,61 +276,64 @@ class StoriesRepository(
 
     }
 
-    suspend fun getCategories(categoryRequest: CategoryRequest): Flow<DataState<List<Category>?>> = flow{
+    suspend fun getCategories(categoryRequest: CategoryRequest): Flow<DataState<List<Category>?>> = flow {
         emit(DataState.Loading)
         try {
             val response = newsService.getCategories(categoryRequest)
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 emit(DataState.Success(response.body()?.data))
                 response.body()?.data?.let { storiesDao.insertCategories(it) }
 
 
-            }else{
+            } else {
+                val categories = storiesDao.getAllCategories()
+                emit(DataState.Success(categories))
                 val gson = Gson()
                 val type = object : TypeToken<ErrorResponse>() {}.type
-                var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                var errorResponse: ErrorResponse? =
+                    gson.fromJson(response.errorBody()!!.charStream(), type)
                 if (errorResponse != null) {
                     emit(DataState.Error(errorResponse.detail))
                 }
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             val categories = storiesDao.getAllCategories()
             emit(DataState.Success(categories))
 
-            if (e is ConnectException){
+            if (e is ConnectException) {
                 emit(DataState.Error("Enjoy Offline Mode :)"))
-            }else{
+            } else {
                 emit(DataState.Error(e.message.toString()))
             }
         }
     }
 
-    suspend fun logout(logoutRequest: LogoutRequest): Flow<DataState<LogoutResponse?>> = flow{
+    suspend fun logout(logoutRequest: LogoutRequest): Flow<DataState<LogoutResponse?>> = flow {
         emit(DataState.Loading)
-        try{
+        try {
             val response = newsService.logout(logoutRequest)
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
 
                 emit(DataState.Success(response.body()))
-            }else{
+            } else {
                 val gson = Gson()
                 val type = object : TypeToken<ErrorResponse>() {}.type
-                var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                var errorResponse: ErrorResponse? =
+                    gson.fromJson(response.errorBody()!!.charStream(), type)
                 if (errorResponse != null) {
                     emit(DataState.Error(errorResponse.detail))
                 }
             }
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
 
-            if (e is ConnectException){
+            if (e is ConnectException) {
                 DataState.Error("No network connection")
-            }else{
+            } else {
                 DataState.Error(e.message.toString())
             }
 
         }
     }
-
 
 }

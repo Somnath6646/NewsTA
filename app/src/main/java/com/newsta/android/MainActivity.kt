@@ -68,36 +68,43 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun observeUserNetworkConnection(){
+    private fun observeUserNetworkConnection() {
 
-        NetworkObserver.getNetworkLiveData(applicationContext).observe(this, androidx.lifecycle.Observer { isConnected ->
-            if(!isConnected){
-                binding.textViewNetworkStatus.text = "No internet connection"
-                binding.networkStatusLayout.apply {
-                    binding.networkStatusLayout.visibility = View.VISIBLE
-                    setBackgroundColor( ContextCompat.getColor(context,
-                            android.R.color.holo_red_light
-                    ))
-                }
-            } else{
-                binding.textViewNetworkStatus.text = "Back Online"
+        NetworkObserver.getNetworkLiveData(applicationContext)
+            .observe(this, androidx.lifecycle.Observer { isConnected ->
+                if (!isConnected) {
+                    binding.textViewNetworkStatus.text = "No internet connection"
+                    binding.networkStatusLayout.apply {
+                        binding.networkStatusLayout.visibility = View.VISIBLE
+                        setBackgroundColor(
+                            ContextCompat.getColor(
+                                context,
+                                android.R.color.holo_red_light
+                            )
+                        )
+                    }
+                } else {
+                    binding.textViewNetworkStatus.text = "Back Online"
 
-                binding.networkStatusLayout.apply {
-                    animate()
+                    binding.networkStatusLayout.apply {
+                        animate()
                             .alpha(1f)
                             .setStartDelay(1000)
                             .setDuration(1000)
-                            .setListener(object : AnimatorListenerAdapter(){
+                            .setListener(object : AnimatorListenerAdapter() {
                                 override fun onAnimationEnd(animation: Animator?) {
                                     binding.networkStatusLayout.visibility = View.GONE
                                 }
                             }).start()
-                    setBackgroundColor( ContextCompat.getColor(context,
-                            R.color.colorPrimary
-                    ))
+                        setBackgroundColor(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.colorPrimary
+                            )
+                        )
+                    }
                 }
-            }
-        })
+            })
     }
 
     override fun attachBaseContext(newBase: Context?) {

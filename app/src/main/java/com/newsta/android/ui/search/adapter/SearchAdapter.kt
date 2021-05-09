@@ -1,4 +1,4 @@
-package com.newsta.android.ui.landing.adapter
+package com.newsta.android.ui.search.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,7 +17,10 @@ class SearchAdapter(private val onClick: (SearchStory, Int) -> Unit) : RecyclerV
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = DataBindingUtil.inflate<ItemSearchresultBinding>(inflater, R.layout.item_searchresult, parent, false)
-        return SearchViewHolder(binding, onClick)
+        return SearchViewHolder(
+            binding,
+            onClick
+        )
     }
 
     override fun getItemCount(): Int = stories.size

@@ -1,11 +1,8 @@
 package com.newsta.android.ui.search.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -14,8 +11,7 @@ import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSearchBinding
 import com.newsta.android.responses.SearchStory
 import com.newsta.android.ui.base.BaseFragment
-import com.newsta.android.ui.landing.adapter.NewsAdapter
-import com.newsta.android.ui.landing.adapter.SearchAdapter
+import com.newsta.android.ui.search.adapter.SearchAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
@@ -92,7 +88,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     }
 
     private fun setUpAdapter(){
-        adapter = SearchAdapter { story: SearchStory, eventId: Int -> openDetails(story, eventId) }
+        adapter =
+            SearchAdapter { story: SearchStory, eventId: Int ->
+                openDetails(
+                    story,
+                    eventId
+                )
+            }
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
