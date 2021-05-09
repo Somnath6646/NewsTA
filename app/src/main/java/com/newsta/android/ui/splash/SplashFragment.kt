@@ -10,15 +10,18 @@ import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSplashBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import kotlinx.android.synthetic.main.news_item.*
 
 class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
     private val viewModel: NewsViewModel by activityViewModels()
 
+    private lateinit var timer: CountDownTimer
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        object : CountDownTimer(2000, 1000) {
+        timer = object : CountDownTimer(2000, 1000) {
             override fun onFinish() {
 
 
@@ -41,9 +44,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
     }
 
     fun navigateToMainFragment() {
-        val action =
-            SplashFragmentDirections.actionSplashFragmentToLandingFragment()
-        findNavController().navigate(action)
+        findNavController().navigate(R.id.action_splashFragment_to_landingFragment)
     }
 
     fun navigateToAuthenticationOptionsFragment() {
@@ -55,6 +56,5 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_splash
-
 
 }

@@ -267,6 +267,12 @@ constructor(private val newsRepository: StoriesRepository,
         setCategoryState(0)
     }
 
+    fun setFontScale(fontScale: Float) {
+        viewModelScope.launch {
+            preferences.setFontScale(fontScale)
+        }
+    }
+
     @SuppressLint("SimpleDateFormat")
     private fun getMaxDate(maxDateTime: Long): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")

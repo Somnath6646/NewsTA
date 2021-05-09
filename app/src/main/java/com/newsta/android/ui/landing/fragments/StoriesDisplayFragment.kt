@@ -1,5 +1,6 @@
 package com.newsta.android.ui.landing.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -18,6 +19,7 @@ import com.newsta.android.databinding.FragmentStoriesDisplayBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import com.newsta.android.utils.helpers.LocaleConfigurationUtil
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.Story
@@ -52,8 +54,8 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
         println("EXTRAS: $extras")
         binding.refreshLayout.setOnRefreshListener {
             if (maxStory != null) {
-                viewModel.getAllNews(maxStory!!.storyId, maxStory!!.updatedAt)
-                viewModel.updateNews(maxStory!!.storyId, maxStory!!.updatedAt)
+                viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
+                viewModel.updateNews(maxStory.storyId, maxStory.updatedAt)
             } else if(!extras.isNullOrEmpty()) {
                 viewModel.getAllNews(extras.first().storyId, extras.first().updatedAt)
                 viewModel.updateNews(extras.first().storyId, extras.first().updatedAt)
@@ -84,7 +86,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     Log.i("newsDataState", " success")
                     binding.refreshLayout.isRefreshing = false
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
-                    stories = ArrayList(it.data!!)
+                    stories = ArrayList(it.data)
                     val filteredStories = stories.filter { story: Story -> story.category == categoryState }
                     if(filteredStories.isNullOrEmpty()) {
                         NewstaApp.is_database_empty = true
@@ -107,9 +109,9 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     maxStory = it.data?.first()!!
                     minStory = it.data.last()
                     extras = ArrayList(it.data)
-                    Log.i("newsDataState", " EXTRA MAX ${maxStory!!.storyId} ${maxStory!!.updatedAt} ${maxStory!!.category} ${maxStory!!.events}")
-                    Log.i("newsDataState", " EXTRA MIN ${maxStory!!.storyId} ${maxStory!!.updatedAt} ${maxStory!!.category} ${maxStory!!.events}")
-                    viewModel.getAllNews(maxStory!!.storyId, maxStory!!.updatedAt)
+                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    Log.i("newsDataState", " EXTRA MIN ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
                 }
             }
         })
@@ -120,7 +122,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                 is DataState.Success<List<Story>?> -> {
                     Log.i("newsDataState", " success")
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
-                    stories = ArrayList(it.data!!)
+                    stories = ArrayList(it.data)
                     val filteredStories = stories.filter { story: Story -> story.category == categoryState }
                     println("FilteredStories  $filteredStories")
                     adapter.addAll(ArrayList<Story>(filteredStories))
@@ -134,9 +136,9 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                 is DataState.Extra<List<Story>?> -> {
                     maxStory = it.data?.first()!!
                     minStory = it.data.last()
-                    Log.i("newsDataState", " EXTRA MAX ${maxStory!!.storyId} ${maxStory!!.updatedAt} ${maxStory!!.category} ${maxStory!!.events}")
-                    Log.i("newsDataState", " EXTRA MIN ${minStory!!.storyId} ${minStory!!.updatedAt} ${minStory!!.category} ${minStory!!.events}")
-                    viewModel.getAllNews(maxStory!!.storyId, maxStory!!.updatedAt)
+                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
+                    viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
                 }
             }
 
@@ -149,8 +151,8 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     maxStory = it.data?.first()!!
                     minStory = it.data.last()
                     extras = ArrayList(it.data)
-                    Log.i("newsDataState", " EXTRA MAX ${maxStory!!.storyId} ${maxStory!!.updatedAt} ${maxStory!!.category} ${maxStory!!.events}")
-                    Log.i("newsDataState", " EXTRA MIN ${minStory!!.storyId} ${minStory!!.updatedAt} ${minStory!!.category} ${minStory!!.events}")
+                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
                 }
                 is DataState.Error -> {
                     Log.i("newsDataState", " errror ${it.exception}")
@@ -162,8 +164,8 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     maxStory = it.data?.first()!!
                     minStory = it.data.last()
                     extras = ArrayList(it.data)
-                    Log.i("newsDataState", " EXTRA MAX ${maxStory!!.storyId} ${maxStory!!.updatedAt} ${maxStory!!.category} ${maxStory!!.events}")
-                    Log.i("newsDataState", " EXTRA MIN ${minStory!!.storyId} ${minStory!!.updatedAt} ${minStory!!.category} ${minStory!!.events}")
+                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
                 }
             }
 

@@ -106,6 +106,12 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     true
                 }
 
+                R.id.settings -> {
+                    findNavController().navigate(R.id.action_landingFragment_to_settingsFragment)
+                    closeNavigationDrawer()
+                    true
+                }
+
                 else -> {
                     false
                 }

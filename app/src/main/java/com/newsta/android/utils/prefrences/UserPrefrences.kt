@@ -47,10 +47,22 @@ class UserPrefrences(context: Context) {
         }
     }
 
+    val fontScale: Flow<Float?> = applicationContext.dataStore.data
+        .map { preferences ->
+            preferences[FONT_SCALE]
+        }
+
+    suspend fun setFontScale(fontScale: Float) {
+        applicationContext.dataStore.edit { settings ->
+            settings[FONT_SCALE] = fontScale
+        }
+    }
+
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("access token")
         val ISS = stringPreferencesKey("iss")
         val IS_DATABASE_EMPTY = booleanPreferencesKey("is_database_empty")
+        val FONT_SCALE = floatPreferencesKey("font_scale")
     }
 
 }

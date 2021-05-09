@@ -5,6 +5,7 @@ import androidx.databinding.Observable
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.newsta.android.NewstaApp
 import com.newsta.android.remote.data.*
 import com.newsta.android.repository.AuthRepository
 import com.newsta.android.responses.SigninResponse
@@ -112,6 +113,7 @@ constructor(private val authRepository: AuthRepository,
         viewModelScope.launch {
             userPrefrences.saveAccessToken(accessToken)
             userPrefrences.isDatabaseEmpty(true)
+            userPrefrences.setFontScale(NewstaApp.DEFAULT_FONT_SCALE)
             _navigate.value =
                 Indicator("Landing")
         }
@@ -120,12 +122,7 @@ constructor(private val authRepository: AuthRepository,
 
 
 
-    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
-
-    }
-
-    override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
-
-    }
+    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
+    override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 
 }
