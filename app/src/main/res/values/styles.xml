@@ -149,6 +149,12 @@
     <item name="android:textSize">14sp</item>
     <item name="textAllCaps">false</item>
 
+    </style><style name="SettingsItemText">
+
+    <item name="android:fontFamily">@font/segoeuib</item>
+    <item name="android:textSize">18sp</item>
+    <item name="android:textColor">@color/colorText</item>
+
     </style>
 
     <string name="hint_password">Password</string>

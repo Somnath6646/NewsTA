@@ -139,6 +139,13 @@
             app:exitAnim="@anim/out_to_left"
             app:popUpToInclusive="true"
             app:popUpTo="@id/nav_graph"/>
+        <action
+            android:id="@+id/action_landingFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right" />
     </fragment>
     <fragment
         android:id="@+id/signIn_AuthenticationOptionsFragment"
@@ -200,4 +207,8 @@
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.newsta.android.ui.settings.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

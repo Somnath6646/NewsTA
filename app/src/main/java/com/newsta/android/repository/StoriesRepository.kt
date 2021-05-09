@@ -260,25 +260,25 @@ class StoriesRepository(
 
     suspend fun getCategories(categoryRequest: CategoryRequest) = newsService.getCategories(categoryRequest)
 
-    suspend fun logout(logoutRequest: LogoutRequest): Flow<DataState<LogoutResponse?>> = flow{
+    suspend fun logout(logoutRequest: LogoutRequest): Flow<DataState<LogoutResponse?>> = flow {
+
         emit(DataState.Loading)
-        try{
+
+        try {
             val response = newsService.logout(logoutRequest)
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 emit(DataState.Success(response.body()))
-            }else{
+            } else {
                 val gson = Gson()
                 val type = object : TypeToken<ErrorResponse>() {}.type
-                var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                var errorResponse: ErrorResponse? =
+                    gson.fromJson(response.errorBody()!!.charStream(), type)
                 if (errorResponse != null) {
                     emit(DataState.Error(errorResponse.detail))
                 }
             }
 
-        }catch (e: Exception){
-
-        }
+        } catch (e: Exception) {  }
     }
-
 
 }

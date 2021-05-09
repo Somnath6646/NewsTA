@@ -28,7 +28,10 @@ class NewstaApp : Application(), Configuration.Provider {
     companion object {
 
         const val ISSUER_NEWSTA = "newsta"
+
         const val DEFAULT_FONT_SCALE = 1.05f
+        const val MEDIUM_FONT_SCALE = 1.25f
+        const val LARGE_FONT_SCALE = 1.5f
 
         lateinit var prefrences: UserPrefrences
         var access_token: String? = null
@@ -37,7 +40,6 @@ class NewstaApp : Application(), Configuration.Provider {
         fun setAccessToken(accessToken: String?) {
             this.access_token = accessToken
         }
-
 
         var is_database_empty: Boolean? = true
 
