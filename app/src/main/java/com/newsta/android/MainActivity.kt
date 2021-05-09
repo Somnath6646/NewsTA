@@ -46,4 +46,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    companion object {
+
+        var extras = ArrayList<Story>()
+        lateinit var minStory: Story
+        lateinit var maxStory: Story
+
+    }
+
 }

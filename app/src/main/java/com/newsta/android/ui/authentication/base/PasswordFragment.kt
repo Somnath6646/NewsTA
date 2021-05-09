@@ -58,13 +58,13 @@ abstract class PasswordFragment <T: ViewDataBinding>: Fragment() {
             viewModel.password.value = ""
         }
 
-
         viewModel.navigate.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
                 if(it!=null){
                     when(it){
                         "Landing" -> {
                             navigateToMainFragment()
+                            binding.root.clearFocus()
                         }
                     }
                 }

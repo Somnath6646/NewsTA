@@ -2,6 +2,7 @@ package com.newsta.android.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.newsta.android.utils.models.Category
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
 import kotlinx.coroutines.flow.Flow
@@ -37,5 +38,13 @@ interface StoriesDAO {
     @Delete
     suspend fun deleteSavedStory(savedStory: SavedStory): Int
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCategories(categories: List<Category>)
+
+    @Query("SELECT * FROM ${Category.TABLE_NAME}")
+    suspend fun getAllCategories(): List<Category>
+
+    @Query("DELETE FROM ${Category.TABLE_NAME}")
+    suspend fun deleteAllCategories()
 
 }
