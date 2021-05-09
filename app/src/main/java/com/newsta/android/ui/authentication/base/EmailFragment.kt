@@ -10,7 +10,6 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -19,15 +18,14 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.material.textfield.TextInputEditText
-import com.newsta.android.ui.authentication.AuthenticationViewmodel
-import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.viewmodels.AuthenticationViewModel
 
 abstract class EmailFragment <T: ViewDataBinding>: Fragment(){
     protected lateinit var binding: T
 
     val REQUEST_CODE_EMAIL = 1
 
-    val viewModel by activityViewModels<AuthenticationViewmodel>()
+    val viewModel by activityViewModels<AuthenticationViewModel>()
 
     override fun onCreateView(
             inflater: LayoutInflater,

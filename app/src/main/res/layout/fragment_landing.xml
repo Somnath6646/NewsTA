@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
-            type="com.newsta.android.ui.landing.viewmodel.NewsViewModel" />
+            type="com.newsta.android.viewmodels.NewsViewModel" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -91,17 +92,19 @@
                     android:id="@+id/search_layout"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
+                    android:layout_marginHorizontal="8dp"
                     android:layout_marginVertical="15dp"
                     android:background="@drawable/input_bg"
-                    android:hint="Type here to search"
+                    android:hint="@string/type_here_to_search"
                     android:paddingStart="15dp"
-                    android:visibility="gone"
                     android:singleLine="true"
                     android:text="@={viewModel.searchTerm}"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/nav_guideline"
                     app:layout_constraintEnd_toStartOf="@id/search"
                     app:layout_constraintStart_toEndOf="@+id/back"
                     app:layout_constraintTop_toTopOf="@+id/top_guideline" />
+
                 <TextView
                     android:id="@+id/app_name"
                     android:layout_width="wrap_content"
@@ -111,7 +114,6 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
                     android:textStyle="bold"
-
                     app:layout_constraintBottom_toTopOf="@id/nav_guideline"
                     app:layout_constraintEnd_toStartOf="@id/search"
                     app:layout_constraintStart_toEndOf="@id/nav_drawer"
@@ -158,10 +160,10 @@
                     android:id="@+id/pager"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/end_guideline"
                     app:layout_constraintStart_toEndOf="@id/start_guideline"
-                    app:layout_constraintTop_toBottomOf="@id/tabLayout"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,7 +7,7 @@
 
         <variable
             name="authviewModel"
-            type="com.newsta.android.ui.authentication.AuthenticationViewmodel" />
+            type="com.newsta.android.viewmodels.AuthenticationViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

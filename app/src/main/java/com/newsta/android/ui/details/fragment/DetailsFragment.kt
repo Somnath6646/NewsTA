@@ -22,7 +22,7 @@ import com.newsta.android.databinding.FragmentDetailsBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.details.adapter.NewsSourceAdapter
 import com.newsta.android.ui.details.adapter.TimelineAdapter
-import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import com.newsta.android.viewmodels.NewsViewModel
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.collections.ArrayList

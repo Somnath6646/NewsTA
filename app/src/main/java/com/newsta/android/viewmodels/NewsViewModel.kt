@@ -1,4 +1,4 @@
-package com.newsta.android.ui.landing.viewmodel
+package com.newsta.android.viewmodels
 
 import android.annotation.SuppressLint
 import androidx.databinding.Bindable
@@ -10,9 +10,7 @@ import com.facebook.login.LoginManager
 import com.newsta.android.NewstaApp
 import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
-import com.newsta.android.responses.CategoryResponse
 import com.newsta.android.responses.LogoutResponse
-import com.newsta.android.responses.NewsSourceResponse
 import com.newsta.android.responses.SearchStory
 import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.models.*
@@ -27,9 +25,8 @@ constructor(private val newsRepository: StoriesRepository,
             private val preferences: UserPrefrences,
             @Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(), Observable {
 
-
     @Bindable
-    val searchTerm = MutableLiveData<String>()
+    val searchTerm = MutableLiveData<String>("")
 
     private val _newsDataState = MutableLiveData<DataState<List<Story>>>()
 
@@ -76,15 +73,22 @@ constructor(private val newsRepository: StoriesRepository,
         newsRepository.deleteAllStories()
     }
 
-    fun getSearchResults(){
-        viewModelScope.launch {
-            val request = SearchRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, searchTerm.value!!)
-            newsRepository.getSearchResults(searchRequest = request)
+    fun getSearchResults() {
+        if(!searchTerm.value.isNullOrEmpty()) {
+            viewModelScope.launch {
+                val request =
+                    SearchRequest(
+                        NewstaApp.access_token!!,
+                        NewstaApp.ISSUER_NEWSTA,
+                        searchTerm.value!!
+                    )
+                newsRepository.getSearchResults(searchRequest = request)
                     .onEach {
                         _searchDataState.value = it
                     }
                     .launchIn(viewModelScope)
-        }
+            }
+        } else toast("Type something search")
     }
 
     fun getStoryByIDFromSearch(storyId: Int){

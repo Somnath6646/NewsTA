@@ -1,13 +1,11 @@
 package com.newsta.android.ui.landing.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.MainActivity.Companion.extras
@@ -18,8 +16,7 @@ import com.newsta.android.R
 import com.newsta.android.databinding.FragmentStoriesDisplayBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.NewsAdapter
-import com.newsta.android.ui.landing.viewmodel.NewsViewModel
-import com.newsta.android.utils.helpers.LocaleConfigurationUtil
+import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.Story
@@ -106,9 +103,11 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     binding.refreshLayout.isRefreshing = true
                 }
                 is DataState.Extra<List<Story>?> -> {
-                    maxStory = it.data?.first()!!
-                    minStory = it.data.last()
-                    extras = ArrayList(it.data)
+                    if(!it.data.isNullOrEmpty()) {
+                        maxStory = it.data.first()
+                        minStory = it.data.last()
+                        extras = ArrayList(it.data)
+                    }
                     Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
                     Log.i("newsDataState", " EXTRA MIN ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
                     viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
@@ -134,8 +133,11 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     Log.i("newsDataState", " loding")
                 }
                 is DataState.Extra<List<Story>?> -> {
-                    maxStory = it.data?.first()!!
-                    minStory = it.data.last()
+                    if(!it.data.isNullOrEmpty()) {
+                        maxStory = it.data.first()
+                        minStory = it.data.last()
+                        extras = ArrayList(it.data)
+                    }
                     Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
                     Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
                     viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
@@ -148,9 +150,11 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
             when (it) {
                 is DataState.Success<List<Story>?> -> {
-                    maxStory = it.data?.first()!!
-                    minStory = it.data.last()
-                    extras = ArrayList(it.data)
+                    if(!it.data.isNullOrEmpty()) {
+                        maxStory = it.data.first()
+                        minStory = it.data.last()
+                        extras = ArrayList(it.data)
+                    }
                     Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
                     Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
                 }
@@ -161,9 +165,11 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     Log.i("newsDataState", " loding")
                 }
                 is DataState.Extra<List<Story>?> -> {
-                    maxStory = it.data?.first()!!
-                    minStory = it.data.last()
-                    extras = ArrayList(it.data)
+                    if(!it.data.isNullOrEmpty()) {
+                        maxStory = it.data.first()
+                        minStory = it.data.last()
+                        extras = ArrayList(it.data)
+                    }
                     Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
                     Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
                 }

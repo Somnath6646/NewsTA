@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -31,10 +30,9 @@ import com.newsta.android.databinding.FragmentLandingBinding
 import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
-import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.Category
 import com.newsta.android.utils.models.DataState
-import com.newsta.android.utils.models.Story
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
@@ -229,6 +227,12 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                     }
                 }
+            }
+        })
+
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled().let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })
 

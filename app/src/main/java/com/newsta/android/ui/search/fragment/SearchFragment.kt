@@ -12,7 +12,7 @@ import com.newsta.android.databinding.FragmentSearchBinding
 import com.newsta.android.responses.SearchStory
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.search.adapter.SearchAdapter
-import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.Story

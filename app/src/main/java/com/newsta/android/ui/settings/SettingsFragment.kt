@@ -1,10 +1,7 @@
 package com.newsta.android.ui.settings
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -15,8 +12,7 @@ import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSettingsBinding
 import com.newsta.android.ui.base.BaseFragment
-import com.newsta.android.ui.landing.viewmodel.NewsViewModel
-import kotlinx.android.synthetic.main.fragment_settings.view.*
+import com.newsta.android.viewmodels.NewsViewModel
 
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 

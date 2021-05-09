@@ -3,7 +3,6 @@ package com.newsta.android.ui.authentication.base
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,12 +16,12 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.newsta.android.R
-import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.viewmodels.AuthenticationViewModel
 
 abstract class PasswordFragment <T: ViewDataBinding>: Fragment() {
 
     protected lateinit var binding: T
-    val viewModel by activityViewModels<AuthenticationViewmodel>()
+    val viewModel by activityViewModels<AuthenticationViewModel>()
     private val strengthWeak = 0
     private val strengthModerate = 1
     private val strengthStrong = 2

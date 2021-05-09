@@ -19,7 +19,7 @@ import com.facebook.login.LoginResult
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentSignInAuthenticationOptionsBinding
-import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.utils.models.DataState
 import java.util.*
@@ -28,7 +28,7 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenti
 
 
     private lateinit var callbackManager: CallbackManager
-    val viewModel by activityViewModels<AuthenticationViewmodel>()
+    val viewModel by activityViewModels<AuthenticationViewModel>()
     private lateinit var facebookAccessToken: String
     private lateinit var iss: String
 

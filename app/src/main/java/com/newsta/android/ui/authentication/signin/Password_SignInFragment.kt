@@ -21,14 +21,14 @@ import androidx.navigation.fragment.findNavController
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentPasswordSignInBinding
-import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.utils.models.DataState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class Password_SignInFragment : BaseFragment<FragmentPasswordSignInBinding>() {
 
-    val viewModel by activityViewModels<AuthenticationViewmodel>()
+    val viewModel by activityViewModels<AuthenticationViewModel>()
     private val strengthWeak = 0
     private val strengthModerate = 1
     private val strengthStrong = 2
@@ -125,7 +125,7 @@ class Password_SignInFragment : BaseFragment<FragmentPasswordSignInBinding>() {
 
 
     private fun showPasswordStrength() {
-        binding.inputPassword.addTextChangedListener { text: Editable? ->
+        binding.inputPassword.addTextChangedListener { text ->
 
             val password = text.toString()
             val strength = passwordStrength(password)

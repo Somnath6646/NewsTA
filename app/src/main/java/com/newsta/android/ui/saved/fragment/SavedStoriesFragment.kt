@@ -4,11 +4,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Message
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
@@ -20,12 +16,11 @@ import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSavedStoriesBinding
 import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.ui.base.BaseFragment
-import com.newsta.android.ui.landing.viewmodel.NewsViewModel
+import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.ui.saved.adapter.SavedStoryAdapter
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
-import kotlinx.android.synthetic.main.logout_dialog.*
 
 class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>() {
 

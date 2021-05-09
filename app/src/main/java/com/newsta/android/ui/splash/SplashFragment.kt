@@ -9,8 +9,7 @@ import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSplashBinding
 import com.newsta.android.ui.base.BaseFragment
-import com.newsta.android.ui.landing.viewmodel.NewsViewModel
-import kotlinx.android.synthetic.main.news_item.*
+import com.newsta.android.viewmodels.NewsViewModel
 
 class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 

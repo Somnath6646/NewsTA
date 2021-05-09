@@ -13,7 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import com.newsta.android.databinding.ActivityMainBinding
-import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.utils.NetworkObserver
 import com.newsta.android.utils.helpers.LocaleConfigurationUtil
 import com.newsta.android.utils.models.Story
@@ -22,7 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    val viewModel : AuthenticationViewmodel by viewModels()
+    val viewModel : AuthenticationViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

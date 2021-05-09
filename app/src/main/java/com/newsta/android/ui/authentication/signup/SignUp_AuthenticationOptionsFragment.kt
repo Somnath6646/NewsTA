@@ -21,7 +21,7 @@ import com.facebook.login.LoginResult
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentSignupOptionsBinding
-import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.utils.models.DataState
 import java.util.*
@@ -31,7 +31,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
 
 
     private lateinit var callbackManager: CallbackManager
-    val viewModel by activityViewModels<AuthenticationViewmodel>()
+    val viewModel by activityViewModels<AuthenticationViewModel>()
 
     override fun getFragmentView(): Int = R.layout.fragment_signup_options
 

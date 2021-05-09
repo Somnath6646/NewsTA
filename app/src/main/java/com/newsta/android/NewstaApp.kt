@@ -2,21 +2,14 @@ package com.newsta.android
 
 import android.app.Application
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorkerFactory
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.work.*
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
-import com.newsta.android.ui.authentication.AuthenticationViewmodel
 import com.newsta.android.utils.prefrences.UserPrefrences
 import com.newsta.android.utils.workers.DatabaseClearer
 import dagger.hilt.android.HiltAndroidApp
-import java.lang.invoke.ConstantCallSite
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

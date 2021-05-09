@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.newsta.android.ui.landing.viewmodel.NewsViewModel" />
+            type="com.newsta.android.viewmodels.NewsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

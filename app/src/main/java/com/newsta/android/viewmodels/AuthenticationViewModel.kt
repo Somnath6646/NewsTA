@@ -1,4 +1,4 @@
-package com.newsta.android.ui.authentication
+package com.newsta.android.viewmodels
 
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 
-class AuthenticationViewmodel
+class AuthenticationViewModel
 @ViewModelInject
 constructor(private val authRepository: AuthRepository,
             private val prefrences: UserPrefrences,
