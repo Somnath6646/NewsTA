@@ -6,6 +6,7 @@ import androidx.databinding.Observable
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.facebook.login.LoginManager
 import com.newsta.android.NewstaApp
 import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
@@ -53,9 +54,11 @@ constructor(private val newsRepository: StoriesRepository,
         viewModelScope.launch {
             val request = NewstaApp.access_token?.let { LogoutRequest(it, NewstaApp.ISSUER_NEWSTA) }
             if (request != null) {
+
                 newsRepository.logout(logoutRequest = request).onEach {
                     _logoutDataState.value = Indicator(it)
-                }
+                }.launchIn(viewModelScope)
+                LoginManager.getInstance().logOut();
                 clearAllData()
             }
         }

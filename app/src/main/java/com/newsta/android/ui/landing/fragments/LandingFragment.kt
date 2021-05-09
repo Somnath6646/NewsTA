@@ -1,5 +1,6 @@
 package com.newsta.android.ui.landing.fragments
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -205,6 +206,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                         dialog.show()
                     }
+                    else -> {
+
+                    }
                 }
             }
         })
@@ -328,6 +332,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun addCustomView(
         title: String,
         size: Float = 14f,

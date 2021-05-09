@@ -24,6 +24,7 @@ import java.net.ConnectException
 
 class StoriesRepository(
     private val storiesDao: StoriesDAO,
+
     private val newsService: NewsService
 ) {
 
