@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso
 
 private var category = 0
 
-class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
+class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
 
     private var stories = ArrayList<Story>()
 
@@ -46,7 +46,7 @@ class NewsAdapter(private val onClick: (Story) -> Unit) : RecyclerView.Adapter<N
 
 }
 
-class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: (Story) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: (Story, Int) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(story: Story) {
 
@@ -62,7 +62,7 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
             .load(event.imgUrl)
             .into(binding.image)
 
-        binding.root.setOnClickListener { onClick(story) }
+        binding.root.setOnClickListener { onClick(story, event.eventId) }
 
     }
 

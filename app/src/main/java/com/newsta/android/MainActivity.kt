@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import com.newsta.android.databinding.ActivityMainBinding
 import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.utils.models.Story
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,13 +22,18 @@ class MainActivity : AppCompatActivity() {
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
         viewModel.userPrefrences.accessToken.asLiveData().observe(this, Observer {accessToken ->
-            if (accessToken != null) {
+
                 NewstaApp.access_token = accessToken
+
                 NewstaApp.setAccessToken(accessToken)
 
+
                 Log.i("MainActivity", (accessToken == NewstaApp.getAccessToken()).toString())
-            }
+
         })
+
+
+
 
         viewModel.userPrefrences.isDatabaseEmpty.asLiveData().observe(this, Observer { isDatabaseEmpty ->
             if (isDatabaseEmpty != null) {

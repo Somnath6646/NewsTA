@@ -29,7 +29,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
                     //navtoauthenticationoptionsfragment
                     navigateToAuthenticationOptionsFragment()
                 }
-
+//                navigateToAuthenticationOptionsFragment()
             }
 
             override fun onTick(millisUntilFinished: Long) {

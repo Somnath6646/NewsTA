@@ -31,6 +31,7 @@ import com.newsta.android.utils.models.*
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private lateinit var story: Story
+    private lateinit var data: DetailsPageData
     private var scrollState: Int = 0
     private lateinit var event: Event
 
@@ -41,7 +42,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun initViews() {
 
-        event = story.events.last()
+        event = story.events.singleOrNull{
+            it.eventId == data.eventId
+        }!!
 
         println("Story: ${story.storyId} Event: ${event.eventId}")
 
@@ -139,7 +142,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        story = requireArguments().getParcelable<Story>("data")!!
+        data = requireArguments().getParcelable<DetailsPageData>("data")!!
+
+        story = data.story
+
         scrollState = requireArguments().getInt("scroll")
 
         binding.lifecycleOwner = requireActivity()

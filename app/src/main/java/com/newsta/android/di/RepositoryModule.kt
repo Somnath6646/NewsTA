@@ -5,7 +5,6 @@ import com.newsta.android.remote.services.AuthenticationService
 import com.newsta.android.remote.services.NewsService
 import com.newsta.android.repository.AuthRepository
 import com.newsta.android.repository.StoriesRepository
-import com.newsta.android.repository.NewsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,12 +25,6 @@ object RepositoryModule {
     @Provides
     fun provideStoriesRepository(newsService: NewsService, dao: StoriesDAO): StoriesRepository{
         return StoriesRepository(dao, newsService)
-    }
-
-    @Singleton
-    @Provides
-    fun provideNewsRepository(newsService: NewsService): NewsRepository {
-        return NewsRepository(newsService)
     }
 
 }

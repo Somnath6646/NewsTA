@@ -6,6 +6,7 @@ import com.newsta.android.remote.data.SigninRequest
 import com.newsta.android.remote.data.SignupRequest
 import com.newsta.android.responses.SigninResponse
 import com.newsta.android.responses.SignupResponse
+import retrofit2.Response
 import retrofit2.http.*
 
 interface AuthenticationService {
@@ -14,14 +15,14 @@ interface AuthenticationService {
     @POST("signup/email")
     suspend fun signup(
         @Body signupRequest: SignupRequest
-    ): SignupResponse
+    ): Response<SignupResponse>
 
 
     @Headers("Accept: application/json")
     @POST("signup/si")
     suspend fun signup(
             @Body signupRequest: SignUpRequest_Social
-    ): SignupResponse
+    ): Response<SignupResponse>
 
 
 
@@ -29,13 +30,13 @@ interface AuthenticationService {
     @POST("login/email")
     suspend fun signin(
             @Body signupRequest: SigninRequest
-    ): SigninResponse
+    ): Response<SigninResponse>
 
 
     @Headers("Accept: application/json")
     @POST("login/si")
     suspend fun signin(
             @Body signinRequest: SignInRequest_Social
-    ): SigninResponse
+    ): Response<SigninResponse>
 
 }

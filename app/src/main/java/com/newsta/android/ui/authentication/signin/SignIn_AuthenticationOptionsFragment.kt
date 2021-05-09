@@ -7,23 +7,21 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentSignInAuthenticationOptionsBinding
-import com.newsta.android.remote.data.Resource
 import com.newsta.android.ui.authentication.AuthenticationViewmodel
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.utils.models.DataState
 import java.util.*
 
 class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenticationOptionsBinding>() {
@@ -31,8 +29,8 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenti
 
     private lateinit var callbackManager: CallbackManager
     val viewModel by activityViewModels<AuthenticationViewmodel>()
-
-
+    private lateinit var facebookAccessToken: String
+    private lateinit var iss: String
 
     override fun getFragmentView(): Int = R.layout.fragment_sign_in__authentication_options
 
@@ -45,8 +43,7 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenti
         }
 
         binding.btnSignup.setOnClickListener {
-            val action = SignIn_AuthenticationOptionsFragmentDirections.actionSignInAuthenticationOptionsFragmentToSignupSigninOptionsFragment()
-            findNavController().navigate(action)
+            findNavController().popBackStack()
         }
 
         callbackManager = CallbackManager.Factory.create();
@@ -69,41 +66,9 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenti
         })
 
 
-        viewModel.signinResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it.getContentIfNotHandled().let {
-                when(it) {
-                    is Resource.Success -> {
-                        Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
-
-                        println("ACcessToken ${it.data.data}")
-                        viewModel.saveToken(it.data.data)
 
 
-                    }
 
-                    is Resource.Failure -> {
-                        Toast.makeText(requireContext(), "Facebook error code: ${it.errorCode}", Toast.LENGTH_SHORT).show()
-                        val dialog = Dialog(requireContext())
-                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
-                        dialog.setContentView(dialogBinding.root)
-                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-                        when(it.errorCode) {
-                            400 -> {
-                                dialogBinding.message.text = "User not registered"
-                                dialogBinding.buttonText.text = "Try Again"
-                                dialogBinding.button.setOnClickListener {
-                                    dialog.dismiss()
-                                }
-                                dialog.show()
-                            }
-                        }
-
-                    }
-                }
-            }
-
-        })
 
 
         val loginButton = binding.loginButton
@@ -115,6 +80,9 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenti
             override fun onSuccess(loginResult: LoginResult?) {
                 if (loginResult != null) {
                     Log.i("Facebook Signin", loginResult.accessToken.token)
+
+                    facebookAccessToken = loginResult.accessToken.token
+
                     viewModel.signIn(accessToken = loginResult.accessToken.token, iss = "facebook")
 
                 }else{
@@ -130,6 +98,45 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenti
                 Toast.makeText(requireActivity(), exception.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         })
+
+
+        viewModel.signinResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it.getContentIfNotHandled().let {
+                when(it){
+                    is DataState.Success -> {
+                        Log.i("TAG", "Sucess")
+                        it.data?.data?.let { it1 -> viewModel.saveTokenAndIss(accessToken = it1) }
+                    }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "Loading")
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "eror")
+                        LoginManager.getInstance().logOut()
+
+                        val dialog = Dialog(requireContext())
+                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
+                        dialog.setContentView(dialogBinding.root)
+
+                        println("Abhi hai $dialogBinding")
+
+                        dialogBinding.message.text = "${it.exception}"
+                        dialogBinding.buttonText.text = "Sign Up"
+                        dialogBinding.button.setOnClickListener { v ->
+                            dialog.dismiss()
+                            findNavController().popBackStack()
+                        }
+
+                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+                        dialog.show()
+                    }
+                    else -> {}
+                }
+            }
+        })
+
 
     }
 

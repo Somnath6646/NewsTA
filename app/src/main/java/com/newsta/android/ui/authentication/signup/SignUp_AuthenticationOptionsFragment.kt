@@ -8,24 +8,22 @@ import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentSignupOptionsBinding
-import com.newsta.android.remote.data.Resource
 import com.newsta.android.ui.authentication.AuthenticationViewmodel
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.utils.models.DataState
 import java.util.*
 
 
@@ -39,6 +37,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
 
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
@@ -55,7 +54,12 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
           callbackManager = CallbackManager.Factory.create();
 
 
+
         val EMAIL = "email"
+        val loginButton = binding.loginButton
+        loginButton.setReadPermissions(Arrays.asList(EMAIL))
+        loginButton.setFragment(this);
+
 
         viewModel.navigate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it.getContentIfNotHandled().let {
@@ -74,44 +78,44 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
 
         viewModel.signupResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it.getContentIfNotHandled().let {
-                when(it) {
-                    is Resource.Success -> {
-                        Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
-
-                        println("ACcessToken ${it.data.data}")
-                        viewModel.saveToken(it.data.data)
-
-
+                when(it){
+                    is DataState.Success -> {
+                        Log.i("TAG", "Sucess")
+                        it.data?.data?.let { it1 -> viewModel.saveTokenAndIss(accessToken = it1) }
                     }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "Loading")
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "eror")
+                        LoginManager.getInstance().logOut();
 
-                    is Resource.Failure -> {
-                        Toast.makeText(requireContext(), "Facebook error code: ${it.errorCode}", Toast.LENGTH_SHORT).show()
                         val dialog = Dialog(requireContext())
                         val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
                         dialog.setContentView(dialogBinding.root)
-                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-                        when(it.errorCode) {
-                            400 -> {
-                                dialogBinding.message.text = "User not registered"
-                                dialogBinding.buttonText.text = "Try Again"
-                                dialogBinding.button.setOnClickListener {
-                                    dialog.dismiss()
-                                }
-                                dialog.show()
-                            }
+                        println("Abhi hai $dialogBinding")
+
+                        dialogBinding.message.text = "${it.exception}"
+                        dialogBinding.buttonText.text = "Sign In"
+                        dialogBinding.button.setOnClickListener { v ->
+                            dialog.dismiss()
+                            val action = SignUp_AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToSignInAuthenticationOptionsFragment()
+                            findNavController().navigate(action)
                         }
 
+                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+                        dialog.show()
                     }
+                    else -> {}
                 }
             }
-
         })
 
 
-        val loginButton = binding.loginButton
-        loginButton.setReadPermissions(Arrays.asList(EMAIL))
-         loginButton.setFragment(this);
+
 
 
         loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {

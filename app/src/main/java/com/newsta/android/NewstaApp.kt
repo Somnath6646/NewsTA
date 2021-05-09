@@ -32,9 +32,10 @@ class NewstaApp : Application(), Configuration.Provider {
         var access_token: String? = null
 
         fun getAccessToken(): String? = access_token
-        fun setAccessToken(accessToken: String) {
+        fun setAccessToken(accessToken: String?) {
             this.access_token = accessToken
         }
+
 
         var is_database_empty: Boolean? = true
 
@@ -117,11 +118,9 @@ class NewstaApp : Application(), Configuration.Provider {
         workManager.getWorkInfoByIdLiveData(periodicDatabaseClearRequest.id)
             .observeForever { info ->
                 if(info.state.isFinished) {
-                    Toast.makeText(applicationContext, "Work ${info.state.name}", Toast.LENGTH_SHORT).show()
-                    is_database_empty = true
+                   is_database_empty = true
                     setIsDatabaseEmpty(true)
                 } else {
-                    Toast.makeText(applicationContext, "Work ${info.state.name}", Toast.LENGTH_SHORT).show()
                     is_database_empty = true
                     setIsDatabaseEmpty(true)
                 }

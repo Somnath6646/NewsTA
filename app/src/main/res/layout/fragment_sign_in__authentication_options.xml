@@ -9,7 +9,7 @@
         android:background="@color/bg_color"
         tools:context=".ui.authentication.signin.SignIn_AuthenticationOptionsFragment">
 
-        <ImageView
+          <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -40,7 +40,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Easy Sign in"
-
                 />
         </androidx.cardview.widget.CardView>
 
@@ -106,7 +105,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sign in with Google"
-
                 />
         </androidx.cardview.widget.CardView>
 

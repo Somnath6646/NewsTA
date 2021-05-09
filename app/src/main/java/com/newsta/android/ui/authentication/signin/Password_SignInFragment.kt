@@ -12,7 +12,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
-import android.widget.Toast
+import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
@@ -21,9 +21,8 @@ import androidx.navigation.fragment.findNavController
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentPasswordSignInBinding
-import com.newsta.android.databinding.FragmentPasswordSignUpBinding
-import com.newsta.android.remote.data.Resource
 import com.newsta.android.ui.authentication.AuthenticationViewmodel
+import com.newsta.android.utils.models.DataState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -78,41 +77,38 @@ class Password_SignInFragment : BaseFragment<FragmentPasswordSignInBinding>() {
 
         viewModel.signinResponse.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
-
                 when(it){
-                    is Resource.Success -> {
-                        viewModel.saveToken(accessToken = it.data.data)
+                    is DataState.Success -> {
+                        binding.ctabtnProgressBar.visibility = View.GONE
+                        it.data?.data?.let { it1 -> viewModel.saveTokenAndIss(accessToken = it1) }
                     }
+                    is DataState.Loading -> {
+                        binding.ctabtnProgressBar.visibility = View.VISIBLE
+                    }
+                    is DataState.Error -> {
+                        binding.ctabtnProgressBar.visibility = View.GONE
 
-                    is Resource.Failure -> {
+                        val dialog = Dialog(requireContext())
+                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
+                        dialog.setContentView(dialogBinding.root)
 
+                        println("Abhi hai $dialogBinding")
 
-                        when(it.errorCode) {
-                            400 -> {
-                                val dialog = Dialog(requireContext())
-                                val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
-                                dialog.setContentView(dialogBinding.root)
-
-                                println("Abhi hai $dialogBinding")
-
-                                dialogBinding.message.text = "Invalid Username or Password"
-                                dialogBinding.buttonText.text = "Try Again"
-                                dialogBinding.button.setOnClickListener { v ->
-                                    dialog.dismiss()
-                                    findNavController().popBackStack()
-                                }
-
-                                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-
-                                dialog.show()
-                            }
+                        dialogBinding.message.text = "${it.exception}"
+                        dialogBinding.buttonText.text = "Try Again"
+                        dialogBinding.button.setOnClickListener { v ->
+                            dialog.dismiss()
+                            findNavController().popBackStack()
                         }
+
+                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+                        dialog.show()
                     }
+                    else -> {}
                 }
-
             }
-
         })
 
 

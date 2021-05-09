@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,12 +24,15 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
+import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentLandingBinding
 import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
 import com.newsta.android.utils.models.Category
+import com.newsta.android.utils.models.DataState
+import com.newsta.android.utils.models.Story
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
@@ -44,9 +48,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private lateinit var categories: ArrayList<Category>
     private var category = 0
 
-    private fun setUpAdapter() {
+    private fun setUpAdapter(categories: ArrayList<Category>) {
 
-        adapter = ViewPagerAdapter(fragmentActivity = requireActivity())
+        adapter = ViewPagerAdapter(fragmentActivity = requireActivity(),itemCount =  categories.size)
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
@@ -78,6 +82,12 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     println("Abhi hai $dialogBinding")
 
                     dialogBinding.btnCancel.setOnClickListener { v ->
+                        dialog.dismiss()
+                        closeNavigationDrawer()
+                    }
+
+                    dialogBinding.btnAction.setOnClickListener {
+                        viewModel.logOut()
                         dialog.dismiss()
                         closeNavigationDrawer()
                     }
@@ -116,13 +126,46 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             println("RETURNED")
         }
 
+        binding.viewModel = viewModel
+
         println("Access token: ${NewstaApp.access_token}")
 
-        setUpAdapter()
 
         binding.lifecycleOwner = requireActivity()
 
         println("VIEWMODEL: $viewModel")
+
+
+        binding.back.setOnClickListener {
+
+            if(binding.searchLayout.visibility == View.VISIBLE) {
+                binding.navDrawer.visibility = View.VISIBLE
+                binding.appName.visibility = View.VISIBLE
+                binding.searchLayout.visibility = View.GONE
+                binding.back.visibility = View.GONE
+            }
+        }
+
+        binding.search.setOnClickListener {
+
+            if(binding.searchLayout.visibility == View.GONE) {
+                binding.navDrawer.visibility = View.GONE
+                binding.appName.visibility = View.GONE
+                binding.back.visibility = View.VISIBLE
+
+                binding.searchLayout.visibility = View.VISIBLE
+                binding.searchLayout.isActivated = true
+
+            }else{
+                viewModel.getSearchResults()
+                val action = LandingFragmentDirections.actionLandingFragmentToSearchFragment()
+                findNavController().navigate(action)
+
+            }
+
+
+        }
+
 
         viewModel.categoryResponse.observe(viewLifecycleOwner, Observer { response ->
             println("CATEGORIES ${response.data}")
@@ -130,11 +173,50 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             setUpTabLayout(categories = categories)
         })
 
+
+        viewModel.logoutDataState.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled().let {
+                when(it){
+                    is DataState.Success -> {
+                        Log.i("TAG", "Sucess logout ")
+                        val action = LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
+                        findNavController().navigate(action)
+                    }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "Loading logout ")
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "Error logout ")
+                        val dialog = Dialog(requireContext())
+                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
+                        dialog.setContentView(dialogBinding.root)
+
+                        println("Abhi hai $dialogBinding")
+
+                        dialogBinding.message.text = "${it.exception}"
+                        dialogBinding.buttonText.text = "Try Again"
+                        dialogBinding.button.setOnClickListener { v ->
+                            dialog.dismiss()
+                            findNavController().popBackStack()
+                        }
+
+                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+                        dialog.show()
+                    }
+                }
+            }
+        })
+
         setUpNavigationDrawer()
 
     }
 
     private fun setUpTabLayout(categories: ArrayList<Category>) {
+
+        setUpAdapter(categories)
+
         TabLayoutMediator(binding.tabLayout, binding.pager,
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                 tab.customView = when (position) {

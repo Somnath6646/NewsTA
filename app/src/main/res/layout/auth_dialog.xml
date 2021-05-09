@@ -40,6 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="60dp"
                     android:paddingTop="10dp"
+                    android:minWidth="210dp"
                     android:paddingBottom="10dp"
                     android:layout_marginBottom="36dp">
 

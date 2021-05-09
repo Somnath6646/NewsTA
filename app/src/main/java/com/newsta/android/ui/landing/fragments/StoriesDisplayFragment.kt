@@ -15,6 +15,7 @@ import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.ui.landing.viewmodel.NewsViewModel
 import com.newsta.android.utils.models.DataState
+import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.Story
 
 class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
@@ -31,14 +32,15 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
     private fun setUpAdapter() {
 
-        adapter = NewsAdapter { story: Story -> openDetails(story) }
+        adapter = NewsAdapter { story: Story, eventId: Int -> openDetails(story, eventId) }
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
     }
 
-    private fun openDetails(story: Story) {
-        val bundle = bundleOf("data" to story)
+    private fun openDetails(story: Story, eventId: Int) {
+        val data = DetailsPageData(story, eventId)
+        val bundle = bundleOf("data" to data)
         findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)
     }
 
