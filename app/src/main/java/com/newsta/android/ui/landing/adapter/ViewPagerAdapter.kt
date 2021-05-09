@@ -5,9 +5,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.newsta.android.ui.landing.fragments.StoriesDisplayFragment
 
-class ViewPagerAdapter(private val fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+class ViewPagerAdapter(private val fragmentActivity: FragmentActivity, private val itemCount: Int) : FragmentStateAdapter(fragmentActivity) {
 
-    private val itemCount = 8
+
 
     override fun getItemCount(): Int = itemCount
 

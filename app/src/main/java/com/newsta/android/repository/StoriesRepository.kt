@@ -1,25 +1,97 @@
 package com.newsta.android.repository
 
+import android.provider.ContactsContract
+import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.newsta.android.NewstaApp
 import com.newsta.android.data.local.StoriesDAO
-import com.newsta.android.remote.data.CategoryRequest
-import com.newsta.android.remote.data.NewsRequest
-import com.newsta.android.remote.data.NewsSourceRequest
+import com.newsta.android.remote.data.*
 import com.newsta.android.remote.services.NewsService
+import com.newsta.android.responses.LogoutResponse
+import com.newsta.android.responses.SearchStory
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
 import retrofit2.http.Body
 import java.io.IOException
 import java.lang.Exception
+import java.net.ConnectException
 
 class StoriesRepository(
     private val storiesDao: StoriesDAO,
     private val newsService: NewsService
 ) {
+
+
+    suspend fun getStoryByIDFromSearch(searchByStoryIDRequest: SearchByStoryIDRequest): Flow<DataState<ArrayList<Story>?>> = flow{
+        emit(DataState.Loading)
+        println("LOADING")
+
+        try {
+
+            val response = newsService.getSearchedStoryById(searchByStoryIDRequest)
+
+            if (!response.isSuccessful) {
+                Log.i("MYTAG", response.message())
+                val gson = Gson()
+                val type = object : TypeToken<ErrorResponse>() {}.type
+                var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                if (errorResponse != null) {
+                    emit(DataState.Error(errorResponse.detail))
+                }
+            }
+
+            val searchedStories = newsService.getSearchedStoryById(searchByStoryIDRequest).body()?.data
+
+            emit(DataState.Success(searchedStories))
+
+        } catch (e: Exception) {
+
+            Log.i("MYTAG", e.message.toString())
+            if (e is ConnectException){
+                emit(DataState.Error("No network connection"))
+            }else{
+                emit(DataState.Error(e.message.toString()))
+            }
+
+        }
+    }
+
+    suspend fun getSearchResults(searchRequest: SearchRequest): Flow<DataState<List<SearchStory>?>> = flow {
+        emit(DataState.Loading)
+        println("LOADING")
+
+        try {
+
+            val response = newsService.getSearchResults(searchRequest)
+            val searchedStories = response.body()?.data
+            if (!response.isSuccessful) {
+                Log.i("MYTAG", response.message())
+                val gson = Gson()
+                val type = object : TypeToken<ErrorResponse>() {}.type
+                var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                if (errorResponse != null) {
+                    emit(DataState.Error(errorResponse.detail))
+                }
+            }
+            emit(DataState.Success(searchedStories))
+
+        } catch (e: Exception) {
+
+            Log.i("MYTAG", e.message.toString())
+            if (e is ConnectException){
+                emit(DataState.Error("No network connection"))
+            }else{
+                emit(DataState.Error(e.message.toString()))
+            }
+
+        }
+    }
 
     suspend fun getNewsFromDatabase(): Flow<DataState<List<Story>>> = flow {
 
@@ -50,6 +122,8 @@ class StoriesRepository(
         emit(DataState.Loading)
         try {
             val remoteNewsResponse = newsService.getAllNews(newsRequest)
+
+
             val stories = remoteNewsResponse.data
             stories.sortedByDescending { story: Story -> story.updatedAt }
             emit(DataState.Success(stories))
@@ -184,5 +258,26 @@ class StoriesRepository(
     }
 
     suspend fun getCategories(categoryRequest: CategoryRequest) = newsService.getCategories(categoryRequest)
+
+    suspend fun logout(logoutRequest: LogoutRequest): Flow<DataState<LogoutResponse?>> = flow{
+        emit(DataState.Loading)
+        try{
+            val response = newsService.logout(logoutRequest)
+            if (response.isSuccessful){
+                emit(DataState.Success(response.body()))
+            }else{
+                val gson = Gson()
+                val type = object : TypeToken<ErrorResponse>() {}.type
+                var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                if (errorResponse != null) {
+                    emit(DataState.Error(errorResponse.detail))
+                }
+            }
+
+        }catch (e: Exception){
+
+        }
+    }
+
 
 }

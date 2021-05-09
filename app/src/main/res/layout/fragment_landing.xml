@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.newsta.android.ui.landing.viewmodel.NewsViewModel" />
+    </data>
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
@@ -54,9 +61,22 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toStartOf="@id/end_guideline"
-                    app:layout_constraintGuide_percent="0.07"
+                    app:layout_constraintGuide_begin="59dp"
                     app:layout_constraintStart_toEndOf="@id/start_guideline"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/back"
+                    style="@style/Rippleeffect"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/back"
+                    android:visibility="gone"
+
+                    app:layout_constraintBottom_toTopOf="@id/nav_guideline"
+                    app:layout_constraintStart_toEndOf="@id/start_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/top_guideline" />
+
 
                 <ImageView
                     android:id="@+id/nav_drawer"
@@ -68,6 +88,21 @@
                     app:layout_constraintStart_toEndOf="@id/start_guideline"
                     app:layout_constraintTop_toBottomOf="@id/top_guideline" />
 
+                <EditText
+                    android:id="@+id/search_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginVertical="15dp"
+                    android:background="@drawable/input_bg"
+                    android:hint="Type here to search"
+                    android:paddingStart="15dp"
+                    android:visibility="gone"
+                    android:singleLine="true"
+                    android:text="@={viewModel.searchTerm}"
+                    app:layout_constraintBottom_toTopOf="@+id/nav_guideline"
+                    app:layout_constraintEnd_toStartOf="@id/search"
+                    app:layout_constraintStart_toEndOf="@+id/back"
+                    app:layout_constraintTop_toTopOf="@+id/top_guideline" />
                 <TextView
                     android:id="@+id/app_name"
                     android:layout_width="wrap_content"
@@ -77,6 +112,7 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
                     android:textStyle="bold"
+
                     app:layout_constraintBottom_toTopOf="@id/nav_guideline"
                     app:layout_constraintEnd_toStartOf="@id/search"
                     app:layout_constraintStart_toEndOf="@id/nav_drawer"
@@ -97,7 +133,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="10dp"
                     android:animateLayoutChanges="true"
                     app:layout_constraintBottom_toTopOf="@id/pager"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -108,13 +144,15 @@
                     app:tabIndicatorFullWidth="false"
                     app:tabIndicatorGravity="center"
                     app:tabGravity="center"
-                    app:tabIndicatorHeight="36dp"
+                    app:tabIndicatorHeight="34dp"
                     app:tabMode="scrollable"
                     app:tabPaddingEnd="12dp"
                     app:tabPaddingTop="1dp"
                     app:tabRippleColor="@android:color/transparent"
                     app:tabSelectedTextColor="@color/colorPrimary"
                     app:tabTextAppearance="@style/tab_text">
+
+
 
                 </com.google.android.material.tabs.TabLayout>
 

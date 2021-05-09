@@ -1,17 +1,18 @@
 package com.newsta.android.ui.landing.viewmodel
 
 import android.annotation.SuppressLint
+import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.newsta.android.NewstaApp
-import com.newsta.android.remote.data.CategoryRequest
-import com.newsta.android.remote.data.NewsRequest
-import com.newsta.android.remote.data.NewsSourceRequest
+import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
 import com.newsta.android.responses.CategoryResponse
+import com.newsta.android.responses.LogoutResponse
 import com.newsta.android.responses.NewsSourceResponse
+import com.newsta.android.responses.SearchStory
 import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.SavedStory
@@ -27,9 +28,66 @@ constructor(private val newsRepository: StoriesRepository,
             private val preferences: UserPrefrences,
             @Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(), Observable {
 
+
+    @Bindable
+    val searchTerm = MutableLiveData<String>()
+
     private val _newsDataState = MutableLiveData<DataState<List<Story>>>()
 
     val newsDataState: LiveData<DataState<List<Story>>> = _newsDataState
+
+    private val _logoutDataState = MutableLiveData<Indicator<DataState<LogoutResponse?>>>()
+
+    val logoutDataState: LiveData<Indicator<DataState<LogoutResponse?>>> = _logoutDataState
+
+    private val _storyByIDDataState = MutableLiveData<Indicator<DataState<ArrayList<Story>?>>>()
+
+    val storyByIDDataState: LiveData<Indicator<DataState<ArrayList<Story>?>>> = _storyByIDDataState
+
+    private val _searchDataState = MutableLiveData<DataState<List<SearchStory>?>>()
+
+    val searchDataState: LiveData<DataState<List<SearchStory>?>> = _searchDataState
+
+
+    fun logOut(){
+        viewModelScope.launch {
+            val request = NewstaApp.access_token?.let { LogoutRequest(it, NewstaApp.ISSUER_NEWSTA) }
+            if (request != null) {
+                newsRepository.logout(logoutRequest = request).onEach {
+                    _logoutDataState.value = Indicator(it)
+                }
+                clearAllData()
+            }
+        }
+    }
+
+    suspend fun clearAllData(){
+        preferences.clearData()
+        newsRepository.deleteAllStories()
+    }
+
+    fun getSearchResults(){
+        viewModelScope.launch {
+            val request = SearchRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, searchTerm.value!!)
+            newsRepository.getSearchResults(searchRequest = request)
+                    .onEach {
+                        _searchDataState.value = it
+                    }
+                    .launchIn(viewModelScope)
+        }
+    }
+
+    fun getStoryByIDFromSearch(storyId: Int){
+        viewModelScope.launch {
+            val request = SearchByStoryIDRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId)
+            newsRepository.getStoryByIDFromSearch(request)
+                    .onEach {
+                        _storyByIDDataState.value = Indicator(it)
+                    }
+                    .launchIn(viewModelScope)
+        }
+    }
+
 
     fun getAllNews(storyId: Int = 0, maxDateTime: Long) {
 

@@ -12,6 +12,7 @@ interface StoriesDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStories(stories: List<Story>): Array<Long>
 
+
     @Query("SELECT * FROM ${Story.TABLE_NAME}")
     suspend fun getAllStories(): List<Story>
 
