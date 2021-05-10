@@ -106,6 +106,7 @@ class StoriesRepository(
         try {
 
             val cachedStories = storiesDao.getAllStories()
+            println("CACHED STORIES$cachedStories")
             emit(DataState.Success(cachedStories))
             val maxStory = storiesDao.getMaxStory()
             emit(DataState.Extra(listOf(maxStory)))
@@ -132,6 +133,8 @@ class StoriesRepository(
             stories.sortedByDescending { story: Story -> story.updatedAt }
             emit(DataState.Success(stories))
             val isInserted = storiesDao.insertStories(stories as List<Story>)
+            println("INSERTED LONG: $isInserted")
+            println("INSERTED LONG: ${isInserted[0]}")
             if (isInserted[0] > 0) {
                 val maxStory = storiesDao.getMaxStory()
                 val minStory = storiesDao.getMinStory()
@@ -291,8 +294,6 @@ class StoriesRepository(
                 if (response.isSuccessful) {
                     emit(DataState.Success(response.body()?.data))
                     response.body()?.data?.let { storiesDao.insertCategories(it) }
-
-
                 } else {
                     val categories = storiesDao.getAllCategories()
                     emit(DataState.Success(categories))
