@@ -119,7 +119,7 @@ class NewstaApp : Application(), Configuration.Provider {
             .build()
 
         val workManager = WorkManager.getInstance(applicationContext)
-        workManager.enqueue(periodicDatabaseClearRequest)
+        // workManager.enqueue(periodicDatabaseClearRequest)
 
         println("METHOD CALLED FOR WORKER")
 
