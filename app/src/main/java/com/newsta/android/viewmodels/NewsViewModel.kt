@@ -63,6 +63,7 @@ constructor(private val newsRepository: StoriesRepository,
     suspend fun clearAllData(){
         preferences.clearData()
         newsRepository.deleteAllStories()
+        toast("DATA CLEAR CALLED")
     }
 
     fun getSearchResults() {
