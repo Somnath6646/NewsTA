@@ -155,7 +155,7 @@ class StoriesRepository(
 
             emit(DataState.Loading)
 
-            try {
+            try{
 
                 val updateResponse = newsService.getExistingNews(newsRequest)
                 val stories = updateResponse.data
@@ -166,7 +166,7 @@ class StoriesRepository(
                     emit(DataState.Extra(listOf(maxStory, minStory)))
                 }
 
-            } catch (e: Exception) {
+            }catch (e: Exception) {
                 emit(DataState.Error("Error in updating the stories"))
             }
 

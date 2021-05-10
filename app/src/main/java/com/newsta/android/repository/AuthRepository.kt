@@ -17,7 +17,6 @@ class AuthRepository (
         api.signup(signupRequest)
     }
 
-
     suspend fun signup(
             signupRequestSI: SignUpRequest_Social
     ) = safeApiCall {
