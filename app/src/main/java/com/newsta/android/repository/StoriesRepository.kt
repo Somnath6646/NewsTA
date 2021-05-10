@@ -28,70 +28,75 @@ class StoriesRepository(
 ) {
 
 
-    suspend fun getStoryByIDFromSearch(searchByStoryIDRequest: SearchByStoryIDRequest): Flow<DataState<ArrayList<Story>?>> = flow{
-        emit(DataState.Loading)
-        println("LOADING")
+    suspend fun getStoryByIDFromSearch(searchByStoryIDRequest: SearchByStoryIDRequest): Flow<DataState<ArrayList<Story>?>> =
+        flow {
+            emit(DataState.Loading)
+            println("LOADING")
 
-        try {
+            try {
 
-            val response = newsService.getSearchedStoryById(searchByStoryIDRequest)
+                val response = newsService.getSearchedStoryById(searchByStoryIDRequest)
 
-            if (!response.isSuccessful) {
-                Log.i("MYTAG", response.message())
-                val gson = Gson()
-                val type = object : TypeToken<ErrorResponse>() {}.type
-                var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
-                if (errorResponse != null) {
-                    emit(DataState.Error(errorResponse.detail))
+                if (!response.isSuccessful) {
+                    Log.i("MYTAG", response.message())
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    var errorResponse: ErrorResponse? =
+                        gson.fromJson(response.errorBody()!!.charStream(), type)
+                    if (errorResponse != null) {
+                        emit(DataState.Error(errorResponse.detail))
+                    }
                 }
-            }
 
-            val searchedStories = newsService.getSearchedStoryById(searchByStoryIDRequest).body()?.data
+                val searchedStories =
+                    newsService.getSearchedStoryById(searchByStoryIDRequest).body()?.data
 
-            emit(DataState.Success(searchedStories))
+                emit(DataState.Success(searchedStories))
 
-        } catch (e: Exception) {
+            } catch (e: Exception) {
 
-            Log.i("MYTAG", e.message.toString())
-            if (e is ConnectException){
-                emit(DataState.Error("No network connection"))
-            }else{
-                emit(DataState.Error(e.message.toString()))
-            }
-
-        }
-    }
-
-    suspend fun getSearchResults(searchRequest: SearchRequest): Flow<DataState<List<SearchStory>?>> = flow {
-        emit(DataState.Loading)
-        println("LOADING")
-
-        try {
-
-            val response = newsService.getSearchResults(searchRequest)
-            val searchedStories = response.body()?.data
-            if (!response.isSuccessful) {
-                Log.i("MYTAG", response.message())
-                val gson = Gson()
-                val type = object : TypeToken<ErrorResponse>() {}.type
-                var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
-                if (errorResponse != null) {
-                    emit(DataState.Error(errorResponse.detail))
+                Log.i("MYTAG", e.message.toString())
+                if (e is ConnectException) {
+                    emit(DataState.Error("No network connection"))
+                } else {
+                    emit(DataState.Error(e.message.toString()))
                 }
+
             }
-            emit(DataState.Success(searchedStories))
-
-        } catch (e: Exception) {
-
-            Log.i("MYTAG", e.message.toString())
-            if (e is ConnectException){
-                emit(DataState.Error("No network connection"))
-            }else{
-                emit(DataState.Error(e.message.toString()))
-            }
-
         }
-    }
+
+    suspend fun getSearchResults(searchRequest: SearchRequest): Flow<DataState<List<SearchStory>?>> =
+        flow {
+            emit(DataState.Loading)
+            println("LOADING")
+
+            try {
+
+                val response = newsService.getSearchResults(searchRequest)
+                val searchedStories = response.body()?.data
+                if (!response.isSuccessful) {
+                    Log.i("MYTAG", response.message())
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    var errorResponse: ErrorResponse? =
+                        gson.fromJson(response.errorBody()!!.charStream(), type)
+                    if (errorResponse != null) {
+                        emit(DataState.Error(errorResponse.detail))
+                    }
+                }
+                emit(DataState.Success(searchedStories))
+
+            } catch (e: Exception) {
+
+                Log.i("MYTAG", e.message.toString())
+                if (e is ConnectException) {
+                    emit(DataState.Error("No network connection"))
+                } else {
+                    emit(DataState.Error(e.message.toString()))
+                }
+
+            }
+        }
 
     suspend fun getNewsFromDatabase(): Flow<DataState<List<Story>>> = flow {
 
@@ -110,7 +115,6 @@ class StoriesRepository(
             val cachedStories = storiesDao.getAllStories()
             if (cachedStories.size == 0) {
                 if (cachedStories.isEmpty())
-
                 else
                     emit(DataState.Success(cachedStories))
             }
@@ -133,7 +137,7 @@ class StoriesRepository(
                 val minStory = storiesDao.getMinStory()
                 emit(DataState.Extra(listOf(maxStory, minStory)))
             }
-            if(remoteNewsResponse.statusCode == 200)
+            if (remoteNewsResponse.statusCode == 200)
                 println("SUCCESSFUL RESPONSE")
             else
                 println(" ERROR: ${remoteNewsResponse.statusCode}")
@@ -146,26 +150,27 @@ class StoriesRepository(
         }
     }
 
-    suspend fun updateExistingStories(@Body newsRequest: NewsRequest): Flow<DataState<List<Story>>> = flow {
+    suspend fun updateExistingStories(@Body newsRequest: NewsRequest): Flow<DataState<List<Story>>> =
+        flow {
 
-        emit(DataState.Loading)
+            emit(DataState.Loading)
 
-        try {
+            try {
 
-            val updateResponse = newsService.getExistingNews(newsRequest)
-            val stories = updateResponse.data
-            storiesDao.insertStories(stories)
-            emit(DataState.Success(stories)).let {
-                val maxStory = storiesDao.getMaxStory()
-                val minStory = storiesDao.getMinStory()
-                emit(DataState.Extra(listOf(maxStory, minStory)))
+                val updateResponse = newsService.getExistingNews(newsRequest)
+                val stories = updateResponse.data
+                storiesDao.insertStories(stories)
+                emit(DataState.Success(stories)).let {
+                    val maxStory = storiesDao.getMaxStory()
+                    val minStory = storiesDao.getMinStory()
+                    emit(DataState.Extra(listOf(maxStory, minStory)))
+                }
+
+            } catch (e: Exception) {
+                emit(DataState.Error("Error in updating the stories"))
             }
 
-        } catch (e: Exception) {
-            emit(DataState.Error("Error in updating the stories"))
         }
-
-    }
 
     suspend fun getMaxAndMinStory(): Flow<DataState<List<Story>>> = flow {
 
@@ -181,26 +186,28 @@ class StoriesRepository(
 
     }
 
-    suspend fun getSources(sourceRequest: NewsSourceRequest): Flow<DataState<List<NewsSource>?>> = flow{
-        emit(DataState.Loading)
-        try{
-          val sources =  newsService.getSource(sourceRequest)
-          if(sources.isSuccessful){
-             emit(DataState.Success(sources.body()?.data))
-          }else {
-              val gson = Gson()
-              val type = object : TypeToken<ErrorResponse>() {}.type
-              var errorResponse: ErrorResponse? = gson.fromJson(sources.errorBody()!!.charStream(), type)
-              if (errorResponse != null) {
-                  emit(DataState.Error(errorResponse.detail))
-              }
-          }
-        }catch (e: Exception){
-            if (e is ConnectException){
-                emit(DataState.Error("To see sources connect to internet"))
+    suspend fun getSources(sourceRequest: NewsSourceRequest): Flow<DataState<List<NewsSource>?>> =
+        flow {
+            emit(DataState.Loading)
+            try {
+                val sources = newsService.getSource(sourceRequest)
+                if (sources.isSuccessful) {
+                    emit(DataState.Success(sources.body()?.data))
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    var errorResponse: ErrorResponse? =
+                        gson.fromJson(sources.errorBody()!!.charStream(), type)
+                    if (errorResponse != null) {
+                        emit(DataState.Error(errorResponse.detail))
+                    }
+                }
+            } catch (e: Exception) {
+                if (e is ConnectException) {
+                    emit(DataState.Error("To see sources connect to internet"))
+                }
             }
         }
-    }
 
     suspend fun saveStory(story: SavedStory): Flow<DataState<SavedStory>> = flow {
 
@@ -276,37 +283,38 @@ class StoriesRepository(
 
     }
 
-    suspend fun getCategories(categoryRequest: CategoryRequest): Flow<DataState<List<Category>?>> = flow {
-        emit(DataState.Loading)
-        try {
-            val response = newsService.getCategories(categoryRequest)
-            if (response.isSuccessful) {
-                emit(DataState.Success(response.body()?.data))
-                response.body()?.data?.let { storiesDao.insertCategories(it) }
+    suspend fun getCategories(categoryRequest: CategoryRequest): Flow<DataState<List<Category>?>> =
+        flow {
+            emit(DataState.Loading)
+            try {
+                val response = newsService.getCategories(categoryRequest)
+                if (response.isSuccessful) {
+                    emit(DataState.Success(response.body()?.data))
+                    response.body()?.data?.let { storiesDao.insertCategories(it) }
 
 
-            } else {
+                } else {
+                    val categories = storiesDao.getAllCategories()
+                    emit(DataState.Success(categories))
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    var errorResponse: ErrorResponse? =
+                        gson.fromJson(response.errorBody()!!.charStream(), type)
+                    if (errorResponse != null) {
+                        emit(DataState.Error(errorResponse.detail))
+                    }
+                }
+            } catch (e: Exception) {
                 val categories = storiesDao.getAllCategories()
                 emit(DataState.Success(categories))
-                val gson = Gson()
-                val type = object : TypeToken<ErrorResponse>() {}.type
-                var errorResponse: ErrorResponse? =
-                    gson.fromJson(response.errorBody()!!.charStream(), type)
-                if (errorResponse != null) {
-                    emit(DataState.Error(errorResponse.detail))
+
+                if (e is ConnectException) {
+                    emit(DataState.Error("Enjoy Offline Mode :)"))
+                } else {
+                    emit(DataState.Error(e.message.toString()))
                 }
             }
-        } catch (e: Exception) {
-            val categories = storiesDao.getAllCategories()
-            emit(DataState.Success(categories))
-
-            if (e is ConnectException) {
-                emit(DataState.Error("Enjoy Offline Mode :)"))
-            } else {
-                emit(DataState.Error(e.message.toString()))
-            }
         }
-    }
 
     suspend fun logout(logoutRequest: LogoutRequest): Flow<DataState<LogoutResponse?>> = flow {
         emit(DataState.Loading)
@@ -334,6 +342,22 @@ class StoriesRepository(
             }
 
         }
+    }
+
+    fun getSavedStory(storyId: Int): Flow<DataState<SavedStory>> = flow {
+
+        emit(DataState.Loading)
+
+        try {
+
+            val savedStory = storiesDao.getSavedStory(storyId)
+            println("CHECK SAVED STORY: $savedStory")
+            emit(DataState.Success(savedStory))
+
+        } catch (e: Exception) {
+            emit(DataState.Error("Error in checking saved story"))
+        }
+
     }
 
 }

@@ -1,72 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/point_timline"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:cardBackgroundColor="@color/colorPrimary"
-        app:cardCornerRadius="15dp"
-        android:layout_marginStart="6dp"
-        app:layout_constraintBottom_toBottomOf="@id/date_events_timeline"
-        />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/upper_attacher_events_timeline"
-        android:layout_width="2.5dp"
-        android:layout_height="0dp"
-        android:background="#A2B9DF"
-        app:layout_constraintBottom_toBottomOf="@id/point_timline"
-        app:layout_constraintEnd_toEndOf="@+id/point_timline"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/point_timline"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="6dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintBottom_toBottomOf="@id/date_events_timeline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        app:layout_constraintStart_toStartOf="@id/point_timline"
-        app:layout_constraintTop_toTopOf="parent"
-        android:orientation="horizontal" />
-    <LinearLayout
-        android:id="@+id/down_attacher_events_timeline"
-        android:layout_width="2.5dp"
-        android:layout_height="0dp"
-        android:background="#A2B9DF"
-        app:layout_constraintTop_toTopOf="@id/point_timline"
-        app:layout_constraintStart_toStartOf="@id/point_timline"
-        app:layout_constraintEnd_toEndOf="@id/point_timline"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="horizontal" />
+        <LinearLayout
+            android:id="@+id/upper_attacher_events_timeline"
+            android:layout_width="2.5dp"
+            android:layout_height="0dp"
+            android:background="#A2B9DF"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/point_timline"
+
+            app:layout_constraintEnd_toEndOf="@+id/point_timline"
+            app:layout_constraintStart_toStartOf="@id/point_timline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/down_attacher_events_timeline"
+            android:layout_width="2.5dp"
+            android:layout_height="0dp"
+            android:background="#A2B9DF"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/point_timline"
+            app:layout_constraintStart_toStartOf="@id/point_timline"
+            app:layout_constraintTop_toTopOf="@id/point_timline" />
 
         <TextView
             android:id="@+id/date_events_timeline"
+            style="@style/TimelineTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="2dp"
             android:text="15 Nov"
             android:textSize="12sp"
-            android:layout_marginBottom="2dp"
-            style="@style/TimelineTime"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/point_timline"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginHorizontal="15dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/title_events_timeline"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="2dp"
-        android:paddingBottom="20dp"
-        android:text="What happened?"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/point_timline"
-        app:layout_constraintTop_toBottomOf="@id/date_events_timeline" />
+        <TextView
+            android:id="@+id/title_events_timeline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="2dp"
+            android:paddingBottom="20dp"
+            android:text="What happened?"
+            android:textColor="@color/colorText"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/point_timline"
+            app:layout_constraintTop_toBottomOf="@id/date_events_timeline" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/date_events_timeline"
+            app:layout_constraintStart_toEndOf="@id/date_events_timeline"
+            app:layout_constraintBottom_toBottomOf="@id/date_events_timeline"
+            android:src="@drawable/ic_arrow"/>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

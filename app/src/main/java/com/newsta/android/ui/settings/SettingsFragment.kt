@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.SpinnerAdapter
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
@@ -14,17 +16,55 @@ import com.newsta.android.databinding.FragmentSettingsBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.viewmodels.NewsViewModel
 
-class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
+class  SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
     private val viewModel: NewsViewModel by activityViewModels()
+
+    private var fontSizes = arrayListOf<String>()
+    lateinit var spinnerAdapter: SpinnerAdapter
+
+    private fun setAdapter(scale: Float) {
+
+        when(scale) {
+
+            NewstaApp.DEFAULT_FONT_SCALE -> fontSizes = arrayListOf(
+                NewstaApp.DEFAULT_FONT_NAME,
+                NewstaApp.LARGE_FONT_NAME,
+                NewstaApp.SMALL_FONT_NAME
+            )
+            NewstaApp.LARGE_FONT_SCALE -> fontSizes = arrayListOf(
+                NewstaApp.LARGE_FONT_NAME,
+                NewstaApp.DEFAULT_FONT_NAME,
+                NewstaApp.SMALL_FONT_NAME
+            )
+            NewstaApp.SMALL_FONT_SCALE -> fontSizes = arrayListOf(
+                NewstaApp.SMALL_FONT_NAME,
+                NewstaApp.LARGE_FONT_NAME,
+                NewstaApp.DEFAULT_FONT_NAME
+            )
+            else -> fontSizes = arrayListOf(
+                NewstaApp.DEFAULT_FONT_NAME,
+                NewstaApp.LARGE_FONT_NAME,
+                NewstaApp.SMALL_FONT_NAME
+            )
+        }
+
+        spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, fontSizes)
+            .also { adapter ->
+                binding.spinnerFontSize.adapter = adapter
+            }
+
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val spinnerAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.font_sizes_array, android.R.layout.simple_spinner_item)
-            .also { adapter ->
-                binding.spinnerFontSize.adapter = adapter
-            }
+        viewModel.preferences.fontScale.asLiveData().observe(viewLifecycleOwner, Observer {
+
+            val fontScale = it!!
+            setAdapter(fontScale)
+
+        })
 
         binding.spinnerFontSize.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
@@ -36,19 +76,19 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 position: Int,
                 id: Long
             ) {
-                when(position) {
+                when(fontSizes[position]) {
 
-                    0 -> {
+                    NewstaApp.DEFAULT_FONT_NAME -> {
                         viewModel.setFontScale(NewstaApp.DEFAULT_FONT_SCALE)
                         println("DEFAULT SELECTED")
                     }
-                    1 -> {
-                        viewModel.setFontScale(NewstaApp.MEDIUM_FONT_SCALE)
-                        println("MEDIUM SELECTED")
-                    }
-                    2 -> {
+                    NewstaApp.LARGE_FONT_NAME -> {
                         viewModel.setFontScale(NewstaApp.LARGE_FONT_SCALE)
                         println("LARGE SELECTED")
+                    }
+                    NewstaApp.SMALL_FONT_NAME -> {
+                        viewModel.setFontScale(NewstaApp.SMALL_FONT_SCALE)
+                        println("SMALL SELECTED")
                     }
 
                 }

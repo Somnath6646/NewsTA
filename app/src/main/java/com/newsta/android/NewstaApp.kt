@@ -23,8 +23,12 @@ class NewstaApp : Application(), Configuration.Provider {
         const val ISSUER_NEWSTA = "newsta"
 
         const val DEFAULT_FONT_SCALE = 1.05f
-        const val MEDIUM_FONT_SCALE = 1.25f
-        const val LARGE_FONT_SCALE = 1.5f
+        const val LARGE_FONT_SCALE = 1.15f
+        const val SMALL_FONT_SCALE = 0.95f
+
+        const val DEFAULT_FONT_NAME = "Default"
+        const val LARGE_FONT_NAME = "Large"
+        const val SMALL_FONT_NAME = "Small"
 
         lateinit var prefrences: UserPrefrences
         var access_token: String? = null

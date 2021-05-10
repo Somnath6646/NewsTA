@@ -67,7 +67,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         binding.sideNavDrawer.inflateHeaderView(R.layout.side_nav_header)
 
-        val view = binding.sideNavDrawer.menu.getItem(1).subMenu.getItem(0).actionView
+        val view = binding.sideNavDrawer.menu.getItem(0).subMenu.getItem(2).actionView
         val modeSwitch = view.findViewById<SwitchCompat>(R.id.switchCompatMode)
 
         binding.sideNavDrawer.setNavigationItemSelectedListener {

@@ -8,6 +8,10 @@ import com.newsta.android.R
 import com.newsta.android.databinding.SourcesItemBinding
 import com.newsta.android.utils.models.NewsSource
 import com.squareup.picasso.Picasso
+import java.sql.Time
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class NewsSourceAdapter(private val onClick: (NewsSource) -> Unit) : RecyclerView.Adapter<NewsSourceViewHolder>() {
 
@@ -49,58 +53,16 @@ class NewsSourceViewHolder(private val binding: SourcesItemBinding, private val 
 
         println("Width = ${binding.image.width}")
 
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        val date = sdf.parse(source.createdAt)
+
+        val sdf2 = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val time = sdf2.format(date?.time)
+
+        binding.time.text = time
+
         binding.root.setOnClickListener { onClick(source) }
-
-    }
-
-    private fun setTime(updatedAt: Long): String {
-
-        val time = System.currentTimeMillis()
-
-        val diff = time - updatedAt
-
-        println("DIFF:   $diff")
-        println("TIME:   $time")
-        println("UPDATED_AT:   $updatedAt")
-
-        val seconds: Long = diff / 1000
-
-        val minutes: Int = (seconds / 60).toInt()
-
-        val hours: Int = minutes / 60
-        val days: Int = hours / 24
-        val months: Int = days / 30
-        val years: Int = months / 12
-
-        if (minutes <= 30) {
-            return "Few minutes ago"
-        }
-        else if (minutes > 30 && minutes < 60) {
-            return "Less than an hour ago"
-        } else {
-
-            if (hours == 1)
-                return "An hour ago"
-            else if (hours > 1 && hours < 24) {
-                return "$hours hours ago"
-            } else {
-                if (days >= 1 && days < 30) {
-                    return "$days days ago"
-                } else {
-                    if (months >= 1 && months < 12) {
-                        return "$months months ago"
-                    } else {
-                        if (years == 1)
-                            return "An year ago"
-                        else if (years > 1)
-                            return "$years years ago"
-                        else
-                            return "Time unknown"
-                    }
-                }
-            }
-
-        }
 
     }
 

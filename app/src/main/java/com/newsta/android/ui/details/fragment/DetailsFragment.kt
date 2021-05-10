@@ -1,24 +1,34 @@
 package com.newsta.android.ui.details.fragment
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.ContentValues
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.drawToBitmap
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.newsta.android.MainActivity
+import com.newsta.android.MainActivity.Companion.isConnectedToNetwork
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
+import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.details.adapter.NewsSourceAdapter
 import com.newsta.android.ui.details.adapter.TimelineAdapter
@@ -43,13 +53,15 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun initViews() {
 
-        event = story.events.singleOrNull{
+        event = story.events.singleOrNull {
             it.eventId == data.eventId
         }!!
 
         println("Story: ${story.storyId} Event: ${event.eventId}")
 
         showEventData(event)
+
+        binding.updatedAtEvent.text = NewstaApp.setTime(story.updatedAt)
 
         setUpAdapters()
 
@@ -61,11 +73,21 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             binding.recyclerViewTimelineEvents.visibility = View.GONE
         }
 
+        viewModel.getSavedStory(story.storyId)
+
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
 
         binding.btnShare.setOnClickListener { shareImage() }
 
         binding.btnDownload.setOnClickListener { saveStory() }
+
+        binding.btnDownloaded.setOnClickListener { deleteSavedStory() }
+
+        if (!isConnectedToNetwork) {
+            binding.sourcesContainer.visibility = View.INVISIBLE
+        } else {
+            binding.sourcesContainer.visibility = View.VISIBLE
+        }
 
     }
 
@@ -77,7 +99,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         binding.summaryEvent.text = event.summary
 
-        binding.updatedAtEvent.text = "${NewstaApp.setTime(story.updatedAt)}"
+        binding.updatedAtEvent.text = NewstaApp.setTime(event.createdAt)
 
         Picasso.get()
             .load(event.imgUrl)
@@ -137,6 +159,102 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         )
 
         viewModel.saveStory(savedStory)
+        binding.btnDownload.visibility = View.INVISIBLE
+
+    }
+
+    private fun deleteSavedStory() {
+
+        println("DELETING SAVEDSTORY")
+
+        val savedStory = SavedStory(
+            storyId = story.storyId,
+            category = story.category,
+            updatedAt = story.updatedAt,
+            events = story.events
+        )
+
+        showDeleteDialog(savedStory)
+
+    }
+
+    private fun showDeleteDialog(savedStory: SavedStory) {
+
+        val dialog = Dialog(requireContext())
+        val dialogBinding = DataBindingUtil.inflate<LogoutDialogBinding>(LayoutInflater.from(requireContext()), R.layout.logout_dialog, null, false)
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.message.text = "Are you sure you want to delete this story?"
+        dialogBinding.buttonTextAction.text = "Delete"
+
+        dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.btnAction.setOnClickListener {
+            viewModel.deleteSavedStory(savedStory)
+            binding.btnDownload.visibility = View.VISIBLE
+            dialog.dismiss()
+        }
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialog.show()
+
+    }
+
+    private fun observer() {
+
+        viewModel.sourcesDataState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is DataState.Success -> {
+                    sourcesAdapter.addAll((it.data) as ArrayList)
+                }
+                is DataState.Loading -> {
+                    Log.i("TAG", "onActivityCreated: load horha hai sources ")
+                }
+                is DataState.Error -> {
+                    Log.i("TAG", "onActivityCreated: error h bhai sources me")
+                }
+            }
+        })
+
+        viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is DataState.Success<SavedStory> -> {
+                    binding.btnDownload.visibility = View.INVISIBLE
+                    println("NEWS SAVE SUCCESSFUL")
+                }
+                is DataState.Error -> {
+                    binding.btnDownload.visibility = View.VISIBLE
+                    println("NEWS SAVE ERROR")
+                }
+                is DataState.Loading -> {
+                    binding.btnDownload.visibility = View.VISIBLE
+                    println("NEWS SAVING")
+                }
+            }
+        })
+
+        viewModel.checkSavedStoryState.observe(viewLifecycleOwner, Observer {
+
+            when (it) {
+                is DataState.Success<SavedStory?> -> {
+                    val savedStory = it.data
+                    if(it.data != null) {
+                        binding.btnDownload.visibility = View.INVISIBLE
+                        println("NEWS WAS SAVED")
+                    }
+                }
+                is DataState.Error -> {
+                    binding.btnDownload.visibility = View.VISIBLE
+                    println("NEWS SAVE ERROR")
+                }
+                is DataState.Loading -> {
+                    binding.btnDownload.visibility = View.VISIBLE
+                    println("NEWS SAVING")
+                }
+            }
+
+        })
 
     }
 
@@ -158,37 +276,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         println("VIEWMODEL: $viewModel")
 
         initViews()
-
-
-
-        viewModel.sourcesDataState.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is DataState.Success -> {
-                    sourcesAdapter.addAll((it.data) as ArrayList)
-                }
-                is DataState.Loading -> {
-                    Log.i("TAG", "onActivityCreated: load horha hai sources ")
-                }
-                is DataState.Error -> {
-                    Log.i("TAG", "onActivityCreated: error h bhai sources me")
-                }
-            }
-        })
-
-        viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DataState.Success<SavedStory> -> {
-                    binding.btnDownload.setImageDrawable(resources.getDrawable(R.drawable.ic_downloaded))
-                    println("NEWS SAVE SUCCESSFUL")
-                }
-                is DataState.Error -> {
-                    println("NEWS SAVE ERROR")
-                }
-                is DataState.Loading -> {
-                    println("NEWS SAVING")
-                }
-            }
-        })
+        observer()
 
     }
 

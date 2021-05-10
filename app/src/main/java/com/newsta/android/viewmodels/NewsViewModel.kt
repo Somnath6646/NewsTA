@@ -22,39 +22,31 @@ import java.text.SimpleDateFormat
 class NewsViewModel
 @ViewModelInject
 constructor(private val newsRepository: StoriesRepository,
-            private val preferences: UserPrefrences,
+            val preferences: UserPrefrences,
             @Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(), Observable {
 
     @Bindable
     val searchTerm = MutableLiveData<String>("")
 
     private val _newsDataState = MutableLiveData<DataState<List<Story>>>()
-
     val newsDataState: LiveData<DataState<List<Story>>> = _newsDataState
 
     private val _categoryDataState = MutableLiveData<DataState<List<Category>?>>()
-
     val categoryDataState: LiveData<DataState<List<Category>?>> = _categoryDataState
 
     private val _sourcesDataState = MutableLiveData<DataState<List<NewsSource>?>>()
-
     val sourcesDataState: LiveData<DataState<List<NewsSource>?>> = _sourcesDataState
 
-
     private val _logoutDataState = MutableLiveData<Indicator<DataState<LogoutResponse?>>>()
-
     val logoutDataState: LiveData<Indicator<DataState<LogoutResponse?>>> = _logoutDataState
 
     private val _storyByIDDataState = MutableLiveData<Indicator<DataState<ArrayList<Story>?>>>()
-
     val storyByIDDataState: LiveData<Indicator<DataState<ArrayList<Story>?>>> = _storyByIDDataState
 
     private val _searchDataState = MutableLiveData<DataState<List<SearchStory>?>>()
-
     val searchDataState: LiveData<DataState<List<SearchStory>?>> = _searchDataState
 
-
-    fun logOut(){
+    fun logOut() {
         viewModelScope.launch {
             val request = NewstaApp.access_token?.let { LogoutRequest(it, NewstaApp.ISSUER_NEWSTA) }
             if (request != null) {
@@ -130,7 +122,7 @@ constructor(private val newsRepository: StoriesRepository,
 
         if(NewstaApp.is_database_empty!!) {
             println("API ------>        ${NewstaApp.is_database_empty!!}")
-            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+            val days3 = System.currentTimeMillis() - (8 * 24 * 60 * 60 * 1000)
             getAllNews(0, days3)
         } else {
             println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
@@ -201,7 +193,6 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun getCategories() {
 
-
         viewModelScope.launch {
             val request = CategoryRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA)
             newsRepository.getCategories(request).onEach {
@@ -263,6 +254,21 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun toast(message: String) {
         _toast.value = Indicator(message)
+    }
+
+    private val _checkSavedStoryState = MutableLiveData<DataState<SavedStory>>()
+    val checkSavedStoryState: LiveData<DataState<SavedStory>>
+        get() = _checkSavedStoryState
+
+    fun getSavedStory(storyId: Int) {
+
+        viewModelScope.launch {
+            newsRepository.getSavedStory(storyId)
+                .onEach {
+                    _checkSavedStoryState.value = it
+                }.launchIn(viewModelScope)
+        }
+
     }
 
     init {

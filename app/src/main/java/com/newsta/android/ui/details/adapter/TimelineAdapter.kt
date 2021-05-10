@@ -52,11 +52,20 @@ class TimelineViewHolder(private val binding: ItemTimelineEventsBinding, private
         binding.titleEventsTimeline.text = event.title
 
         val calendar = Calendar.getInstance()
+        val currentYear = calendar.get(Calendar.YEAR)
         calendar.timeInMillis = event.createdAt
 
-        val date = "${calendar.get(Calendar.DAY_OF_MONTH)} ${getMonth(calendar.get(Calendar.MONTH))}"
+        println("CURRENT YEAR: $currentYear")
 
-        binding.dateEventsTimeline.text = date
+        if (calendar.get(Calendar.YEAR) == currentYear) {
+            val date =
+                "${calendar.get(Calendar.DAY_OF_MONTH)} ${getMonth(calendar.get(Calendar.MONTH))}"
+            binding.dateEventsTimeline.text = date
+        } else {
+            val date =
+                "${calendar.get(Calendar.DAY_OF_MONTH)} ${getMonth(calendar.get(Calendar.MONTH))}, ${calendar.get(Calendar.YEAR)}"
+            binding.dateEventsTimeline.text = date
+        }
         
         if(pos == 0)
             binding.upperAttacherEventsTimeline.visibility = View.INVISIBLE

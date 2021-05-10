@@ -13,7 +13,6 @@ interface StoriesDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStories(stories: List<Story>): Array<Long>
 
-
     @Query("SELECT * FROM ${Story.TABLE_NAME}")
     suspend fun getAllStories(): List<Story>
 
@@ -34,6 +33,9 @@ interface StoriesDAO {
 
     @Query("SELECT * FROM ${SavedStory.TABLE_NAME}")
     suspend fun getSavedStories(): List<SavedStory>
+
+    @Query("SELECT story_id, updated_at, events, category FROM ${SavedStory.TABLE_NAME} WHERE story_id = (SELECT :storyId FROM ${SavedStory.TABLE_NAME})")
+    suspend fun getSavedStory(storyId: Int): SavedStory
 
     @Delete
     suspend fun deleteSavedStory(savedStory: SavedStory): Int

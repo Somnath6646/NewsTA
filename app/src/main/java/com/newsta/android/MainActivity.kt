@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         NetworkObserver.getNetworkLiveData(applicationContext)
             .observe(this, androidx.lifecycle.Observer { isConnected ->
                 if (!isConnected) {
+                    isConnectedToNetwork = isConnected
                     binding.textViewNetworkStatus.text = "No internet connection"
                     binding.networkStatusLayout.apply {
                         binding.networkStatusLayout.visibility = View.VISIBLE
@@ -84,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                 } else {
+                    isConnectedToNetwork = isConnected
                     binding.textViewNetworkStatus.text = "Back Online"
 
                     binding.networkStatusLayout.apply {
@@ -116,6 +118,7 @@ class MainActivity : AppCompatActivity() {
         var extras = ArrayList<Story>()
         lateinit var minStory: Story
         lateinit var maxStory: Story
+        var isConnectedToNetwork = true
 
     }
 

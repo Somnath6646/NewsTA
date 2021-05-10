@@ -19,6 +19,7 @@ import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.ui.saved.adapter.SavedStoryAdapter
 import com.newsta.android.utils.models.DataState
+import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
 
@@ -43,7 +44,11 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>() {
             updatedAt = savedStory.updatedAt,
             events = savedStory.events,
             storyId = savedStory.storyId)
-        val bundle = bundleOf("data" to story)
+        val detailsPageData = DetailsPageData(
+            story = story,
+            eventId = story.events.last().eventId
+        )
+        val bundle = bundleOf("data" to detailsPageData)
         findNavController().navigate(R.id.action_savedStoriesFragment_to_detailsFragment, bundle)
     }
 
