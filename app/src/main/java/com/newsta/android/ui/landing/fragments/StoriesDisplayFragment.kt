@@ -20,6 +20,7 @@ import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.Story
+import java.lang.Exception
 
 class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
@@ -103,10 +104,15 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     binding.refreshLayout.isRefreshing = true
                 }
                 is DataState.Extra<List<Story>?> -> {
-                    if(!it.data.isNullOrEmpty()) {
-                        maxStory = it.data.first()
-                        minStory = it.data.last()
-                        extras = ArrayList(it.data)
+                    try {
+                        if (!it.data.isNullOrEmpty()) {
+                            maxStory = it.data.first()
+                            minStory = it.data.last()
+                            extras = ArrayList(it.data)
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
+                        e.printStackTrace()
                     }
                     Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
                     Log.i("newsDataState", " EXTRA MIN ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
@@ -133,10 +139,15 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     Log.i("newsDataState", " loding")
                 }
                 is DataState.Extra<List<Story>?> -> {
-                    if(!it.data.isNullOrEmpty()) {
-                        maxStory = it.data.first()
-                        minStory = it.data.last()
-                        extras = ArrayList(it.data)
+                    try {
+                        if (!it.data.isNullOrEmpty()) {
+                            maxStory = it.data.first()
+                            minStory = it.data.last()
+                            extras = ArrayList(it.data)
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
+                        e.printStackTrace()
                     }
                     Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
                     Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")

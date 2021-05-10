@@ -40,7 +40,6 @@ import kotlin.collections.ArrayList
 @AndroidEntryPoint
 class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
-
     private val viewModel: NewsViewModel by activityViewModels()
 
     private lateinit var adapter: ViewPagerAdapter
