@@ -292,6 +292,7 @@ class StoriesRepository(
             try {
                 val response = newsService.getCategories(categoryRequest)
                 if (response.isSuccessful) {
+                    println("CATEGORIES REPO: ${response.body()?.data}")
                     emit(DataState.Success(response.body()?.data))
                     response.body()?.data?.let { storiesDao.insertCategories(it) }
                 } else {
@@ -307,7 +308,8 @@ class StoriesRepository(
                 }
             } catch (e: Exception) {
                 val categories = storiesDao.getAllCategories()
-                emit(DataState.Success(categories))
+                println("CATEGORIES REPO: ${categories}")
+                //emit(DataState.Success(categories))
             }
         }
 

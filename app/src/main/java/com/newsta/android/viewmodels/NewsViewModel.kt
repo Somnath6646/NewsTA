@@ -127,7 +127,7 @@ constructor(private val newsRepository: StoriesRepository,
 
         if(NewstaApp.is_database_empty!!) {
             println("API ------>        ${NewstaApp.is_database_empty!!}")
-            val days3 = System.currentTimeMillis() - (8 * 24 * 60 * 60 * 1000)
+            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
             getAllNews(0, days3)
         } else {
             println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
@@ -164,8 +164,6 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-
-
     fun getSources(storyId: Int, eventId: Int) {
 
         viewModelScope.launch {
@@ -194,7 +192,6 @@ constructor(private val newsRepository: StoriesRepository,
             preferences.isDatabaseEmpty(isDatabaseEmpty)
         }
     }
-
 
     fun getCategories() {
 

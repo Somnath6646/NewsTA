@@ -50,6 +50,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:letterSpacing="0.15"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textAllCaps="true"
                         android:text="Try again" />
 
