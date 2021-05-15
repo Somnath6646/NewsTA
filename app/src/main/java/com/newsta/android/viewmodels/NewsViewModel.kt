@@ -1,6 +1,7 @@
 package com.newsta.android.viewmodels
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.hilt.Assisted
@@ -54,15 +55,18 @@ constructor(private val newsRepository: StoriesRepository,
                 newsRepository.logout(logoutRequest = request).onEach {
                     _logoutDataState.value = Indicator(it)
                 }.launchIn(viewModelScope)
-                LoginManager.getInstance().logOut();
-                clearAllData()
+
             }
         }
     }
 
-    suspend fun clearAllData(){
-        preferences.clearData()
-        newsRepository.deleteAllStories()
+    fun clearAllData(): LiveData<Boolean> = liveData{
+        viewModelScope.launch {
+            preferences.clearData()
+            newsRepository.deleteAllStories()
+            emit(true)
+        }
+
         toast("DATA CLEAR CALLED")
     }
 
@@ -81,7 +85,7 @@ constructor(private val newsRepository: StoriesRepository,
                     }
                     .launchIn(viewModelScope)
             }
-        } else toast("Type something search")
+        } else toast("Type something to search")
     }
 
     fun getStoryByIDFromSearch(storyId: Int){
@@ -273,6 +277,7 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
     init {
+        Log.i("TAG", "init viemodel ")
         getCategories()
         getNewsOnInit()
         setCategoryState(0)

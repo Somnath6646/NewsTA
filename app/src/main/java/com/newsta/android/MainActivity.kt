@@ -17,12 +17,14 @@ import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.utils.NetworkObserver
 import com.newsta.android.utils.helpers.LocaleConfigurationUtil
 import com.newsta.android.utils.models.Story
+import com.newsta.android.viewmodels.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     val viewModel : AuthenticationViewModel by viewModels()
+    val newsViewModel : NewsViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

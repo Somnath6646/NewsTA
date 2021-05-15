@@ -30,9 +30,7 @@ class SearchAdapter(private val onClick: (SearchStory, Int) -> Unit) : RecyclerV
     }
 
     fun addAll(storiesResponse: ArrayList<SearchStory>) {
-        storiesResponse.sortByDescending {
-            story ->  story.created_at
-        }
+        stories.clear()
         stories.addAll(storiesResponse)
         notifyDataSetChanged()
     }

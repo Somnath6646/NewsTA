@@ -34,6 +34,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         setUpAdapter()
 
         binding.search.setOnClickListener {
+
             viewModel.getSearchResults()
         }
 

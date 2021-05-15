@@ -40,15 +40,6 @@ constructor(private val authRepository: AuthRepository,
     val signinResponse: LiveData <Indicator<DataState<SigninResponse?>>>
         get() = _signinResponse
 
-
-
-    private val _facebookSignInResponse: MutableLiveData<Indicator<DataState<SigninResponse?>>> = MutableLiveData()
-
-
-
-    val facebookSignInResponse: LiveData <Indicator<DataState<SigninResponse?>>>
-        get() = _facebookSignInResponse
-
     private val _navigate: MutableLiveData<Indicator<String>> = MutableLiveData()
 
     val navigate: LiveData<Indicator<String>>

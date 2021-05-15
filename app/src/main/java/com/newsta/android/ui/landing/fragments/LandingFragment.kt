@@ -21,6 +21,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.facebook.login.LoginManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.NewstaApp
@@ -42,11 +43,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private val viewModel: NewsViewModel by activityViewModels()
 
-    private lateinit var adapter: ViewPagerAdapter
+
 
     private lateinit var categories: ArrayList<Category>
     private var category = 0
 
+
+    private lateinit var adapter: ViewPagerAdapter
     private fun setUpAdapter(categories: ArrayList<Category>) {
 
         adapter = ViewPagerAdapter(fragmentActivity = requireActivity(),itemCount =  categories.size)
@@ -196,8 +199,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 when(it){
                     is DataState.Success -> {
                         Log.i("TAG", "Sucess logout ")
-                        val action = LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
-                        findNavController().navigate(action)
+                        viewModel.clearAllData().observe(viewLifecycleOwner, Observer {
+                            if(it){
+                                val action = LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
+                                findNavController().navigate(action)
+                                LoginManager.getInstance().logOut();
+                            }
+                        })
+
                     }
                     is DataState.Loading -> {
                         Log.i("TAG", "Loading logout ")

@@ -308,12 +308,6 @@ class StoriesRepository(
             } catch (e: Exception) {
                 val categories = storiesDao.getAllCategories()
                 emit(DataState.Success(categories))
-
-                if (e is ConnectException) {
-                    emit(DataState.Error("Enjoy Offline Mode :)"))
-                } else {
-                    emit(DataState.Error(e.message.toString()))
-                }
             }
         }
 
