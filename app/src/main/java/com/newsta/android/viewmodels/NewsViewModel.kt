@@ -127,7 +127,7 @@ constructor(private val newsRepository: StoriesRepository,
 
         if(NewstaApp.is_database_empty!!) {
             println("API ------>        ${NewstaApp.is_database_empty!!}")
-            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+            val days3 = System.currentTimeMillis() - (12 * 24 * 60 * 60 * 1000)
             getAllNews(0, days3)
         } else {
             println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
