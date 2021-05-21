@@ -309,7 +309,7 @@ class StoriesRepository(
             } catch (e: Exception) {
                 val categories = storiesDao.getAllCategories()
                 println("CATEGORIES REPO: ${categories}")
-                //emit(DataState.Success(categories))
+                emit(DataState.Success(categories))
             }
         }
 

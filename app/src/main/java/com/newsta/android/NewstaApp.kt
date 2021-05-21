@@ -2,14 +2,21 @@ package com.newsta.android
 
 import android.app.Application
 import android.os.Build
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorkerFactory
+import androidx.lifecycle.asLiveData
 import androidx.work.*
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.newsta.android.utils.prefrences.UserPrefrences
 import com.newsta.android.utils.workers.DatabaseClearer
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -17,6 +24,7 @@ import javax.inject.Inject
 class NewstaApp : Application(), Configuration.Provider {
 
     @Inject lateinit var workerFactory: HiltWorkerFactory
+    @Inject lateinit var prefrences: UserPrefrences
 
     companion object {
 
@@ -30,7 +38,7 @@ class NewstaApp : Application(), Configuration.Provider {
         const val LARGE_FONT_NAME = "Large"
         const val SMALL_FONT_NAME = "Small"
 
-        lateinit var prefrences: UserPrefrences
+
         var access_token: String? = null
 
         fun getAccessToken(): String? = access_token
@@ -38,11 +46,12 @@ class NewstaApp : Application(), Configuration.Provider {
             this.access_token = accessToken
         }
 
-        var is_database_empty: Boolean? = true
+        var is_database_empty: Boolean = false
 
-        fun getIsDatabaseEmpty(): Boolean? = is_database_empty
+        fun getIsDatabaseEmpty(): Boolean = is_database_empty
         fun setIsDatabaseEmpty(isDatabaseEmpty: Boolean) {
             this.is_database_empty = isDatabaseEmpty
+
         }
 
         var font_scale: Float? = DEFAULT_FONT_SCALE
@@ -115,22 +124,41 @@ class NewstaApp : Application(), Configuration.Provider {
             .setRequiresDeviceIdle(true)
             .build()
 
-        val periodicDatabaseClearRequest = PeriodicWorkRequestBuilder<DatabaseClearer>(3, TimeUnit.DAYS)
+        val periodicDatabaseClearRequest = PeriodicWorkRequestBuilder<DatabaseClearer>(16, TimeUnit.MINUTES)
             .build()
 
         val workManager = WorkManager.getInstance(applicationContext)
-        // workManager.enqueue(periodicDatabaseClearRequest)
+
+        prefrences.appInstalledJustNow.onEach {
+            if(it == null){
+
+                Log.i("AppInstalled", "true")
+
+
+                prefrences.appInstalledJustNow(false)
+
+
+                workManager.enqueue(periodicDatabaseClearRequest)
+            }else{
+                Log.i("AppInstalled", "false")
+            }
+        }.launchIn(GlobalScope)
+
+
 
         println("METHOD CALLED FOR WORKER")
 
         workManager.getWorkInfoByIdLiveData(periodicDatabaseClearRequest.id)
             .observeForever { info ->
                 if(info.state.isFinished) {
-                   is_database_empty = true
-                    setIsDatabaseEmpty(true)
-                } else {
                     is_database_empty = true
                     setIsDatabaseEmpty(true)
+
+                } else {
+
+                    is_database_empty = false
+                    setIsDatabaseEmpty(false)
+
                 }
             }
 

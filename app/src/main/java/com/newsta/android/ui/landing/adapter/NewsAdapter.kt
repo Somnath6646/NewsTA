@@ -56,7 +56,7 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
 
         binding.title.text = event.title
         binding.timeline.text = if(events.size > 1) "View timeline" else ""
-        binding.time.text = "${NewstaApp.setTime(story.updatedAt)} - ${story.storyId}"
+        binding.time.text = "${NewstaApp.setTime(story.updatedAt)}"
 
         Picasso.get()
             .load(event.imgUrl)

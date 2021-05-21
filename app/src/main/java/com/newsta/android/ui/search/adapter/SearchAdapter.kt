@@ -46,7 +46,7 @@ class SearchViewHolder(private val binding: ItemSearchresultBinding, private val
 
         binding.title.text = event.title
         
-        binding.time.text = "${NewstaApp.setTime(story.created_at)} - ${story.story_id}"
+        binding.time.text = "${NewstaApp.setTime(story.created_at)}"
 
         Picasso.get()
                 .load(event.img_url)
