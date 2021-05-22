@@ -15,6 +15,7 @@ import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentStoriesDisplayBinding
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.ui.landing.adapter.ARG_OBJECT
 import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
@@ -23,6 +24,8 @@ import com.newsta.android.utils.models.Story
 import java.lang.Exception
 
 class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
+
+
 
     private val viewModel: NewsViewModel by activityViewModels()
 
@@ -54,11 +57,15 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
             if (maxStory != null) {
                 viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
                 viewModel.updateNews(maxStory.storyId, maxStory.updatedAt)
-            } else if(!extras.isNullOrEmpty()) {
+            } else if (!extras.isNullOrEmpty()) {
                 viewModel.getAllNews(extras.first().storyId, extras.first().updatedAt)
                 viewModel.updateNews(extras.first().storyId, extras.first().updatedAt)
             } else {
-                Toast.makeText(requireContext(), "Cannot refresh now. Try re-launching the app.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Cannot refresh now. Try re-launching the app.",
+                    Toast.LENGTH_SHORT
+                ).show()
                 binding.refreshLayout.isRefreshing = false
                 viewModel.getMaxAndMinStory()
             }
@@ -68,15 +75,20 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
     private fun observer() {
 
-        viewModel.categoryState.observe(viewLifecycleOwner, Observer { state ->
+        /*viewModel.categoryState.observe(viewLifecycleOwner, Observer { state ->
             println("CATEGORY STATE CHANGED TO: $state")
             adapter.setCategory(state)
             categoryState = state
             val filteredStories = stories.filter { story: Story -> story.category == state }
             println("FilteredStories  $filteredStories")
-            adapter.addAll(ArrayList<Story>(filteredStories))
+
+            val stories = ArrayList<Story>(filteredStories)
+            stories.sortByDescending {
+                    story ->  story.updatedAt
+            }
+            adapter.addAll(stories)
             viewModel.getMaxAndMinStory()
-        })
+        })*/
 
         viewModel.newsDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -85,15 +97,21 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     binding.refreshLayout.isRefreshing = false
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
                     stories = ArrayList(it.data)
-                    val filteredStories = stories.filter { story: Story -> story.category == categoryState }
-                    if(filteredStories.isNullOrEmpty()) {
+                    val filteredStories =
+                        stories.filter { story: Story -> story.category == categoryState }
+                    if (filteredStories.isNullOrEmpty()) {
                         NewstaApp.is_database_empty = true
                         viewModel.changeDatabaseState(true)
                         viewModel.getNewsOnInit()
                         NewstaApp.setIsDatabaseEmpty(true)
                     }
                     println("FilteredStories  $filteredStories")
-                    adapter.addAll(ArrayList<Story>(filteredStories))
+
+                    val stories = ArrayList<Story>(filteredStories)
+                    stories.sortByDescending {
+                            story ->  story.updatedAt
+                    }
+                    adapter.addAll(stories)
                 }
                 is DataState.Error -> {
                     Log.i("newsDataState", " errror ${it.exception}")
@@ -114,8 +132,14 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                         Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
                         e.printStackTrace()
                     }
-                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
-                    Log.i("newsDataState", " EXTRA MIN ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
+                    Log.i(
+                        "newsDataState",
+                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
+                    )
+                    Log.i(
+                        "newsDataState",
+                        " EXTRA MIN ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
+                    )
                     viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
                 }
             }
@@ -128,9 +152,14 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     Log.i("newsDataState", " success")
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
                     stories = ArrayList(it.data)
-                    val filteredStories = stories.filter { story: Story -> story.category == categoryState }
+                    val filteredStories =
+                        stories.filter { story: Story -> story.category == categoryState }
                     println("FilteredStories  $filteredStories")
-                    adapter.addAll(ArrayList<Story>(filteredStories))
+                    val stories = ArrayList<Story>(filteredStories)
+                    stories.sortByDescending {
+                            story ->  story.updatedAt
+                    }
+                    adapter.addAll(stories)
                 }
                 is DataState.Error -> {
                     Log.i("newsDataState", " errror ${it.exception}")
@@ -149,8 +178,14 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                         Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
                         e.printStackTrace()
                     }
-                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
-                    Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
+                    Log.i(
+                        "newsDataState",
+                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
+                    )
+                    Log.i(
+                        "newsDataState",
+                        " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}"
+                    )
                     viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
                 }
             }
@@ -161,13 +196,19 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
             when (it) {
                 is DataState.Success<List<Story>?> -> {
-                    if(!it.data.isNullOrEmpty()) {
+                    if (!it.data.isNullOrEmpty()) {
                         maxStory = it.data.first()
                         minStory = it.data.last()
                         extras = ArrayList(it.data)
                     }
-                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
-                    Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
+                    Log.i(
+                        "newsDataState",
+                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
+                    )
+                    Log.i(
+                        "newsDataState",
+                        " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}"
+                    )
                 }
                 is DataState.Error -> {
                     Log.i("newsDataState", " errror ${it.exception}")
@@ -176,13 +217,19 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     Log.i("newsDataState", " loding")
                 }
                 is DataState.Extra<List<Story>?> -> {
-                    if(!it.data.isNullOrEmpty()) {
+                    if (!it.data.isNullOrEmpty()) {
                         maxStory = it.data.first()
                         minStory = it.data.last()
                         extras = ArrayList(it.data)
                     }
-                    Log.i("newsDataState", " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}")
-                    Log.i("newsDataState", " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}")
+                    Log.i(
+                        "newsDataState",
+                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
+                    )
+                    Log.i(
+                        "newsDataState",
+                        " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}"
+                    )
                 }
             }
 
@@ -194,6 +241,25 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
         super.onActivityCreated(savedInstanceState)
 
         setUpAdapter()
+
+        arguments?.takeIf {
+            it.containsKey(ARG_OBJECT) }?.apply {
+           val  state = getInt(ARG_OBJECT)
+        categoryState = state
+        val filteredStories = stories.filter { story: Story -> story.category == state }
+        println("FilteredStories  $filteredStories")
+
+        val stories = ArrayList<Story>(filteredStories)
+        stories.sortByDescending {
+                story ->  story.updatedAt
+        }
+        adapter.clear()
+        adapter.addAll(stories)
+        viewModel.getMaxAndMinStory()
+
+        }
+
+
         observer()
         initViews()
 

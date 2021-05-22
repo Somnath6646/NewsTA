@@ -8,6 +8,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.newsta.android.NewstaApp
 import com.newsta.android.repository.StoriesRepository
+import com.newsta.android.utils.prefrences.UserPrefrences
 import java.lang.Exception
 
 class DatabaseClearer
@@ -15,7 +16,8 @@ class DatabaseClearer
     constructor(
         @Assisted context: Context,
         @Assisted parameters: WorkerParameters,
-        private val repository: StoriesRepository
+        private val repository: StoriesRepository,
+        private val prefrences: UserPrefrences
     ) : CoroutineWorker(context, parameters) {
 
     override suspend fun doWork(): Result {
@@ -23,11 +25,13 @@ class DatabaseClearer
             repository.deleteAllStories()
             NewstaApp.is_database_empty = true
             NewstaApp.setIsDatabaseEmpty(true)
+            prefrences.isDatabaseEmpty(true)
             Log.i("WORK MANAGER", "Called")
             return Result.success()
         } catch (e: Exception) {
             Log.i("WORK MANAGER", "Exception")
             e.printStackTrace()
+            prefrences.isDatabaseEmpty(false)
             return Result.success()
         }
 

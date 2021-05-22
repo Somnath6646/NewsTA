@@ -127,7 +127,12 @@ constructor(private val newsRepository: StoriesRepository,
 
         if(NewstaApp.is_database_empty!!) {
             println("API ------>        ${NewstaApp.is_database_empty!!}")
-            val days3 = System.currentTimeMillis() - (12 * 24 * 60 * 60 * 1000)
+
+
+            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+
+            //prefrences se idharr lenaa hai
+
             getAllNews(0, days3)
         } else {
             println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
@@ -204,13 +209,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    private val _categoryState = MutableLiveData<Int>()
-    val categoryState: LiveData<Int>
-        get() = _categoryState
 
-    fun setCategoryState(categoryState: Int) {
-        _categoryState.value = categoryState
-    }
 
     private val _savedStoriesState = MutableLiveData<DataState<List<SavedStory>>>()
     val savedStoriesState: LiveData<DataState<List<SavedStory>>>
@@ -277,7 +276,6 @@ constructor(private val newsRepository: StoriesRepository,
         Log.i("TAG", "init viemodel ")
         getCategories()
         getNewsOnInit()
-        setCategoryState(0)
     }
 
     fun setFontScale(fontScale: Float) {

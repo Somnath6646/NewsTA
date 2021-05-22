@@ -28,20 +28,16 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
         holder.bind(stories[position])
     }
 
-    fun addAll(storiesResponse: ArrayList<Story>) {
-        storiesResponse.sortByDescending {
-            story ->  story.updatedAt
-        }
-        val storiesList = storiesResponse.filter { story -> story.category == category }
+    fun addAll(storiesList: ArrayList<Story>) {
+
         stories = ArrayList(storiesList)
-        stories.addAll(storiesResponse)
+        stories.addAll(storiesList)
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
     }
 
-    fun setCategory(categoryState: Int) {
-        category = categoryState
-        notifyDataSetChanged()
+    fun clear(){
+        stories.clear()
     }
 
 }

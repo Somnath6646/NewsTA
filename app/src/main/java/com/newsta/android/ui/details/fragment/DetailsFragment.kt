@@ -134,7 +134,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
                     }
                 binding.recyclerViewTimelineEvents.adapter = timelineAdapter
                 binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
-                binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
+                binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = true
                 timelineAdapter.addAll(timelineAllEvents)
                 binding.btnSeemoreTimeline.setText("See less")
             }else{

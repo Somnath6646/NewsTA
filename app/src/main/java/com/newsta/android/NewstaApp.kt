@@ -46,20 +46,22 @@ class NewstaApp : Application(), Configuration.Provider {
             this.access_token = accessToken
         }
 
-        var is_database_empty: Boolean = false
+        var is_database_empty: Boolean = true
 
         fun getIsDatabaseEmpty(): Boolean = is_database_empty
         fun setIsDatabaseEmpty(isDatabaseEmpty: Boolean) {
             this.is_database_empty = isDatabaseEmpty
-
         }
 
         var font_scale: Float? = DEFAULT_FONT_SCALE
 
         fun getFontScale(): Float? = font_scale
+
+
         fun setFontScale(fontScale: Float) {
             this.font_scale = fontScale
         }
+
 
         fun setTime(updatedAt: Long): String {
 
