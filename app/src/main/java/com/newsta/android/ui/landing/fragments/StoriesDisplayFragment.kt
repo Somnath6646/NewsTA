@@ -51,8 +51,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
     private fun initViews() {
 
         viewModel.getMaxAndMinStory()
-        println("FRAGMENT INITIALIZED")
-        println("EXTRAS: $extras")
+
         binding.refreshLayout.setOnRefreshListener {
             if (maxStory != null) {
                 viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
@@ -244,8 +243,11 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
         arguments?.takeIf {
             it.containsKey(ARG_OBJECT) }?.apply {
-           val  state = getInt(ARG_OBJECT)
+
+        val  state = getInt(ARG_OBJECT)
+
         categoryState = state
+
         val filteredStories = stories.filter { story: Story -> story.category == state }
         println("FilteredStories  $filteredStories")
 

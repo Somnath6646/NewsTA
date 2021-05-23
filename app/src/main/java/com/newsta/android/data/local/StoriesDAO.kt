@@ -40,6 +40,9 @@ interface StoriesDAO {
     @Delete
     suspend fun deleteSavedStory(savedStory: SavedStory): Int
 
+    @Delete
+    suspend fun deleteSavedStories(savedStory: List<SavedStory>): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategories(categories: List<Category>)
 

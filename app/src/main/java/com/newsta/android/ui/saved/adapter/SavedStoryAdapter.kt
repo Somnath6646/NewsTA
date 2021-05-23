@@ -1,8 +1,11 @@
 package com.newsta.android.ui.saved.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
@@ -17,16 +20,30 @@ class SavedStoryAdapter(private val onClick: (SavedStory) -> Unit, private val o
 
     private val stories = ArrayList<SavedStory>()
 
+    var tracker: SelectionTracker<Long>? = null
+
+    init {
+        setHasStableIds(true)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedStoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = DataBindingUtil.inflate<NewsItemBinding>(inflater, R.layout.news_item, parent, false)
         return SavedStoryViewHolder(binding, onClick, onLongClick)
     }
 
+    override fun getItemId(position: Int): Long = position.toLong()
+    override fun getItemViewType(position: Int): Int = position
+
     override fun getItemCount(): Int = stories.size
 
     override fun onBindViewHolder(holder: SavedStoryViewHolder, position: Int) {
-        holder.bind(stories[position])
+        tracker.let {
+            if (it != null) {
+                holder.bind(stories[position], it.isSelected(position.toLong() ))
+            }
+        }
+
     }
 
     fun addAll(storiesResponse: ArrayList<SavedStory>) {
@@ -48,7 +65,7 @@ class SavedStoryAdapter(private val onClick: (SavedStory) -> Unit, private val o
 
 class SavedStoryViewHolder(private val binding: NewsItemBinding, private val onClick: (SavedStory) -> Unit, private val onLongClick: (SavedStory) -> Boolean) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(story: SavedStory) {
+    fun bind(story: SavedStory, isSelected: Boolean = false) {
 
         val events = story.events.sortedByDescending { events -> events.updatedAt }
 
@@ -64,8 +81,26 @@ class SavedStoryViewHolder(private val binding: NewsItemBinding, private val onC
 
         binding.root.setOnClickListener { onClick(story) }
 
-        binding.root.setOnLongClickListener { onLongClick(story) }
+//        binding.root.setOnLongClickListener { onLongClick(story) }
 
+        val checkLayout = binding.checkLayout
+
+        if (isSelected){
+            checkLayout.visibility = View.VISIBLE
+        }else{
+            checkLayout.visibility = View.GONE
+        }
     }
+
+
+    fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
+
+        object : ItemDetailsLookup.ItemDetails<Long>() {
+
+            override fun getPosition(): Int = adapterPosition
+
+            override fun getSelectionKey(): Long? = itemId
+
+        }
 
 }

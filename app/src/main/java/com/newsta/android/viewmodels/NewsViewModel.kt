@@ -235,6 +235,14 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
+    fun deleteSavedStory(savedStory: List<SavedStory>) {
+        viewModelScope.launch {
+            newsRepository.deleteSavedStory(savedStory).onEach {
+                _savedStoriesDeleteState.value = it
+            }.launchIn(viewModelScope)
+        }
+    }
+
     private val _filteredStoriesState = MutableLiveData<DataState<List<Story>>>()
     val filteredStoriesState: LiveData<DataState<List<Story>>>
         get() = filteredStoriesState

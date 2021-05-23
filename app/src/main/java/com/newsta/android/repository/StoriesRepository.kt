@@ -261,6 +261,24 @@ class StoriesRepository(
 
     }
 
+    suspend fun deleteSavedStory(story: List<SavedStory>): Flow<DataState<SavedStory>> = flow {
+
+        emit(DataState.Loading)
+
+        try {
+
+            val isDeleted = storiesDao.deleteSavedStories(story)
+            if (isDeleted != -1)
+                emit(DataState.Success(story[0]))
+            else
+                emit(DataState.Error("Error in deleting saved story"))
+
+        } catch (e: Exception) {
+            emit(DataState.Error("Error in deleting saved story"))
+        }
+
+    }
+
     suspend fun getFilteredStories(category: Int): Flow<DataState<List<Story>>> = flow {
 
         emit(DataState.Loading)

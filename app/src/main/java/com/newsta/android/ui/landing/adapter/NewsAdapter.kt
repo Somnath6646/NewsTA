@@ -29,8 +29,6 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
     }
 
     fun addAll(storiesList: ArrayList<Story>) {
-
-        stories = ArrayList(storiesList)
         stories.addAll(storiesList)
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
