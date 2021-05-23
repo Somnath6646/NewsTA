@@ -100,11 +100,11 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
 
-    fun getAllNews(storyId: Int = 0, maxDateTime: Long) {
+    fun getAllNews(storyId: Int = 0, maxDateTime: Long, isRefresh: Boolean = false) {
 
         viewModelScope.launch {
             val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, getMaxDate(maxDateTime))
-            newsRepository.getAllStories(newsRequest = request)
+            newsRepository.getAllStories(newsRequest = request, isRefresh = isRefresh)
                     .onEach {
                         _newsDataState.value = it
                     }

@@ -1,5 +1,6 @@
-package com.newsta.android.repository
+    package com.newsta.android.repository
 
+import android.content.ContentValues.TAG
 import android.provider.ContactsContract
 import android.util.Log
 import com.google.gson.Gson
@@ -27,14 +28,12 @@ class StoriesRepository(
     private val newsService: NewsService
 ) {
 
-
     suspend fun getStoryByIDFromSearch(searchByStoryIDRequest: SearchByStoryIDRequest): Flow<DataState<ArrayList<Story>?>> =
         flow {
             emit(DataState.Loading)
             println("LOADING")
 
             try {
-
                 val response = newsService.getSearchedStoryById(searchByStoryIDRequest)
 
                 if (!response.isSuccessful) {
@@ -123,7 +122,7 @@ class StoriesRepository(
         }
     }
 
-    suspend fun getAllStories(@Body newsRequest: NewsRequest): Flow<DataState<List<Story>>> = flow {
+    suspend fun getAllStories(@Body newsRequest: NewsRequest, isRefresh: Boolean = false): Flow<DataState<List<Story>>> = flow {
         emit(DataState.Loading)
         try {
             val remoteNewsResponse = newsService.getAllNews(newsRequest)
@@ -147,8 +146,16 @@ class StoriesRepository(
         } catch (e: Exception) {
             val cachedStories = storiesDao.getAllStories()
             if (cachedStories != null) {
-                if (cachedStories.isEmpty()) emit(DataState.Error("Error in news response"))
-                else emit(DataState.Success(cachedStories))
+                println("PRINTING FROM CATCH GET ALL NEWS ${cachedStories}")
+                if (cachedStories.size <= 0) emit(DataState.Error("Error in news response"))
+                else {
+                    if(!isRefresh) {
+                        println("EMITTING FROM CATCH GET ALL NEWS")
+                        emit(DataState.Success(cachedStories))
+                    } else {
+                        emit(DataState.Error("Error in news response"))
+                    }
+                }
             }
         }
     }
@@ -170,7 +177,7 @@ class StoriesRepository(
                 }
 
             }catch (e: Exception) {
-                emit(DataState.Error("Error in updating the stories"))
+                emit(DataState.Error("Error in refreshing new stories"))
             }
 
         }
@@ -373,6 +380,19 @@ class StoriesRepository(
             emit(DataState.Error("Error in checking saved story"))
         }
 
+    }
+
+    fun admin() = flow {
+        emit(DataState.Loading)
+
+        try {
+            println("ADMIN CALLED YFKUFKHKGVUFLU#############")
+            val admin = newsService.admin(AdminRequest())
+            Log.i(TAG, "admin: ${admin.body()}")
+            emit(DataState.Success(admin.body()))
+        } catch (e: Exception) {
+            emit(DataState.Error("Error in checking saved story"))
+        }
     }
 
 }

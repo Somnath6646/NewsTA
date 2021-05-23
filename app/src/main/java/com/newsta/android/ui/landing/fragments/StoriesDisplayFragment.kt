@@ -54,7 +54,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
         binding.refreshLayout.setOnRefreshListener {
             if (maxStory != null) {
-                viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
+                viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt, true)
                 viewModel.updateNews(maxStory.storyId, maxStory.updatedAt)
             } else if (!extras.isNullOrEmpty()) {
                 viewModel.getAllNews(extras.first().storyId, extras.first().updatedAt)
