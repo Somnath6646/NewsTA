@@ -29,7 +29,7 @@ data class Story(
 
     override fun equals(other: Any?): Boolean {
         val new = other as Story
-        return this.storyId == other.storyId
+        return this.storyId == new.storyId
     }
 
     companion object {

@@ -32,6 +32,7 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
 
     fun addAll(storiesList: ArrayList<Story>) {
         stories.addAll(storiesList)
+        stories = ArrayList(stories.distinct())
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
     }
@@ -39,15 +40,20 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
     @RequiresApi(Build.VERSION_CODES.N)
     fun refreshAdd(storiesList: ArrayList<Story>) {
 
+        val newStories = storiesList
+
         storiesList.forEach { newStory ->
             if(stories.contains(newStory)) {
                 println("OLD STORIES SIZE BEF REM: ${stories.size}")
-                stories.removeIf { oldStory -> oldStory.storyId == newStory.storyId }
+                stories.remove(newStory)
+                // stories.removeIf { oldStory -> oldStory.storyId == newStory.storyId }
                 println("OLD STORIES SIZE AFT REM: ${stories.size}")
             }
         }
 
         stories.addAll(0, storiesList)
+
+        stories = ArrayList(stories.distinct())
 
         notifyDataSetChanged()
 
