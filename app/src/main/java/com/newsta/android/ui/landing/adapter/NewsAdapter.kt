@@ -1,7 +1,9 @@
 package com.newsta.android.ui.landing.adapter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.NewstaApp
@@ -34,11 +36,21 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
         notifyDataSetChanged()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun refreshAdd(storiesList: ArrayList<Story>) {
-        val oldStories = stories
-        stories = storiesList
-        stories.addAll(oldStories)
+
+        storiesList.forEach { newStory ->
+            if(stories.contains(newStory)) {
+                println("OLD STORIES SIZE BEF REM: ${stories.size}")
+                stories.removeIf { oldStory -> oldStory.storyId == newStory.storyId }
+                println("OLD STORIES SIZE AFT REM: ${stories.size}")
+            }
+        }
+
+        stories.addAll(0, storiesList)
+
         notifyDataSetChanged()
+
     }
 
     fun clear() {

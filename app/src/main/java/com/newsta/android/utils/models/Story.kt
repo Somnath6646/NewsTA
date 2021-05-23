@@ -26,6 +26,12 @@ data class Story(
     @SerializedName("story_id")
     val storyId: Int
 ) : Parcelable {
+
+    override fun equals(other: Any?): Boolean {
+        val new = other as Story
+        return this.storyId == other.storyId
+    }
+
     companion object {
         const val TABLE_NAME = "newsta_stories"
     }

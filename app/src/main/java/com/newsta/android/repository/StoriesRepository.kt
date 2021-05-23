@@ -1,4 +1,4 @@
-    package com.newsta.android.repository
+package com.newsta.android.repository
 
 import android.content.ContentValues.TAG
 import android.provider.ContactsContract
@@ -122,7 +122,10 @@ class StoriesRepository(
         }
     }
 
-    suspend fun getAllStories(@Body newsRequest: NewsRequest, isRefresh: Boolean = false): Flow<DataState<List<Story>>> = flow {
+    suspend fun getAllStories(
+        @Body newsRequest: NewsRequest,
+        isRefresh: Boolean = false
+    ): Flow<DataState<List<Story>>> = flow {
         emit(DataState.Loading)
         try {
             val remoteNewsResponse = newsService.getAllNews(newsRequest)
@@ -149,7 +152,7 @@ class StoriesRepository(
                 println("PRINTING FROM CATCH GET ALL NEWS ${cachedStories}")
                 if (cachedStories.size <= 0) emit(DataState.Error("Error in news response"))
                 else {
-                    if(!isRefresh) {
+                    if (!isRefresh) {
                         println("EMITTING FROM CATCH GET ALL NEWS")
                         emit(DataState.Success(cachedStories))
                     } else {
@@ -165,7 +168,7 @@ class StoriesRepository(
 
             emit(DataState.Loading)
 
-            try{
+            try {
 
                 val updateResponse = newsService.getExistingNews(newsRequest)
                 val stories = updateResponse.data
@@ -176,7 +179,8 @@ class StoriesRepository(
                     emit(DataState.Extra(listOf(maxStory, minStory)))
                 }
 
-            }catch (e: Exception) {
+            } catch (e: Exception) {
+                e.printStackTrace()
                 emit(DataState.Error("Error in refreshing new stories"))
             }
 
