@@ -153,12 +153,12 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                     stories = ArrayList(it.data)
                     val filteredStories =
                         stories.filter { story: Story -> story.category == categoryState }
-                    println("FilteredStories  $filteredStories")
                     val stories = ArrayList<Story>(filteredStories)
+                    println("FilteredStories Updated  $stories")
                     stories.sortByDescending {
                             story ->  story.updatedAt
                     }
-                    adapter.addAll(stories)
+                    adapter.refreshAdd(stories)
                 }
                 is DataState.Error -> {
                     Log.i("newsDataState", " errror ${it.exception}")

@@ -34,7 +34,14 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
         notifyDataSetChanged()
     }
 
-    fun clear(){
+    fun refreshAdd(storiesList: ArrayList<Story>) {
+        val oldStories = stories
+        stories = storiesList
+        stories.addAll(oldStories)
+        notifyDataSetChanged()
+    }
+
+    fun clear() {
         stories.clear()
     }
 
