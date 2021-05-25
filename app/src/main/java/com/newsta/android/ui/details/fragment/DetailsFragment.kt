@@ -20,6 +20,7 @@ import android.view.View
 import androidx.core.view.drawToBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,6 +46,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     private lateinit var data: DetailsPageData
     private var scrollState: Int = 0
     private lateinit var event: Event
+
+    private var isFullTimelineEnabled = MutableLiveData<Boolean>(false)
+
 
     private val viewModel: NewsViewModel by activityViewModels()
 
@@ -117,9 +121,39 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
 
-        val timelineEvents = ArrayList<Event>(story.events)
+        if (story.events.size > 3){
+        val timelineAllEvents = ArrayList<Event>(story.events)
 
-        timelineAdapter.addAll(timelineEvents)
+        val timeLineOnlyThreeEvent = arrayListOf<Event>(story.events[0], story.events[1], story.events[2])
+
+        isFullTimelineEnabled.observe(viewLifecycleOwner, Observer {
+            if (it){
+                timelineAdapter =
+                    TimelineAdapter { event ->
+                        timelineOnClick(event)
+                    }
+                binding.recyclerViewTimelineEvents.adapter = timelineAdapter
+                binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = true
+                timelineAdapter.addAll(timelineAllEvents)
+                binding.btnSeemoreTimeline.setText("See less")
+            }else{
+                timelineAdapter =
+                    TimelineAdapter { event ->
+                        timelineOnClick(event)
+                    }
+                binding.recyclerViewTimelineEvents.adapter = timelineAdapter
+                binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
+                timelineAdapter.addAll(timeLineOnlyThreeEvent)
+                binding.btnSeemoreTimeline.setText("See more")
+            }
+        })
+        }else {
+            val timelineAllEvents = ArrayList<Event>(story.events)
+            timelineAdapter.addAll(timelineAllEvents)
+            binding.btnSeemoreTimeline.visibility = View.GONE
+        }
 
         sourcesAdapter =
             NewsSourceAdapter { source ->
@@ -273,10 +307,19 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             findNavController().popBackStack()
         }
 
+        binding.btnSeemoreTimeline.setOnClickListener {
+            if(isFullTimelineEnabled.value != null ){
+                isFullTimelineEnabled.value = !isFullTimelineEnabled.value!!
+            }
+
+        }
+
         println("VIEWMODEL: $viewModel")
 
         initViews()
         observer()
+
+
 
     }
 

@@ -35,6 +35,19 @@ class UserPrefrences(context: Context) {
 
 
 
+    val appInstalledJustNow: Flow<Boolean?> = applicationContext.dataStore.data
+        .map { preferences ->
+            preferences[APP_INSTALLED_JUST_NOW]
+        }
+
+    suspend fun appInstalledJustNow(appInstalledJustNow: Boolean) {
+
+        applicationContext.dataStore.edit { settings ->
+            settings[APP_INSTALLED_JUST_NOW] = appInstalledJustNow
+        }
+    }
+
+
     val isDatabaseEmpty: Flow<Boolean?> = applicationContext.dataStore.data
         .map { preferences ->
             preferences[IS_DATABASE_EMPTY]
@@ -63,6 +76,7 @@ class UserPrefrences(context: Context) {
         val ISS = stringPreferencesKey("iss")
         val IS_DATABASE_EMPTY = booleanPreferencesKey("is_database_empty")
         val FONT_SCALE = floatPreferencesKey("font_scale")
+        val APP_INSTALLED_JUST_NOW = booleanPreferencesKey("app_installed_now")
     }
 
 }

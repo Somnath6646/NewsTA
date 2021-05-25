@@ -70,12 +70,6 @@ constructor(private val newsRepository: StoriesRepository,
         toast("DATA CLEAR CALLED")
     }
 
-    fun clearDataBase(){
-        viewModelScope.launch {
-            newsRepository.deleteAllStories()
-        }
-    }
-
     fun getSearchResults() {
         if(!searchTerm.value.isNullOrEmpty()) {
             viewModelScope.launch {
@@ -106,11 +100,11 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
 
-    fun getAllNews(storyId: Int = 0, maxDateTime: Long) {
+    fun getAllNews(storyId: Int = 0, maxDateTime: Long, isRefresh: Boolean = false) {
 
         viewModelScope.launch {
             val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, getMaxDate(maxDateTime))
-            newsRepository.getAllStories(newsRequest = request)
+            newsRepository.getAllStories(newsRequest = request, isRefresh = isRefresh)
                     .onEach {
                         _newsDataState.value = it
                     }
@@ -133,7 +127,12 @@ constructor(private val newsRepository: StoriesRepository,
 
         if(NewstaApp.is_database_empty!!) {
             println("API ------>        ${NewstaApp.is_database_empty!!}")
-            val days3 = System.currentTimeMillis() - (12 * 24 * 60 * 60 * 1000)
+
+
+            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+
+            //prefrences se idharr lenaa hai
+
             getAllNews(0, days3)
         } else {
             println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
@@ -170,8 +169,6 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-
-
     fun getSources(storyId: Int, eventId: Int) {
 
         viewModelScope.launch {
@@ -201,7 +198,6 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-
     fun getCategories() {
 
         viewModelScope.launch {
@@ -213,13 +209,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    private val _categoryState = MutableLiveData<Int>()
-    val categoryState: LiveData<Int>
-        get() = _categoryState
 
-    fun setCategoryState(categoryState: Int) {
-        _categoryState.value = categoryState
-    }
 
     private val _savedStoriesState = MutableLiveData<DataState<List<SavedStory>>>()
     val savedStoriesState: LiveData<DataState<List<SavedStory>>>
@@ -238,6 +228,14 @@ constructor(private val newsRepository: StoriesRepository,
         get() = _savedStoriesDeleteState
 
     fun deleteSavedStory(savedStory: SavedStory) {
+        viewModelScope.launch {
+            newsRepository.deleteSavedStory(savedStory).onEach {
+                _savedStoriesDeleteState.value = it
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    fun deleteSavedStory(savedStory: List<SavedStory>) {
         viewModelScope.launch {
             newsRepository.deleteSavedStory(savedStory).onEach {
                 _savedStoriesDeleteState.value = it
@@ -286,7 +284,6 @@ constructor(private val newsRepository: StoriesRepository,
         Log.i("TAG", "init viemodel ")
         getCategories()
         getNewsOnInit()
-        setCategoryState(0)
     }
 
     fun setFontScale(fontScale: Float) {

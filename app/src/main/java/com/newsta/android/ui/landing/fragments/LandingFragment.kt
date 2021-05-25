@@ -52,7 +52,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private lateinit var adapter: ViewPagerAdapter
     private fun setUpAdapter(categories: ArrayList<Category>) {
 
-        adapter = ViewPagerAdapter(fragmentActivity = requireActivity(),itemCount =  categories.size)
+        adapter = ViewPagerAdapter(fragmentActivity = requireActivity(),itemCount =  categories.size, categories = categories)
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
@@ -282,7 +282,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                 println("TAB POSITION: $category")
 
-                viewModel.setCategoryState(category)
 
                 binding.tabLayout.setScrollPosition(category, 0f, true)
                 binding.pager.currentItem = category
@@ -334,7 +333,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                 println("TAB POSITION: $category")
 
-                viewModel.setCategoryState(category)
 
                 binding.tabLayout.setScrollPosition(category, 0f, true)
                 binding.pager.currentItem = category

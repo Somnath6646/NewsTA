@@ -39,5 +39,7 @@ interface NewsService {
     @POST("/logout")
     suspend fun logout(@Body logoutRequest: LogoutRequest): Response<LogoutResponse>
 
-
+    @Headers("Accept: application/json")
+    @POST("/admin/events")
+    suspend fun admin(@Body adminRequest: AdminRequest): Response<AdminResponse>
 }

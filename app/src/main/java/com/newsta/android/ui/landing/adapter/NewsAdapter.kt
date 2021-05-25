@@ -1,7 +1,9 @@
 package com.newsta.android.ui.landing.adapter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.NewstaApp
@@ -28,20 +30,37 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
         holder.bind(stories[position])
     }
 
-    fun addAll(storiesResponse: ArrayList<Story>) {
-        storiesResponse.sortByDescending {
-            story ->  story.updatedAt
-        }
-        val storiesList = storiesResponse.filter { story -> story.category == category }
-        stories = ArrayList(storiesList)
-        stories.addAll(storiesResponse)
+    fun addAll(storiesList: ArrayList<Story>) {
+        stories.addAll(storiesList)
+        stories = ArrayList(stories.distinct())
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
     }
 
-    fun setCategory(categoryState: Int) {
-        category = categoryState
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun refreshAdd(storiesList: ArrayList<Story>) {
+
+        val newStories = storiesList
+
+        storiesList.forEach { newStory ->
+            if(stories.contains(newStory)) {
+                println("OLD STORIES SIZE BEF REM: ${stories.size}")
+                stories.remove(newStory)
+                // stories.removeIf { oldStory -> oldStory.storyId == newStory.storyId }
+                println("OLD STORIES SIZE AFT REM: ${stories.size}")
+            }
+        }
+
+        stories.addAll(0, storiesList)
+
+        stories = ArrayList(stories.distinct())
+
         notifyDataSetChanged()
+
+    }
+
+    fun clear() {
+        stories.clear()
     }
 
 }
@@ -56,7 +75,7 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
 
         binding.title.text = event.title
         binding.timeline.text = if(events.size > 1) "View timeline" else ""
-        binding.time.text = "${NewstaApp.setTime(story.updatedAt)} - ${story.storyId}"
+        binding.time.text = "${NewstaApp.setTime(story.updatedAt)}"
 
         Picasso.get()
             .load(event.imgUrl)
