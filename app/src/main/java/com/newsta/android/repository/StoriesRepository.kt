@@ -21,6 +21,9 @@ import java.io.IOException
 import java.lang.Exception
 import java.net.ConnectException
 
+
+private const val TAG = "StoriesRepository"
+
 class StoriesRepository(
     private val storiesDao: StoriesDAO,
 
@@ -265,7 +268,7 @@ class StoriesRepository(
 
         emit(DataState.Loading)
 
-        try {
+        try{
 
             val filteredStories = storiesDao.getFilteredStories(category)
             println("DATABASE FILTER: $filteredStories")
@@ -281,6 +284,7 @@ class StoriesRepository(
     suspend fun deleteAllStories() {
 
         storiesDao.deleteAllStories()
+
         NewstaApp.is_database_empty = true
         NewstaApp.setIsDatabaseEmpty(true)
 
@@ -307,6 +311,7 @@ class StoriesRepository(
                 }
             } catch (e: Exception) {
                 val categories = storiesDao.getAllCategories()
+                Log.i(TAG, "getCategories: $categories")
                 emit(DataState.Success(categories))
             }
         }

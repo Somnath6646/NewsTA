@@ -78,7 +78,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    def work_version = "2.5.0"
+    def work_version = "2.4.0"
 
     // Kotlin + coroutines
     implementation "androidx.work:work-runtime-ktx:$work_version"
@@ -121,7 +121,5 @@ dependencies {
     implementation "com.google.android.gms:play-services-auth:19.0.0"
 
     implementation 'com.facebook.android:facebook-login:9.1.1'
-
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
 }

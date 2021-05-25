@@ -51,6 +51,7 @@
                         android:layout_height="wrap_content"
                         android:letterSpacing="0.15"
                         android:textAllCaps="true"
+                        android:textAlignment="center"
                         android:text="Try again" />
 
                 </androidx.cardview.widget.CardView>

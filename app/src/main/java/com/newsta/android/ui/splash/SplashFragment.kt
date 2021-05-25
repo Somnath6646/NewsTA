@@ -11,6 +11,7 @@ import com.newsta.android.databinding.FragmentSplashBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.viewmodels.NewsViewModel
 
+
 class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
     private val viewModel: NewsViewModel by activityViewModels()

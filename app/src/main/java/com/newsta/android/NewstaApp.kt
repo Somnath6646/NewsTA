@@ -4,19 +4,23 @@ import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorkerFactory
+import androidx.lifecycle.MutableLiveData
 import androidx.work.*
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
+import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.prefrences.UserPrefrences
 import com.newsta.android.utils.workers.DatabaseClearer
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@HiltAndroidApp
-class NewstaApp : Application(), Configuration.Provider {
 
-    @Inject lateinit var workerFactory: HiltWorkerFactory
+
+@HiltAndroidApp
+class NewstaApp : Application() {
+
+
 
     companion object {
 
@@ -38,9 +42,12 @@ class NewstaApp : Application(), Configuration.Provider {
             this.access_token = accessToken
         }
 
-        var is_database_empty: Boolean? = true
+        var liveData_isDataBaseMadeEmpty: MutableLiveData<Indicator<Boolean?>> = MutableLiveData(Indicator(true))
 
-        fun getIsDatabaseEmpty(): Boolean? = is_database_empty
+        var is_database_empty: Boolean = false
+
+        fun getIsDatabaseEmpty(): Boolean = is_database_empty
+
         fun setIsDatabaseEmpty(isDatabaseEmpty: Boolean) {
             this.is_database_empty = isDatabaseEmpty
         }
@@ -97,48 +104,17 @@ class NewstaApp : Application(), Configuration.Provider {
                 }
             }
         }
-
     }
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate() {
         super.onCreate()
         FacebookSdk.sdkInitialize(applicationContext);
         AppEventsLogger.activateApp(this);
-        setWorks()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun setWorks() {
 
-        val constraints = Constraints.Builder()
-            .setRequiresDeviceIdle(true)
-            .build()
 
-        val periodicDatabaseClearRequest = PeriodicWorkRequestBuilder<DatabaseClearer>(3, TimeUnit.DAYS)
-            .build()
-
-        val workManager = WorkManager.getInstance(applicationContext)
-        // workManager.enqueue(periodicDatabaseClearRequest)
-
-        println("METHOD CALLED FOR WORKER")
-
-        workManager.getWorkInfoByIdLiveData(periodicDatabaseClearRequest.id)
-            .observeForever { info ->
-                if(info.state.isFinished) {
-                   is_database_empty = true
-                    setIsDatabaseEmpty(true)
-                } else {
-                    is_database_empty = true
-                    setIsDatabaseEmpty(true)
-                }
-            }
-
-    }
-
-    override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
 
 }

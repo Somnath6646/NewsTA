@@ -38,4 +38,6 @@ interface NewsService {
     @Headers("Accept: application/json")
     @POST("/logout")
     suspend fun logout(@Body logoutRequest: LogoutRequest): Response<LogoutResponse>
+
+
 }

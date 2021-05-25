@@ -3,30 +3,43 @@ package com.newsta.android
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
+import androidx.work.*
 import com.newsta.android.databinding.ActivityMainBinding
 import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.utils.NetworkObserver
+import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.helpers.LocaleConfigurationUtil
 import com.newsta.android.utils.models.Story
+import com.newsta.android.utils.workers.DatabaseClearer
 import com.newsta.android.viewmodels.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
 
     val viewModel : AuthenticationViewModel by viewModels()
     val newsViewModel : NewsViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
 
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -65,6 +78,17 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+
+        NewstaApp.liveData_isDataBaseMadeEmpty.observe(this, Observer {
+            it.getContentIfNotHandled().let {
+                if(!NewstaApp.is_database_empty){
+                    newsViewModel.clearDataBase()
+                    NewstaApp.setIsDatabaseEmpty(true)
+                }
+            }
+        })
+
+        setWorks()
 
         observeUserNetworkConnection()
 
@@ -113,6 +137,35 @@ class MainActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(LocaleConfigurationUtil.adjustFontSize(newBase!!, NewstaApp.font_scale!!))
+    }
+
+
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun setWorks() {
+//
+//        val constraints = Constraints.Builder()
+//            .setRequiresDeviceIdle(true)
+//            .build()
+
+        val periodicDatabaseClearRequest = PeriodicWorkRequest.Builder(DatabaseClearer::class.java, 16, TimeUnit.MINUTES).build()
+
+        val workManager = WorkManager.getInstance(applicationContext)
+
+        workManager.enqueue(periodicDatabaseClearRequest)
+
+        workManager.getWorkInfoByIdLiveData(periodicDatabaseClearRequest.id)
+            .observeForever { info ->
+                if(info.state.isFinished) {
+                    NewstaApp.is_database_empty = true
+                    NewstaApp.setIsDatabaseEmpty(true)
+                    Log.i("Workmanager", "setWorks: aya hai")
+                    NewstaApp.liveData_isDataBaseMadeEmpty.value = Indicator(true)
+                } else {
+                    NewstaApp.is_database_empty = false
+                    NewstaApp.setIsDatabaseEmpty(false)
+                }
+            }
     }
 
     companion object {
