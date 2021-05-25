@@ -58,6 +58,7 @@ class UserPrefrences(context: Context) {
         applicationContext.dataStore.edit { settings ->
             settings[IS_DATABASE_EMPTY] = isDatabaseEmpty
         }
+
     }
 
     val fontScale: Flow<Float?> = applicationContext.dataStore.data

@@ -1,8 +1,10 @@
 package com.newsta.android.ui.landing.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -72,6 +74,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun observer() {
 
         /*viewModel.categoryState.observe(viewLifecycleOwner, Observer { state ->

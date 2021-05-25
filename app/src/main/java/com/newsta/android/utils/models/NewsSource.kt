@@ -11,5 +11,9 @@ data class NewsSource(
     @SerializedName("title")
     val title: String,
     @SerializedName("url")
-    val url: String
+    val url: String,
+    @SerializedName("url_icon")
+    val urlIcon: String,
+    @SerializedName("news_portal")
+    val name: String
 )

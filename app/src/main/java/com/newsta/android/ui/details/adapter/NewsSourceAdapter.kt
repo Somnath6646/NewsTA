@@ -33,6 +33,7 @@ class NewsSourceAdapter(private val onClick: (NewsSource) -> Unit) : RecyclerVie
     }
 
     fun addAll(sourcesResponse: ArrayList<NewsSource>): Boolean {
+        sourcesResponse.distinct()
         sources.clear()
         sources.addAll(sourcesResponse)
         notifyDataSetChanged()
@@ -48,7 +49,7 @@ class NewsSourceViewHolder(private val binding: SourcesItemBinding, private val 
         binding.title.text = source.title
 
         Picasso.get()
-            .load(source.imgUrl)
+            .load(source.urlIcon)
             .into(binding.image)
 
         println("Width = ${binding.image.width}")
@@ -61,6 +62,10 @@ class NewsSourceViewHolder(private val binding: SourcesItemBinding, private val 
         val time = sdf2.format(date?.time)
 
         binding.time.text = time
+
+        binding.sourceName.text = source.name
+
+
 
         binding.root.setOnClickListener { onClick(source) }
 

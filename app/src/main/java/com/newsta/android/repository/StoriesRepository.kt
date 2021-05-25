@@ -103,7 +103,6 @@ class StoriesRepository(
         println("LOADING")
 
         try {
-
             val cachedStories = storiesDao.getAllStories()
             println("CACHED STORIES$cachedStories")
             emit(DataState.Success(cachedStories))
@@ -386,17 +385,6 @@ class StoriesRepository(
 
     }
 
-    fun admin() = flow {
-        emit(DataState.Loading)
 
-        try {
-            println("ADMIN CALLED YFKUFKHKGVUFLU#############")
-            val admin = newsService.admin(AdminRequest())
-            Log.i(TAG, "admin: ${admin.body()}")
-            emit(DataState.Success(admin.body()))
-        } catch (e: Exception) {
-            emit(DataState.Error("Error in checking saved story"))
-        }
-    }
 
 }
