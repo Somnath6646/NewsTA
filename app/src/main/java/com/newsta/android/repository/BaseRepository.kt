@@ -26,15 +26,16 @@ abstract class BaseRepository {
                     emit(DataState.Success(response.body()))
                 } else {
                     val gson = Gson()
+
                     val type = object : TypeToken<ErrorResponse>() {}.type
+
                     var errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+
                     if (errorResponse != null) {
                         emit(DataState.Error(errorResponse.detail))
                     }
 
                 }
-
-
 
             } catch (e: Exception) {
                 if (e is ConnectException) {
