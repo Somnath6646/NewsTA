@@ -24,6 +24,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.newsta.android.MainActivity
 import com.newsta.android.MainActivity.Companion.isConnectedToNetwork
 import com.newsta.android.NewstaApp
@@ -124,7 +125,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         if (story.events.size > 3){
         val timelineAllEvents = ArrayList<Event>(story.events)
 
-        val timeLineOnlyThreeEvent = arrayListOf<Event>(story.events[0], story.events[1], story.events[2])
+        val size = story.events.size
+        val timeLineOnlyThreeEvent = arrayListOf<Event>(story.events[size-3], story.events[size-2], story.events[size-1])
 
         isFullTimelineEnabled.observe(viewLifecycleOwner, Observer {
             if (it){
@@ -193,6 +195,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         )
 
         viewModel.saveStory(savedStory)
+        Snackbar.make(binding.root,"News story saved", Snackbar.LENGTH_SHORT ).show()
         binding.btnDownload.visibility = View.INVISIBLE
 
     }
@@ -208,8 +211,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             events = story.events
         )
 
-        showDeleteDialog(savedStory)
-
+        viewModel.deleteSavedStory(savedStory)
+        binding.btnDownload.visibility = View.VISIBLE
+        Snackbar.make(binding.root,"News story unsaved", Snackbar.LENGTH_SHORT ).show()
     }
 
     private fun showDeleteDialog(savedStory: SavedStory) {

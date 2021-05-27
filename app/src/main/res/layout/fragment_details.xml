@@ -136,6 +136,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="18dp"
+                android:lineSpacingExtra="4dp"
                 android:text="The Serum Institute of India has told Brazil, Saudi Arabia and Morocco that further supplies of the AstraZeneca COVID-19 vaccine will be delayed. The news comes as India is being criticised domestically for donating or selling more doses than inoculations conducted at home."
                 app:layout_constraintBottom_toTopOf="@id/timeline_container"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"

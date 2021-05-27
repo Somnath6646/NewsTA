@@ -60,14 +60,15 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    fun clearAllData(): LiveData<Boolean> = liveData{
+    fun clearAllData(){
         viewModelScope.launch {
             preferences.clearData()
             newsRepository.deleteAllStories()
-            emit(true)
+            toast("DATA CLEAR CALLED")
+
         }
 
-        toast("DATA CLEAR CALLED")
+
     }
 
     fun getSearchResults() {

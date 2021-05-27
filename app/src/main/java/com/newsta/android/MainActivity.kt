@@ -79,16 +79,7 @@ class MainActivity : AppCompatActivity(){
 
         })
 
-        NewstaApp.liveData_isDataBaseMadeEmpty.observe(this, Observer {
-            it.getContentIfNotHandled().let {
-                if(!NewstaApp.is_database_empty){
-                    newsViewModel.clearDataBase()
-                    NewstaApp.setIsDatabaseEmpty(true)
-                }
-            }
-        })
 
-        setWorks()
 
         observeUserNetworkConnection()
 
@@ -141,32 +132,7 @@ class MainActivity : AppCompatActivity(){
 
 
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun setWorks() {
-//
-//        val constraints = Constraints.Builder()
-//            .setRequiresDeviceIdle(true)
-//            .build()
 
-        val periodicDatabaseClearRequest = PeriodicWorkRequest.Builder(DatabaseClearer::class.java, 16, TimeUnit.MINUTES).build()
-
-        val workManager = WorkManager.getInstance(applicationContext)
-
-        workManager.enqueue(periodicDatabaseClearRequest)
-
-        workManager.getWorkInfoByIdLiveData(periodicDatabaseClearRequest.id)
-            .observeForever { info ->
-                if(info.state.isFinished) {
-                    NewstaApp.is_database_empty = true
-                    NewstaApp.setIsDatabaseEmpty(true)
-                    Log.i("Workmanager", "setWorks: aya hai")
-                    NewstaApp.liveData_isDataBaseMadeEmpty.value = Indicator(true)
-                } else {
-                    NewstaApp.is_database_empty = false
-                    NewstaApp.setIsDatabaseEmpty(false)
-                }
-            }
-    }
 
     companion object {
 

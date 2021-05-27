@@ -194,19 +194,18 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         })
 
 
+
         viewModel.logoutDataState.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
                 when(it){
                     is DataState.Success -> {
                         Log.i("TAG", "Sucess logout ")
-                        viewModel.clearAllData().observe(viewLifecycleOwner, Observer {
-                            if(it){
-                                val action = LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
-                                findNavController().navigate(action)
-                                LoginManager.getInstance().logOut();
-                            }
-                        })
 
+                        viewModel.clearAllData()
+                        Toast.makeText(requireContext(), "Cleared!!!", Toast.LENGTH_SHORT).show()
+                        val action = LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
+                        findNavController().navigate(action)
+                        LoginManager.getInstance().logOut();
                     }
                     is DataState.Loading -> {
                         Log.i("TAG", "Loading logout ")
