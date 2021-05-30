@@ -23,6 +23,7 @@ import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.Story
+import com.newsta.android.viewmodels.NewsViewModel.Companion.stories
 import java.lang.Exception
 
 class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
@@ -34,7 +35,6 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
     private lateinit var adapter: NewsAdapter
 
     var categoryState = 0
-    private var stories = ArrayList<Story>()
 
     private fun setUpAdapter() {
 

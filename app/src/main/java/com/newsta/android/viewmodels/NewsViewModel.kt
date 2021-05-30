@@ -306,4 +306,8 @@ constructor(private val newsRepository: StoriesRepository,
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 
+    companion object {
+        var stories = ArrayList<Story>()
+    }
+
 }
