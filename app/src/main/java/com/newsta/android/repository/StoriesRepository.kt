@@ -361,9 +361,9 @@ class StoriesRepository(
         } catch (e: Exception) {
 
             if (e is ConnectException) {
-                DataState.Error("No network connection")
+                emit(DataState.Error("No network connection"))
             } else {
-                DataState.Error(e.message.toString())
+                emit(DataState.Error(" ${e.message.toString()} "))
             }
 
         }

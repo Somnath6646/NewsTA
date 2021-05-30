@@ -16,6 +16,7 @@
             android:elevation="0dp"
             android:layout_marginVertical="3dp"
             app:cardMaxElevation="0dp"
+            android:background="#ffffff"
             app:layout_constraintBottom_toBottomOf="@id/source_name"
             app:layout_constraintEnd_toStartOf="@id/source_name"
             app:layout_constraintTop_toTopOf="@id/source_name"

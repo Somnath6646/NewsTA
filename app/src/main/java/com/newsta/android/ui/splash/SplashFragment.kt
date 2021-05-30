@@ -25,7 +25,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
             override fun onFinish() {
 
 
-                if (NewstaApp.getAccessToken() != null) {
+                if (NewstaApp.access_token != null) {
                     //navtomainfragment
                     navigateToMainFragment()
                 } else {

@@ -63,8 +63,9 @@ constructor(private val newsRepository: StoriesRepository,
     fun clearAllData(){
         viewModelScope.launch {
             preferences.clearData()
+            preferences.appInstalledJustNow(false)
             newsRepository.deleteAllStories()
-            toast("DATA CLEAR CALLED")
+            Log.i("MYTAG", "clearAllData: Aya hai")
 
         }
 
@@ -127,16 +128,17 @@ constructor(private val newsRepository: StoriesRepository,
     fun getNewsOnInit() {
 
         if(NewstaApp.is_database_empty!!) {
-            println("API ------>        ${NewstaApp.is_database_empty!!}")
+            println("API ------>        ${NewstaApp.is_database_empty}")
 
 
             val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
 
             //prefrences se idharr lenaa hai
-
+            Log.i("MYTAG", "getNewsOnInit: Aaya biroo")
             getAllNews(0, days3)
         } else {
-            println("DATABASE ------>        ${NewstaApp.is_database_empty!!}")
+            println("DATABASE ------>        ${NewstaApp.is_database_empty}")
+            Log.i("MYTAG", "getNewsOnInit:Nhi Aaya biroo")
             getNewsFromDatabase()
         }
 

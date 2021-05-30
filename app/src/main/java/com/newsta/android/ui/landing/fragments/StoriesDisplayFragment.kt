@@ -74,7 +74,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+
     private fun observer() {
 
         /*viewModel.categoryState.observe(viewLifecycleOwner, Observer { state ->
@@ -131,7 +131,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
                             extras = ArrayList(it.data)
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
                         e.printStackTrace()
                     }
                     Log.i(
@@ -238,6 +238,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
         })
 
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

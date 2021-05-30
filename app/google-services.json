@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "395971432002",
+    "project_id": "newsta-f6a75",
+    "storage_bucket": "newsta-f6a75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395971432002:android:84069aac75e675218b67db",
+        "android_client_info": {
+          "package_name": "com.newsta.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395971432002-i05p9he5iqsne2mli2tbgcd4f6tug2d7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHiSko_teK3Qv6l4b9HqADt3TyRUpbliM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395971432002-i05p9he5iqsne2mli2tbgcd4f6tug2d7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

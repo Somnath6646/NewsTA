@@ -202,7 +202,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                         Log.i("TAG", "Sucess logout ")
 
                         viewModel.clearAllData()
-                        Toast.makeText(requireContext(), "Cleared!!!", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(requireContext(), "Cleared!!!", Toast.LENGTH_SHORT).show()
                         val action = LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
                         findNavController().navigate(action)
                         LoginManager.getInstance().logOut();

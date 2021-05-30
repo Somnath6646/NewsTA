@@ -37,7 +37,7 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
         notifyDataSetChanged()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+
     fun refreshAdd(storiesList: ArrayList<Story>) {
 
         val newStories = storiesList

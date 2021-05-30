@@ -32,7 +32,7 @@ class DatabaseClearer
             Log.i("WORK MANAGER", "Exception")
             e.printStackTrace()
             prefrences.isDatabaseEmpty(false)
-            return Result.success()
+            return Result.failure()
         }
 
     }

@@ -42,7 +42,7 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>() {
 
     private fun setUpAdapter() {
 
-        adapter = SavedStoryAdapter({ savedStory: SavedStory -> openDetails(savedStory) }, { savedStory: SavedStory -> true })
+        adapter = SavedStoryAdapter({ savedStory: SavedStory -> openDetails(savedStory) }, {  true })
         binding.recyclerView.adapter = adapter
         initTracker()
         adapter.tracker = tracker
@@ -190,7 +190,7 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>() {
             when (it) {
                 is DataState.Success<SavedStory> -> {
 
-                    val story = it.data
+//                    val story = it.data
                     viewModel.getSavedStories()
 
                 }
@@ -216,7 +216,8 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>() {
 
         viewModel.getSavedStories()
 
-        binding.back.setOnClickListener { findNavController().popBackStack() }
+        binding.back.setOnClickListener {
+            findNavController().popBackStack() }
 
     }
 

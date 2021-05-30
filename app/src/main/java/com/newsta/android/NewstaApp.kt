@@ -126,7 +126,7 @@ class NewstaApp : Application(), Configuration.Provider {
             .setRequiresDeviceIdle(true)
             .build()
 
-        val periodicDatabaseClearRequest = PeriodicWorkRequestBuilder<DatabaseClearer>(16, TimeUnit.MINUTES)
+        val periodicDatabaseClearRequest = PeriodicWorkRequestBuilder<DatabaseClearer>(3, TimeUnit.DAYS)
             .build()
 
         val workManager = WorkManager.getInstance(applicationContext)
@@ -140,7 +140,7 @@ class NewstaApp : Application(), Configuration.Provider {
                 prefrences.appInstalledJustNow(false)
 
 
-                workManager.enqueue(periodicDatabaseClearRequest)
+                workManager.enqueueUniquePeriodicWork("Database CLearer", ExistingPeriodicWorkPolicy.KEEP, periodicDatabaseClearRequest)
             }else{
                 Log.i("AppInstalled", "false")
             }
