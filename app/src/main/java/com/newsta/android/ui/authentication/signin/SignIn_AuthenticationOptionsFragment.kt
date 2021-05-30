@@ -18,13 +18,13 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
-import com.newsta.android.databinding.FragmentSignInAuthenticationOptionsBinding
+import com.newsta.android.databinding.FragmentSigninOptionsBinding
 import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.utils.models.DataState
 import java.util.*
 
-class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenticationOptionsBinding>() {
+class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSigninOptionsBinding>() {
 
 
     private lateinit var callbackManager: CallbackManager
@@ -32,7 +32,7 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSignInAuthenti
     private lateinit var facebookAccessToken: String
     private lateinit var iss: String
 
-    override fun getFragmentView(): Int = R.layout.fragment_sign_in__authentication_options
+    override fun getFragmentView(): Int = R.layout.fragment_signin_options
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
