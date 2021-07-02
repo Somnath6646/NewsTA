@@ -6,4 +6,5 @@
     <color name="bg_color">#121212</color>
     <color name="colorSourceTitle">#AEAEAE</color>
     <color name="colorSecondary">#272727</color>
+    <color name="summary">#EAEAEA</color>
 </resources>

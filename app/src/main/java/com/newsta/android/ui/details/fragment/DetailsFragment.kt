@@ -4,10 +4,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.ContentValues
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -25,7 +23,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.newsta.android.MainActivity
 import com.newsta.android.MainActivity.Companion.isConnectedToNetwork
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
@@ -33,6 +30,7 @@ import com.newsta.android.databinding.FragmentDetailsBinding
 import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.details.adapter.NewsSourceAdapter
+import com.newsta.android.ui.details.adapter.NewsSourceIconsAdapter
 import com.newsta.android.ui.details.adapter.TimelineAdapter
 import com.newsta.android.viewmodels.NewsViewModel
 import com.squareup.picasso.Picasso
@@ -50,11 +48,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private var isFullTimelineEnabled = MutableLiveData<Boolean>(false)
 
-
     private val viewModel: NewsViewModel by activityViewModels()
 
     private lateinit var timelineAdapter: TimelineAdapter
     private lateinit var sourcesAdapter: NewsSourceAdapter
+    private lateinit var sourcesIconsAdapter: NewsSourceIconsAdapter
+    private var isSourceViewIcons = true
+    private var sourcesResponse: ArrayList<NewsSource>? = null
 
     private fun initViews() {
 
@@ -94,6 +94,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             binding.sourcesContainer.visibility = View.VISIBLE
         }
 
+        binding.btnSeemoreSources.setOnClickListener { changeSourcesView() }
+
     }
 
     private fun showEventData(event: Event) {
@@ -122,46 +124,92 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
 
-        if (story.events.size > 3){
-        val timelineAllEvents = ArrayList<Event>(story.events)
+        if (story.events.size > 3) {
+            val timelineAllEvents = ArrayList<Event>(story.events)
 
-        val size = story.events.size
-        val timeLineOnlyThreeEvent = arrayListOf<Event>(story.events[size-3], story.events[size-2], story.events[size-1])
+            val size = story.events.size
+            val timeLineOnlyThreeEvent = arrayListOf<Event>(
+                story.events[size - 3],
+                story.events[size - 2],
+                story.events[size - 1]
+            )
 
-        isFullTimelineEnabled.observe(viewLifecycleOwner, Observer {
-            if (it){
-                timelineAdapter =
-                    TimelineAdapter { event ->
-                        timelineOnClick(event)
-                    }
-                binding.recyclerViewTimelineEvents.adapter = timelineAdapter
-                binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
-                binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = true
-                timelineAdapter.addAll(timelineAllEvents)
-                binding.btnSeemoreTimeline.setText("See less")
-            }else{
-                timelineAdapter =
-                    TimelineAdapter { event ->
-                        timelineOnClick(event)
-                    }
-                binding.recyclerViewTimelineEvents.adapter = timelineAdapter
-                binding.recyclerViewTimelineEvents.layoutManager = LinearLayoutManager(requireContext())
-                binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
-                timelineAdapter.addAll(timeLineOnlyThreeEvent)
-                binding.btnSeemoreTimeline.setText("See more")
-            }
-        })
-        }else {
+            isFullTimelineEnabled.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    timelineAdapter =
+                        TimelineAdapter { event ->
+                            timelineOnClick(event)
+                        }
+                    binding.recyclerViewTimelineEvents.adapter = timelineAdapter
+                    binding.recyclerViewTimelineEvents.layoutManager =
+                        LinearLayoutManager(requireContext())
+                    binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = true
+                    timelineAdapter.addAll(timelineAllEvents)
+                    binding.btnSeemoreTimeline.setText("See less")
+                } else {
+                    timelineAdapter =
+                        TimelineAdapter { event ->
+                            timelineOnClick(event)
+                        }
+                    binding.recyclerViewTimelineEvents.adapter = timelineAdapter
+                    binding.recyclerViewTimelineEvents.layoutManager =
+                        LinearLayoutManager(requireContext())
+                    binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
+                    timelineAdapter.addAll(timeLineOnlyThreeEvent)
+                    binding.btnSeemoreTimeline.setText("See more")
+                }
+            })
+        } else {
             val timelineAllEvents = ArrayList<Event>(story.events)
             timelineAdapter.addAll(timelineAllEvents)
             binding.btnSeemoreTimeline.visibility = View.GONE
         }
+
+    }
+
+    private fun changeSourcesView() {
+        isSourceViewIcons = !isSourceViewIcons
+        if(isSourceViewIcons)
+            setSourcesIconsAdapter()
+        else
+            setSourcesAdapter()
+    }
+
+    private fun setSourcesIconsAdapter() {
+
+        binding.recyclerViewSourceEvents.visibility = View.GONE
+        binding.sourceIconsView.visibility = View.VISIBLE
+        binding.textSources.visibility = View.GONE
+
+        sourcesIconsAdapter =
+            NewsSourceIconsAdapter()
+        binding.recyclerViewSourceIcons.adapter = sourcesIconsAdapter
+        binding.recyclerViewSourceIcons.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerViewSourceIcons.isNestedScrollingEnabled = false
+
+        sourcesIconsAdapter.addAll(sourcesResponse!!)
+        binding.btnSeemoreSources.text = if(sourcesResponse!!.size <= 6) "View all" else "+ ${sourcesResponse!!.size - 6} sources"
+
+        if (sourcesResponse!!.size == 1) {
+            binding.textSourcesIcon.text = "Source:"
+        }
+
+    }
+
+    private fun setSourcesAdapter() {
+
+        binding.recyclerViewSourceEvents.visibility = View.VISIBLE
+        binding.sourceIconsView.visibility = View.GONE
+        binding.textSources.visibility = View.VISIBLE
 
         sourcesAdapter =
             NewsSourceAdapter { source ->
                 openNewsUrl(source)
             }
         binding.recyclerViewSourceEvents.adapter = sourcesAdapter
+        if(!sourcesResponse.isNullOrEmpty()) {
+            sourcesAdapter.addAll(sourcesResponse!!)
+        }
         binding.recyclerViewSourceEvents.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewSourceEvents.isNestedScrollingEnabled = false
 
@@ -195,7 +243,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         )
 
         viewModel.saveStory(savedStory)
-        Snackbar.make(binding.root,"News story saved", Snackbar.LENGTH_SHORT ).show()
+        Snackbar.make(binding.root, "News story saved", Snackbar.LENGTH_SHORT).show()
         binding.btnDownload.visibility = View.INVISIBLE
 
     }
@@ -213,13 +261,18 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         viewModel.deleteSavedStory(savedStory)
         binding.btnDownload.visibility = View.VISIBLE
-        Snackbar.make(binding.root,"News story unsaved", Snackbar.LENGTH_SHORT ).show()
+        Snackbar.make(binding.root, "News story unsaved", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showDeleteDialog(savedStory: SavedStory) {
 
         val dialog = Dialog(requireContext())
-        val dialogBinding = DataBindingUtil.inflate<LogoutDialogBinding>(LayoutInflater.from(requireContext()), R.layout.logout_dialog, null, false)
+        val dialogBinding = DataBindingUtil.inflate<LogoutDialogBinding>(
+            LayoutInflater.from(requireContext()),
+            R.layout.logout_dialog,
+            null,
+            false
+        )
         dialog.setContentView(dialogBinding.root)
 
         dialogBinding.message.text = "Are you sure you want to delete this story?"
@@ -244,7 +297,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         viewModel.sourcesDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
-                    sourcesAdapter.addAll((it.data) as ArrayList)
+                    sourcesResponse = (it.data) as ArrayList
+                    if(!sourcesResponse.isNullOrEmpty()) {
+                        setSourcesIconsAdapter()
+                    }
                 }
                 is DataState.Loading -> {
                     Log.i("TAG", "onActivityCreated: load horha hai sources ")
@@ -277,7 +333,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             when (it) {
                 is DataState.Success<SavedStory?> -> {
                     val savedStory = it.data
-                    if(it.data != null) {
+                    if (it.data != null) {
                         binding.btnDownload.visibility = View.INVISIBLE
                         println("NEWS WAS SAVED")
                     }
@@ -312,7 +368,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         }
 
         binding.btnSeemoreTimeline.setOnClickListener {
-            if(isFullTimelineEnabled.value != null ){
+            if (isFullTimelineEnabled.value != null) {
                 isFullTimelineEnabled.value = !isFullTimelineEnabled.value!!
             }
 
@@ -322,7 +378,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         initViews()
         observer()
-
 
 
     }

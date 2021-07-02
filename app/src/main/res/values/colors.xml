@@ -12,4 +12,5 @@
     <color name="password_strong">#88FF00</color>
     <color name="password_very_strong">#008000</color>
     <color name="gray">#474747</color>
+    <color name="summary">#545454</color>
 </resources>

@@ -210,5 +210,19 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.newsta.android.ui.settings.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true"
+            app:popExitAnim="@anim/out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.newsta.android.ui.settings.categories.CategoriesFragment"
+        android:label="CategoriesFragment" />
 </navigation>

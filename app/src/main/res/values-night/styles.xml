@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/bg_color</item>
         <item name="colorAccent">@color/colorPrimary</item>
-        <item name="fontFamily">@font/segoeui</item>
+        <item name="fontFamily">@font/regular</item>
         <item name="materialAlertDialogTheme">@style/Theme.MaterialComponents.DayNight.Dialog.Alert</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
@@ -16,7 +16,7 @@
     </style>
 
     <style name="DescriptionText">
-        <item name="fontFamily">@font/seguisb</item>
+        <item name="fontFamily">@font/semibold</item>
         <item name="android:textSize">14sp</item>
         <item name="android:padding">12dp</item>
         <item name="android:textStyle">normal</item>
@@ -26,7 +26,7 @@
 
 
     <style name="Loginbuttontextstyle">
-        <item name="fontFamily">@font/segoeuib</item>
+        <item name="fontFamily">@font/bold</item>
         <item name="android:textSize">16sp</item>
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
@@ -38,7 +38,7 @@
 
 
     <style name="signinbuttontextstyle">
-        <item name="fontFamily">@font/segoeuib</item>
+        <item name="fontFamily">@font/bold</item>
         <item name="android:textSize">16sp</item>
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
@@ -61,7 +61,7 @@
     </style>
 
     <style name="BigHeading">
-        <item name="fontFamily">@font/segoeuib</item>
+        <item name="fontFamily">@font/bold</item>
         <item name="android:textSize">28sp</item>
         <item name="android:textColor">@color/colorText</item>
     </style>
@@ -73,7 +73,7 @@
 
 
     <style name="TextActionBar">
-        <item name="fontFamily">@font/segoeuib</item>
+        <item name="fontFamily">@font/bold</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/colorText</item>
     </style>

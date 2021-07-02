@@ -136,7 +136,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="18dp"
-                android:lineSpacingExtra="4dp"
+                android:textColor="@color/summary"
+                android:lineHeight="30sp"
                 android:text="The Serum Institute of India has told Brazil, Saudi Arabia and Morocco that further supplies of the AstraZeneca COVID-19 vaccine will be delayed. The news comes as India is being criticised domestically for donating or selling more doses than inoculations conducted at home."
                 app:layout_constraintBottom_toTopOf="@id/timeline_container"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
@@ -152,38 +153,37 @@
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
                 app:layout_constraintTop_toBottomOf="@id/summary_event">
 
-            <TextView
-                android:id="@+id/text_timline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Timeline"
-                android:textColor="@color/colorText"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                <TextView
+                    android:id="@+id/text_timline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Timeline"
+                    android:textColor="@color/colorText"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_timeline_events"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:fadingEdge="vertical"
-                app:layout_constraintTop_toBottomOf="@id/text_timline" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_timeline_events"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="12dp"
+                    android:fadingEdge="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_timline" />
 
                 <TextView
                     android:id="@+id/btn_seemore_timeline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
                     android:text="See more"
                     android:textColor="@color/colorPrimary"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recycler_view_timeline_events"
-                    android:layout_marginVertical="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recycler_view_timeline_events" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -192,27 +192,74 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="16dp"
-                app:layout_constraintStart_toStartOf="@id/left_guidline"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
-                app:layout_constraintTop_toBottomOf="@id/timeline_container"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintStart_toStartOf="@id/left_guidline"
+                app:layout_constraintTop_toBottomOf="@id/timeline_container">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/source_icons_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/text_sources_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sources:"
+                        android:textColor="@color/colorText"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_source_icons"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginHorizontal="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/text_sources_icon"
+                        app:layout_constraintEnd_toStartOf="@id/btn_seemore_sources"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/btn_seemore_sources"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:text="+ n sources"
+                        android:textColor="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/text_sources"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sources"
+                    android:visibility="gone"
                     android:textColor="@color/colorText"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view_source_events"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="12dp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_sources" />

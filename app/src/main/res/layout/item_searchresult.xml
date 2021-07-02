@@ -53,7 +53,7 @@
             android:layout_marginStart="14dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:fontFamily="@font/segoeuib"
+            android:fontFamily="@font/bold"
             android:text="N hours ago"
             android:textColor="@color/colorSubText"
             android:textSize="12sp"

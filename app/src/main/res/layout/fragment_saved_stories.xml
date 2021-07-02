@@ -73,7 +73,7 @@
                     android:layout_width="wrap_content"
                     style="@style/TextActionBar"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/segoeui"
+                    android:fontFamily="@font/regular"
                     android:text="@string/saved_stories"
                     android:textSize="20sp"
                     android:textStyle="bold"

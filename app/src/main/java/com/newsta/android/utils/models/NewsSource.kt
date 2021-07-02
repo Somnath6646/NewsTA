@@ -16,4 +16,9 @@ data class NewsSource(
     val urlIcon: String,
     @SerializedName("news_portal")
     val name: String
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        val source = other as NewsSource
+        return source.urlIcon == this.urlIcon
+    }
+}

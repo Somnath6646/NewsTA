@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/bg_color</item>
         <item name="colorAccent">@color/colorPrimary</item>
-        <item name="fontFamily">@font/segoeui</item>
+        <item name="fontFamily">@font/regular</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

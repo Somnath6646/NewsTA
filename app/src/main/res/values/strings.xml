@@ -21,6 +21,8 @@
     <string name="font_scale">Font scale</string>
     <string name="font_size">Font size</string>
     <string name="type_here_to_search">Type here to search</string>
+    <string name="manage_categories">Manage categories</string>
+    <string name="categories">Categories</string>
 
     <string-array name="font_sizes_array">
         <item>Default</item>

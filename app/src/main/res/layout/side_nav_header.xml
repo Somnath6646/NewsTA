@@ -16,7 +16,7 @@
             android:layout_marginTop="25dp"
             android:layout_marginStart="25dp"
             android:layout_marginBottom="10dp"
-            android:fontFamily="@font/segoeui"
+            android:fontFamily="@font/regular"
             android:textSize="24sp"
             android:text="Newsta"
             android:textColor="@color/colorPrimary" />

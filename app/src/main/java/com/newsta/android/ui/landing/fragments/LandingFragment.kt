@@ -43,8 +43,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private val viewModel: NewsViewModel by activityViewModels()
 
-
-
     private lateinit var categories: ArrayList<Category>
     private var category = 0
 
@@ -331,7 +329,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 category = tab!!.position
 
                 println("TAB POSITION: $category")
-
 
                 binding.tabLayout.setScrollPosition(category, 0f, true)
                 binding.pager.currentItem = category

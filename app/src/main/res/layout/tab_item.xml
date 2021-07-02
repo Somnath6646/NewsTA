@@ -18,8 +18,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:background="@drawable/tab_item_unselected"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="2dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -27,8 +29,9 @@
                 android:textSize="16sp"
                 android:textColor="@color/colorText"
                 android:text="Category"
+                android:fontFamily="@font/semibold"
                 android:layout_gravity="center"
-                android:layout_margin="48dp"/>
+                android:layout_margin="60dp"/>
 
             </LinearLayout>
 

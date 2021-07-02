@@ -104,6 +104,8 @@ class  SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
         binding.back.setOnClickListener { findNavController().popBackStack() }
 
+        binding.categoriesContainer.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_categoriesFragment) }
+
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_settings
