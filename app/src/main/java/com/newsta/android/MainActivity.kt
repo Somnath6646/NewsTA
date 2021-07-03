@@ -53,12 +53,12 @@ class MainActivity : AppCompatActivity(){
 
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
-        viewModel.userPrefrences.accessToken.asLiveData().observe(this, Observer {accessToken ->
-                NewstaApp.access_token = accessToken
-                NewstaApp.setAccessToken(accessToken)
-
-                Log.i("MainActivity", (accessToken == NewstaApp.getAccessToken()).toString())
-
+        viewModel.userPrefrences.accessToken.asLiveData().observe(this, Observer { accessToken ->
+            NewstaApp.access_token = accessToken
+            NewstaApp.setAccessToken(accessToken)
+            if (!NewstaApp.access_token.isNullOrEmpty())
+                searchWithNewsta()
+            Log.i("MainActivity", (accessToken == NewstaApp.getAccessToken()).toString())
         })
 
         viewModel.userPrefrences.isDatabaseEmpty.asLiveData().observe(this, Observer { isDatabaseEmpty ->
@@ -87,6 +87,9 @@ class MainActivity : AppCompatActivity(){
 
         observeUserNetworkConnection()
 
+    }
+
+    private fun searchWithNewsta() {
         if (intent?.action == Intent.ACTION_SEND) {
             println("SHARE IF MEIN AAYA HAI")
             println("SHARE INTENT: $intent")
@@ -102,7 +105,6 @@ class MainActivity : AppCompatActivity(){
                 }
             }
         }
-
     }
 
     private fun observeUserNetworkConnection() {

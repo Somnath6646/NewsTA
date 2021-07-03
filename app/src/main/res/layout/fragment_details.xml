@@ -50,13 +50,12 @@
             <ImageView
                 android:id="@+id/btn_back"
                 style="@style/Rippleeffect"
-                android:src="@drawable/back"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:src="@drawable/back"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_share"
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
-                app:layout_constraintTop_toTopOf="@id/top_guidline"
-               />
+                app:layout_constraintTop_toTopOf="@id/top_guidline" />
 
             <ImageView
                 android:id="@+id/btn_downloaded"
@@ -80,8 +79,7 @@
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_share"
                 app:layout_constraintEnd_toStartOf="@id/btn_share"
-                app:layout_constraintTop_toTopOf="@id/top_guidline"
-                 />
+                app:layout_constraintTop_toTopOf="@id/top_guidline" />
 
             <ImageView
                 android:id="@+id/btn_share"
@@ -90,8 +88,7 @@
                 android:layout_height="30dp"
                 android:src="@drawable/share"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
-                app:layout_constraintTop_toTopOf="@id/top_guidline"
-               />
+                app:layout_constraintTop_toTopOf="@id/top_guidline" />
 
             <TextView
                 android:id="@+id/title_event"
@@ -138,9 +135,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="17dp"
-                android:textColor="@color/summary"
                 android:lineHeight="28sp"
                 android:text="The Serum Institute of India has told Brazil, Saudi Arabia and Morocco that further supplies of the AstraZeneca COVID-19 vaccine will be delayed. The news comes as India is being criticised domestically for donating or selling more doses than inoculations conducted at home."
+                android:textColor="@color/summary"
                 app:layout_constraintBottom_toTopOf="@id/timeline_container"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
@@ -159,10 +156,10 @@
                     android:id="@+id/text_timline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/regular"
                     android:text="Timeline"
                     android:textColor="@color/colorText"
                     android:textSize="16sp"
-                    android:fontFamily="@font/regular"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -214,33 +211,33 @@
                         android:id="@+id/text_sources_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/regular"
                         android:text="Sources:"
                         android:textColor="@color/colorText"
                         android:textSize="16sp"
-                        android:fontFamily="@font/regular"
                         android:textStyle="bold"
 
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_source_icons"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginHorizontal="8dp"
+                        android:orientation="horizontal"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/text_sources_icon"
                         app:layout_constraintEnd_toStartOf="@id/btn_seemore_sources"
+                        app:layout_constraintStart_toEndOf="@id/text_sources_icon"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/btn_seemore_sources"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp"
                         android:layout_marginHorizontal="8dp"
+                        android:layout_marginVertical="8dp"
                         android:text="+ n sources"
                         android:textColor="@color/colorPrimary"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -253,12 +250,12 @@
                     android:id="@+id/text_sources"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/regular"
                     android:text="Sources"
-                    android:visibility="gone"
                     android:textColor="@color/colorText"
                     android:textSize="16sp"
-                    android:fontFamily="@font/regular"
                     android:textStyle="bold"
+                    android:visibility="gone"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -275,25 +272,20 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_sources" />
 
-
                 <View
                     android:id="@+id/source_aligner"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    />
-
-
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:id="@+id/extra_space"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="44dp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
