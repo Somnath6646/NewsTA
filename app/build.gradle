@@ -27,7 +27,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -120,8 +120,8 @@ dependencies {
     // define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
 
-
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+
     implementation "androidx.datastore:datastore-preferences:1.0.0-beta01"
 
     implementation 'com.squareup.picasso:picasso:2.71828'

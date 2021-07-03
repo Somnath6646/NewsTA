@@ -27,11 +27,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginVertical="36dp"
-                    android:fontFamily="@font/bold"
+                    android:fontFamily="@font/regular"
                     android:gravity="center"
+                    android:textStyle="bold"
                     android:textColor="@color/colorText"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="20sp"/>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/button"

@@ -240,10 +240,17 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        Log.i("1TAG", "onResume: aya hai ")
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         setUpAdapter()
+
+        Log.i("1TAG", "onActivityCreated: aya hai ")
 
         arguments?.takeIf {
             it.containsKey(ARG_OBJECT) }?.apply {

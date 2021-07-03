@@ -40,15 +40,16 @@
             />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/top_guidline"
-            android:layout_width="wrap_content"
+            android:id="@+id/top_guideline"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintGuide_percent="0.025"
-            />
+            app:layout_constraintGuide_percent="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
 
         <ImageView
             android:id="@+id/btn_back"
@@ -57,7 +58,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/back"
             app:layout_constraintStart_toStartOf="@id/left_guidline"
-            app:layout_constraintTop_toTopOf="@id/top_guidline" />
+            app:layout_constraintTop_toTopOf="@id/top_guideline" />
 
         <TextView
             style="@style/TextActionBar"
@@ -67,7 +68,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/btn_back"
             app:layout_constraintEnd_toEndOf="@id/right_guidline"
             app:layout_constraintStart_toStartOf="@id/left_guidline"
-            app:layout_constraintTop_toBottomOf="@id/top_guidline" />
+            app:layout_constraintTop_toBottomOf="@id/top_guideline" />
 
         <TextView
             android:id="@+id/heading_email_signin"

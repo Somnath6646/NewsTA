@@ -6,6 +6,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SpinnerAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
@@ -14,6 +15,7 @@ import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSettingsBinding
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.ui.settings.adapters.CustomDropDownAdapter
 import com.newsta.android.viewmodels.NewsViewModel
 
 class  SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
@@ -49,7 +51,10 @@ class  SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             )
         }
 
-        spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, fontSizes)
+        val customDropDownAdapter = CustomDropDownAdapter(requireContext(), fontSizes)
+
+
+        spinnerAdapter = customDropDownAdapter
             .also { adapter ->
                 binding.spinnerFontSize.adapter = adapter
             }
@@ -91,7 +96,10 @@ class  SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                         println("SMALL SELECTED")
                     }
 
+
+
                 }
+
             }
 
         }

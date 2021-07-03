@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
+        app:cardElevation="0dp"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardBackgroundColor="@color/colorSecondary"
         app:cardCornerRadius="8dp">
@@ -19,8 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:fontFamily="@font/regular"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="10dp" />
+            android:paddingVertical="6dp" />
 
     </androidx.cardview.widget.CardView>
 

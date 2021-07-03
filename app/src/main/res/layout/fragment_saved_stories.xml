@@ -24,7 +24,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintGuide_percent="0.02"
+                    app:layout_constraintGuide_percent="0.05"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toStartOf="@id/end_guideline"
-                    app:layout_constraintGuide_begin="51dp"
+                    app:layout_constraintGuide_percent="0.09"
                     app:layout_constraintStart_toEndOf="@id/start_guideline"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,8 +75,6 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/regular"
                     android:text="@string/saved_stories"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/nav_guideline"
                     app:layout_constraintEnd_toStartOf="@id/search"
                     app:layout_constraintStart_toEndOf="@id/back"
@@ -115,7 +113,7 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_margin="4dp"
-                        app:cardBackgroundColor="#DBEDFF"
+                        app:cardBackgroundColor="@color/colorSecondary"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"

@@ -146,7 +146,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
             if(binding.searchLayout.visibility == View.VISIBLE) {
                 binding.navDrawer.visibility = View.VISIBLE
-                binding.appName.visibility = View.VISIBLE
+                /*binding.appName.visibility = View.VISIBLE*/
                 binding.searchLayout.visibility = View.GONE
                 binding.back.visibility = View.GONE
             }
@@ -154,20 +154,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         binding.search.setOnClickListener {
 
-            if(binding.searchLayout.visibility == View.GONE) {
-                binding.navDrawer.visibility = View.GONE
-                binding.appName.visibility = View.GONE
-                binding.back.visibility = View.VISIBLE
 
-                binding.searchLayout.visibility = View.VISIBLE
-                binding.searchLayout.isActivated = true
-
-            }else{
-                viewModel.getSearchResults()
                 val action = LandingFragmentDirections.actionLandingFragmentToSearchFragment()
                 findNavController().navigate(action)
-
-            }
 
 
         }
