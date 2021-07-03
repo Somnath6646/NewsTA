@@ -1,0 +1,15 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<shortcut
+        android:shortcutId="compose"
+        android:enabled="true"
+        android:icon="@drawable/ic_logo"
+        android:shortcutShortLabel="@string/shortLabel"
+        android:shortcutLongLabel="@string/longLabel">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.newsta.android"
+            android:targetClass="com.newsta.android.ui.search.fragment.SearchFragment" />
+        <categories android:name="Search" />
+    </shortcut>-->
+    <!-- Specify more shortcuts here. -->
+</shortcuts>

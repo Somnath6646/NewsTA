@@ -1,5 +1,6 @@
 package com.newsta.android.ui.splash
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.fragment.app.activityViewModels
@@ -24,9 +25,9 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
         timer = object : CountDownTimer(2000, 1000) {
             override fun onFinish() {
 
-
                 if (NewstaApp.access_token != null) {
                     //navtomainfragment
+                    if(activity?.intent?.action != Intent.ACTION_SEND)
                     navigateToMainFragment()
                 } else {
                     //navtoauthenticationoptionsfragment

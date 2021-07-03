@@ -3,18 +3,24 @@ package com.newsta.android
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.work.*
 import com.newsta.android.databinding.ActivityMainBinding
 import com.newsta.android.viewmodels.AuthenticationViewModel
@@ -79,9 +85,23 @@ class MainActivity : AppCompatActivity(){
 
         })
 
-
-
         observeUserNetworkConnection()
+
+        if (intent?.action == Intent.ACTION_SEND) {
+            println("SHARE IF MEIN AAYA HAI")
+            println("SHARE INTENT: $intent")
+            if (intent.type?.startsWith("text/") == true) {
+                println("SHARE INTENT: $intent")
+                intent?.getStringExtra(Intent.EXTRA_TEXT)?.let { data ->
+                    println("INTENT SHARE TEXT: $data")
+                    val dataToSearch = bundleOf("dataToSearch" to data)
+                    val navHostFragment =
+                        supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                    val navController = navHostFragment.navController
+                    navController.navigate(R.id.action_splashFragment_to_searchFragment, dataToSearch)
+                }
+            }
+        }
 
     }
 
@@ -129,10 +149,6 @@ class MainActivity : AppCompatActivity(){
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(LocaleConfigurationUtil.adjustFontSize(newBase!!, NewstaApp.font_scale!!))
     }
-
-
-
-
 
     companion object {
 

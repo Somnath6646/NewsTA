@@ -117,7 +117,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    fun getNewsFromDatabase() {
+    private fun getNewsFromDatabase() {
 
         viewModelScope.launch {
             newsRepository.getNewsFromDatabase().onEach {
@@ -203,9 +203,10 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    fun getCategories() {
+    private fun getCategories() {
 
         viewModelScope.launch {
+            println("NEWSTA APP: ${NewstaApp.access_token}")
             val request = CategoryRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA)
             newsRepository.getCategories(request).onEach {
                 _categoryDataState.value = it
@@ -213,8 +214,6 @@ constructor(private val newsRepository: StoriesRepository,
         }
 
     }
-
-
 
     private val _savedStoriesState = MutableLiveData<DataState<List<SavedStory>>>()
     val savedStoriesState: LiveData<DataState<List<SavedStory>>>

@@ -1,17 +1,22 @@
 package com.newsta.android.ui.search.fragment
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSearchBinding
 import com.newsta.android.responses.SearchStory
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.search.adapter.SearchAdapter
+import com.newsta.android.utils.ShareUtil
 import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
@@ -19,27 +24,40 @@ import com.newsta.android.utils.models.Story
 
 class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
-
     private val viewModel by activityViewModels<NewsViewModel>()
     private lateinit var adapter: SearchAdapter
     private var selectedEventID: Int = 0
 
     override fun getFragmentView(): Int  = R.layout.fragment_search
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        val dataToSearch = arguments?.getString("dataToSearch")
+        println("ARGUMENTS $arguments")
+        println("DATA TO SEARCH: $dataToSearch")
+        if(!dataToSearch.isNullOrEmpty()) {
+            viewModel.searchTerm.value = dataToSearch
+            viewModel.getSearchResults()
+        }
+
+        if(activity?.intent?.action == Intent.ACTION_SEND) {
+            binding.back.setOnClickListener {
+                requireActivity().finish()
+            }
+        } else {
+            binding.back.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = requireActivity()
         setUpAdapter()
 
         binding.search.setOnClickListener {
-
             viewModel.getSearchResults()
-        }
-
-        binding.back.setOnClickListener {
-            findNavController().popBackStack()
         }
 
         viewModel.searchDataState.observe(viewLifecycleOwner, Observer {
@@ -85,6 +103,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
             }
 
         })
+
+//        ShareUtil.publishMemeShareShortcuts(requireContext())
 
     }
 

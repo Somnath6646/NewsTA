@@ -15,7 +15,6 @@
         android:background="@color/bg_color"
         tools:context=".ui.search.fragment.SearchFragment">
 
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/top_guideline"
             android:layout_width="match_parent"
@@ -71,15 +70,16 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginVertical="15dp"
-            android:background="@drawable/input_bg"
-            android:hint="Type here to search"
+            android:hint="@string/type_here_to_search"
             android:paddingStart="15dp"
             android:text="@={viewModel.searchTerm}"
+            android:background="@android:color/transparent"
             app:layout_constraintBottom_toTopOf="@+id/nav_guideline"
             app:layout_constraintEnd_toStartOf="@id/search"
             app:layout_constraintStart_toEndOf="@+id/back"
             android:singleLine="true"
             app:layout_constraintTop_toTopOf="@+id/top_guideline" />
+
         <ImageView
             android:id="@+id/search"
             style="@style/Rippleeffect"
@@ -90,8 +90,14 @@
             app:layout_constraintEnd_toStartOf="@id/end_guideline"
             app:layout_constraintTop_toBottomOf="@id/top_guideline" />
 
-
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/gray"
+            app:layout_constraintTop_toTopOf="@+id/nav_guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="4dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -114,6 +120,6 @@
             app:layout_constraintStart_toStartOf="@+id/recycler_view"
             app:layout_constraintTop_toBottomOf="@+id/search_layout" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

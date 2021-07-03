@@ -54,6 +54,9 @@
             app:popUpTo="@id/nav_graph"
 
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/email_SignUpFragment"
@@ -206,6 +209,13 @@
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
+        <deeplink
+            app:action="android.intent.action.SEND"
+            app:mimeType="text/plain"/>
+        <argument
+            android:name="dataToSearch"
+            app:argType="string"
+            android:defaultValue="" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
