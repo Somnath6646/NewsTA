@@ -9,7 +9,7 @@
         android:background="@color/bg_color"
         tools:context=".ui.authentication.signup.SignUp_AuthenticationOptionsFragment">
 
-         <ImageView
+        <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -20,8 +20,7 @@
             app:layout_constraintHeight_percent="0.1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.25"
-             />
+            app:layout_constraintWidth_percent="0.25" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/btn_signup"
@@ -60,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >
+
                 <com.facebook.login.widget.LoginButton
                     android:id="@+id/login_button"
                     style="@style/Ctabuttontextstyle"
@@ -82,6 +82,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
@@ -115,7 +116,7 @@
             style="@style/Ctabuttontextstyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="36dp"
+            android:layout_marginBottom="42dp"
             android:text="Log in"
             android:textColor="@color/colorText"
             app:layout_constraintBottom_toBottomOf="parent"

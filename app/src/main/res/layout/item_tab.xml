@@ -22,7 +22,7 @@
             android:gravity="center"
             android:fontFamily="@font/regular"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="6dp" />
+            android:paddingVertical="6.5dp" />
 
     </androidx.cardview.widget.CardView>
 

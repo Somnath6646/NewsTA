@@ -226,6 +226,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         viewModel.toast.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
+                if(it != null)
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })

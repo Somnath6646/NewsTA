@@ -15,7 +15,10 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.drawToBitmap
+import androidx.core.view.marginBottom
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -73,9 +76,15 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         if (story.events.size > 1) {
             binding.textTimline.visibility = View.VISIBLE
             binding.recyclerViewTimelineEvents.visibility = View.VISIBLE
+
+            addTopToBottomOfSourceContainer()
+
+
         } else {
             binding.textTimline.visibility = View.GONE
             binding.recyclerViewTimelineEvents.visibility = View.GONE
+            binding.extraSpace.visibility = View.VISIBLE
+            removeTopToBottomOfSourceContainer()
         }
 
         viewModel.getSavedStory(story.storyId)
@@ -94,8 +103,59 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             binding.sourcesContainer.visibility = View.VISIBLE
         }
 
-        binding.btnSeemoreSources.setOnClickListener { changeSourcesView() }
+//        adjustExtraSpace()
 
+        binding.btnSeemoreSources.setOnClickListener { changeSourcesView()
+            adjustExtraSpace()
+            removeConstrainBottomOfSourcesToBottomOfParent()
+            addTopToBottomOfSourceContainer()
+        }
+
+    }
+
+    private fun adjustExtraSpace(){
+
+        val scrollView = binding.scrollView
+
+        scrollView.viewTreeObserver.addOnGlobalLayoutListener{
+            val childHeight = binding.constraintLayout.height
+            val isScrollable = scrollView.height < childHeight + scrollView.paddingTop + scrollView.paddingBottom
+            if(isScrollable){
+                binding.extraSpace.visibility = View.VISIBLE
+            }else{
+                binding.extraSpace.visibility = View.GONE
+            }
+        }
+
+
+
+
+    }
+
+    private  fun addTopToBottomOfSourceContainer(){
+        val layout = binding.constraintLayout
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(layout)
+        constraintSet.connect(binding.sourcesContainer.id, ConstraintSet.TOP, binding.timelineContainer.id, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(layout)
+    }
+
+    private  fun removeTopToBottomOfSourceContainer(){
+        val containerParams = binding.sourcesContainer.layoutParams as ConstraintLayout.LayoutParams
+        containerParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
+        binding.sourcesContainer.layoutParams = containerParams
+    }
+
+    private fun removeConstrainBottomOfSourcesToBottomOfParent(){
+        /*val layout = binding.constraintLayout
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(layout)
+        constraintSet.connect(binding.textSources.id, ConstraintSet.BOTTOM, binding.root.id, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(layout)*/
+
+        val containerParams = binding.textSources.layoutParams as ConstraintLayout.LayoutParams
+        containerParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+        binding.textSources.layoutParams = containerParams
     }
 
     private fun showEventData(event: Event) {

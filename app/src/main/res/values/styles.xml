@@ -97,7 +97,7 @@
     </style>
 
     <style name="DetailPageSummary" parent="ExtraLightTextNews">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">17sp</item>
         <item name="lineSpacing">36sp</item>
     </style>
 
