@@ -49,6 +49,8 @@
             android:layout_marginBottom="2dp"
             android:text="15 Nov"
             android:textSize="12sp"
+            android:fontFamily="@font/regular"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/point_timline"
             app:layout_constraintTop_toTopOf="parent" />
@@ -64,6 +66,7 @@
             android:textColor="@color/colorText"
             android:textSize="14sp"
             android:textStyle="bold"
+            android:fontFamily="@font/regular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/point_timline"
             app:layout_constraintTop_toBottomOf="@id/date_events_timeline" />

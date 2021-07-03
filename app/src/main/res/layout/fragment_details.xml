@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintGuide_percent="0.04"
+                app:layout_constraintGuide_percent="0.05"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +34,7 @@
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintGuide_percent="0.96"
+                app:layout_constraintGuide_percent="0.95"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -50,19 +50,19 @@
             <ImageView
                 android:id="@+id/btn_back"
                 style="@style/Rippleeffect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:src="@drawable/back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_share"
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
                 app:layout_constraintTop_toTopOf="@id/top_guidline"
-                app:tint="@color/colorText" />
+               />
 
             <ImageView
                 android:id="@+id/btn_downloaded"
                 style="@style/Rippleeffect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginHorizontal="8dp"
                 android:src="@drawable/ic_downloaded"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_share"
@@ -73,32 +73,32 @@
             <ImageView
                 android:id="@+id/btn_download"
                 style="@style/Rippleeffect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginHorizontal="8dp"
                 android:src="@drawable/ic_downlaod"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_share"
                 app:layout_constraintEnd_toStartOf="@id/btn_share"
                 app:layout_constraintTop_toTopOf="@id/top_guidline"
-                app:tint="@color/colorText" />
+                 />
 
             <ImageView
                 android:id="@+id/btn_share"
                 style="@style/Rippleeffect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_share"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/share"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
                 app:layout_constraintTop_toTopOf="@id/top_guidline"
-                app:tint="@color/colorText" />
+               />
 
             <TextView
                 android:id="@+id/title_event"
                 style="@style/DetailPageHeading"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginBottom="12dp"
 
                 android:text="Serum Institute to Delay Vaccine Shipments to Brazil, Morocco, Saudi over Surging Demand at Home"
@@ -137,9 +137,9 @@
                 style="@style/DetailPageSummary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="18dp"
+                android:layout_marginVertical="17dp"
                 android:textColor="@color/summary"
-                android:lineHeight="30sp"
+                android:lineHeight="28sp"
                 android:text="The Serum Institute of India has told Brazil, Saudi Arabia and Morocco that further supplies of the AstraZeneca COVID-19 vaccine will be delayed. The news comes as India is being criticised domestically for donating or selling more doses than inoculations conducted at home."
                 app:layout_constraintBottom_toTopOf="@id/timeline_container"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
@@ -161,7 +161,8 @@
                     android:layout_height="wrap_content"
                     android:text="Timeline"
                     android:textColor="@color/colorText"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/regular"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -170,7 +171,8 @@
                     android:id="@+id/recycler_view_timeline_events"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="12dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="12dp"
                     android:fadingEdge="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -193,8 +195,8 @@
                 android:id="@+id/sources_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toTopOf="@id/extra_space"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
                 app:layout_constraintTop_toBottomOf="@id/timeline_container">
@@ -203,6 +205,7 @@
                     android:id="@+id/source_icons_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -214,7 +217,9 @@
                         android:text="Sources:"
                         android:textColor="@color/colorText"
                         android:textSize="16sp"
+                        android:fontFamily="@font/regular"
                         android:textStyle="bold"
+
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -251,8 +256,11 @@
                     android:text="Sources"
                     android:visibility="gone"
                     android:textColor="@color/colorText"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/regular"
                     android:textStyle="bold"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -262,17 +270,30 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="12dp"
                     android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/source_aligner"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_sources" />
 
+
                 <View
+                    android:id="@+id/source_aligner"
                     android:layout_width="match_parent"
-                    android:layout_height="82dp"
+                    android:layout_height="1dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     />
 
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/extra_space"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
