@@ -8,9 +8,10 @@ import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.ItemSearchresultBinding
 import com.newsta.android.responses.SearchStory
+import com.newsta.android.ui.details.adapter.pos
 import com.squareup.picasso.Picasso
 
-class SearchAdapter(private val onClick: (SearchStory, Int) -> Unit) : RecyclerView.Adapter<SearchViewHolder>() {
+class SearchAdapter(private val onClick: (SearchStory, Int, Int) -> Unit) : RecyclerView.Adapter<SearchViewHolder>() {
 
     private var stories = ArrayList<SearchStory>()
 
@@ -26,7 +27,7 @@ class SearchAdapter(private val onClick: (SearchStory, Int) -> Unit) : RecyclerV
     override fun getItemCount(): Int = stories.size
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        holder.bind(stories[position])
+        holder.bind(stories[position], position)
     }
 
     fun addAll(storiesResponse: ArrayList<SearchStory>) {
@@ -37,9 +38,9 @@ class SearchAdapter(private val onClick: (SearchStory, Int) -> Unit) : RecyclerV
 
 }
 
-class SearchViewHolder(private val binding: ItemSearchresultBinding, private val onClick: (SearchStory, Int) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+class SearchViewHolder(private val binding: ItemSearchresultBinding, private val onClick: (SearchStory, Int, Int) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(story: SearchStory) {
+    fun bind(story: SearchStory, position: Int) {
 
 
         val event = story.events.first()
@@ -52,7 +53,7 @@ class SearchViewHolder(private val binding: ItemSearchresultBinding, private val
                 .load(event.img_url)
                 .into(binding.image)
 
-        binding.root.setOnClickListener { onClick(story , event.event_id) }
+        binding.root.setOnClickListener { onClick(story , event.event_id, position) }
 
     }
 

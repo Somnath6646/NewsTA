@@ -19,6 +19,7 @@ import com.newsta.android.databinding.FragmentStoriesDisplayBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.ARG_OBJECT
 import com.newsta.android.ui.landing.adapter.NewsAdapter
+import com.newsta.android.utils.helpers.OnDataSetChangedListener
 import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
@@ -26,7 +27,7 @@ import com.newsta.android.utils.models.Story
 import com.newsta.android.viewmodels.NewsViewModel.Companion.stories
 import java.lang.Exception
 
-class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
+class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), OnDataSetChangedListener {
 
 
 
@@ -38,14 +39,17 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
 
     private fun setUpAdapter() {
 
-        adapter = NewsAdapter { story: Story, eventId: Int -> openDetails(story, eventId) }
+        adapter = NewsAdapter { position: Int, stories: List<Story> -> openDetails(position)
+        this.onDataSetChange(stories)}
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        adapter.setDataSetChangeListener(this)
+
     }
 
-    private fun openDetails(story: Story, eventId: Int) {
-        val data = DetailsPageData(story, eventId)
+    private fun openDetails(position: Int) {
+        val data = DetailsPageData(position)
         val bundle = bundleOf("data" to data)
         findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)
     }
@@ -279,5 +283,9 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>() {
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_stories_display
+
+    override fun onDataSetChange(stories: List<Story>) {
+        viewModel.setSelectedStoryList(stories)
+    }
 
 }

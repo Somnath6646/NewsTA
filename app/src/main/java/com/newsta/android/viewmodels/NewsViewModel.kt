@@ -31,6 +31,15 @@ constructor(private val newsRepository: StoriesRepository,
     @Bindable
     val searchTerm = MutableLiveData<String>("")
 
+    private val _selectedStoryList = MutableLiveData<List<Story>>()
+
+    val selectedStoryList: LiveData<List<Story>>
+    get() = _selectedStoryList
+
+    fun setSelectedStoryList(stories: List<Story>){
+        _selectedStoryList.value = stories
+    }
+
     private val _newsDataState = MutableLiveData<DataState<List<Story>>>()
     val newsDataState: LiveData<DataState<List<Story>>> = _newsDataState
 

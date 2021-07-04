@@ -1,22 +1,30 @@
 package com.newsta.android.ui.landing.adapter
 
-import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.NewsItemBinding
+import com.newsta.android.utils.helpers.OnDataSetChangedListener
 import com.newsta.android.utils.models.Story
 import com.squareup.picasso.Picasso
 
 private var category = 0
 
-class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
+class NewsAdapter(private val onClick: (Int, List<Story>) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
+
+    private lateinit var onDataSetChangeListener: OnDataSetChangedListener
+
 
     private var stories = ArrayList<Story>()
+
+    fun setDataSetChangeListener(onDataSetChangeListener: OnDataSetChangedListener){
+        this.onDataSetChangeListener = onDataSetChangeListener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -24,17 +32,22 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
         return NewsViewHolder(binding, onClick)
     }
 
+
+
     override fun getItemCount(): Int = stories.size
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
-        holder.bind(stories[position])
+        holder.bind(stories[position], position, stories)
     }
+
+
 
     fun addAll(storiesList: ArrayList<Story>) {
         stories.addAll(storiesList)
         stories = ArrayList(stories.distinct())
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
+        onDataSetChangeListener.onDataSetChange(stories)
     }
 
 
@@ -56,6 +69,7 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
         stories = ArrayList(stories.distinct())
 
         notifyDataSetChanged()
+        onDataSetChangeListener.onDataSetChange(stories)
 
     }
 
@@ -65,9 +79,9 @@ class NewsAdapter(private val onClick: (Story, Int) -> Unit) : RecyclerView.Adap
 
 }
 
-class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: (Story, Int) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: (Int, List<Story>) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(story: Story) {
+    fun bind(story: Story, position: Int, stories:  List<Story>) {
 
         val events = story.events.sortedByDescending { events -> events.updatedAt }
 
@@ -81,7 +95,8 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
             .load(event.imgUrl)
             .into(binding.image)
 
-        binding.root.setOnClickListener { onClick(story, event.eventId) }
+
+        binding.root.setOnClickListener { onClick(position, stories) }
 
     }
 

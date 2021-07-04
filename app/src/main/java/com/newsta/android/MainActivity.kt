@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity(){
             }
         })
 
+
         viewModel.userPrefrences.fontScale.asLiveData().observe(this, Observer { fontScale ->
 
             if(fontScale != null) {

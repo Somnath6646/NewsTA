@@ -1,22 +1,19 @@
 package com.newsta.android.ui.search.fragment
 
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSearchBinding
 import com.newsta.android.responses.SearchStory
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.search.adapter.SearchAdapter
-import com.newsta.android.utils.ShareUtil
 import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
@@ -24,40 +21,36 @@ import com.newsta.android.utils.models.Story
 
 class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
+
     private val viewModel by activityViewModels<NewsViewModel>()
     private lateinit var adapter: SearchAdapter
     private var selectedEventID: Int = 0
+    private var position: Int = 0
 
     override fun getFragmentView(): Int  = R.layout.fragment_search
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        val dataToSearch = arguments?.getString("dataToSearch")
-        println("ARGUMENTS $arguments")
-        println("DATA TO SEARCH: $dataToSearch")
-        if(!dataToSearch.isNullOrEmpty()) {
-            viewModel.searchTerm.value = dataToSearch
-            viewModel.getSearchResults()
-        }
-
-        if(activity?.intent?.action == Intent.ACTION_SEND) {
-            binding.back.setOnClickListener {
-                requireActivity().finish()
-            }
-        } else {
-            binding.back.setOnClickListener {
-                findNavController().popBackStack()
-            }
-        }
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = requireActivity()
         setUpAdapter()
 
+        binding.searchLayout.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                viewModel.getSearchResults()
+                return@OnEditorActionListener true
+            }
+            false
+        })
+
         binding.search.setOnClickListener {
+
             viewModel.getSearchResults()
+        }
+
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         viewModel.searchDataState.observe(viewLifecycleOwner, Observer {
@@ -85,7 +78,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                     is DataState.Success<List<Story>?> -> {
                         println("Story detail got suceessfully")
                         binding.progressBar.visibility = View.GONE
-                        it.data?.first()?.let { it1 -> navigateToDetailFragment(it1, selectedEventID) }
+                        it.data?.first()?.let { it1 -> navigateToDetailFragment(it1, this.position) }
                     }
                     is DataState.Loading -> {
                         println("Story detail getting")
@@ -94,6 +87,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                     is DataState.Error -> {
                         println("Story detail not got suceessfully ")
                         binding.progressBar.visibility = View.GONE
+
                         Toast.makeText(requireContext(), it.exception, Toast.LENGTH_SHORT).show()
                     }
                     else -> {
@@ -104,16 +98,15 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
         })
 
-//        ShareUtil.publishMemeShareShortcuts(requireContext())
-
     }
 
     private fun setUpAdapter(){
         adapter =
-            SearchAdapter { story: SearchStory, eventId: Int ->
+            SearchAdapter { story: SearchStory, eventId: Int, position: Int ->
                 openDetails(
                     story,
-                    eventId
+                    eventId,
+                    position
                 )
             }
         binding.recyclerView.adapter = adapter
@@ -121,14 +114,18 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     }
 
 
-    private fun openDetails(story: SearchStory, eventId: Int){
+    private fun openDetails(story: SearchStory, eventId: Int, position: Int){
         this.selectedEventID = eventId
+        this.position = 0
         val storyID = story.story_id
         viewModel.getStoryByIDFromSearch(storyID)
     }
 
-    private fun navigateToDetailFragment(story: Story, eventId: Int){
-        val data = DetailsPageData(story, eventId)
+    private fun navigateToDetailFragment(story: Story, position: Int){
+        val data = DetailsPageData(position)
+        val stories = ArrayList<Story>()
+        stories.add(story)
+        viewModel.setSelectedStoryList(stories)
         val action = SearchFragmentDirections.actionSearchFragmentToDetailsFragment(data)
         findNavController().navigate(action)
     }

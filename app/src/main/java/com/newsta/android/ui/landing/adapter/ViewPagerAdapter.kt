@@ -18,7 +18,6 @@ class ViewPagerAdapter(private val fragmentActivity: FragmentActivity, private v
     override fun createFragment(position: Int): Fragment {
         val fragment: Fragment = StoriesDisplayFragment()
         fragment.arguments = Bundle().apply {
-            // Our object is just an integer :-P
 
             putInt(ARG_OBJECT, categories[position].categoryId)
         }

@@ -51,6 +51,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private fun setUpAdapter(categories: ArrayList<Category>) {
 
         adapter = ViewPagerAdapter(fragmentActivity = requireActivity(),itemCount =  categories.size, categories = categories)
+
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 

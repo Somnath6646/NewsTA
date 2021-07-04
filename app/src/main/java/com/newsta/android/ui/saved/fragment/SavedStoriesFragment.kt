@@ -27,12 +27,13 @@ import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.ui.saved.adapter.SavedStoryAdapter
 import com.newsta.android.utils.MyItemDetailsLookup
 import com.newsta.android.utils.MyItemKeyProvider
+import com.newsta.android.utils.helpers.OnDataSetChangedListener
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
 
-class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>() {
+class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnDataSetChangedListener {
 
     private val viewModel: NewsViewModel by activityViewModels()
     private var tracker: SelectionTracker<Long>? = null
@@ -42,7 +43,8 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>() {
 
     private fun setUpAdapter() {
 
-        adapter = SavedStoryAdapter({ savedStory: SavedStory -> openDetails(savedStory) }, {  true })
+        adapter = SavedStoryAdapter({ position: Int-> openDetails(position) }, {  true })
+        adapter.setDataSetChangeListener(this)
         binding.recyclerView.adapter = adapter
         initTracker()
         adapter.tracker = tracker
@@ -124,15 +126,8 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>() {
         }
     }
 
-    private fun openDetails(savedStory: SavedStory) {
-        val story = Story(
-            category = savedStory.category,
-            updatedAt = savedStory.updatedAt,
-            events = savedStory.events,
-            storyId = savedStory.storyId)
-        val detailsPageData = DetailsPageData(
-            story = story,
-            eventId = story.events.last().eventId
+    private fun openDetails(position: Int) {
+        val detailsPageData = DetailsPageData(position
         )
         val bundle = bundleOf("data" to detailsPageData)
         findNavController().navigate(R.id.action_savedStoriesFragment_to_detailsFragment, bundle)
@@ -222,5 +217,8 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>() {
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_saved_stories
+    override fun onDataSetChange(stories: List<Story>) {
+       viewModel.setSelectedStoryList(stories)
+    }
 
 }

@@ -161,6 +161,7 @@
                     android:id="@+id/pager"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:saveEnabled="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/end_guideline"
                     app:layout_constraintStart_toEndOf="@id/start_guideline"
