@@ -56,7 +56,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun setPagerAdapter(){
         stories  = viewModel.selectedStoryList.value!!
-        Toast.makeText(requireContext(), stories[position].events.last().title, Toast.LENGTH_SHORT).show()
         adapter = DetailSliderAdapter(fragmentActivity = requireActivity(),itemCount =  stories.size, stories = stories as ArrayList<Story>)
 
         binding.pager.adapter = adapter
@@ -67,12 +66,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 story = stories[position]
+                viewModel.getSavedStory(storyId = story.storyId)
+                viewModel.getSources(story.storyId, story.events.last().eventId)
             }
         })
     }
 
     private fun initViews() {
-
 
 
         viewModel.getSavedStory(story.storyId)

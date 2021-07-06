@@ -39,6 +39,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         binding.searchLayout.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 viewModel.getSearchResults()
+                binding.root.clearFocus()
                 return@OnEditorActionListener true
             }
             false
@@ -47,6 +48,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         binding.search.setOnClickListener {
 
             viewModel.getSearchResults()
+            binding.root.clearFocus()
         }
 
         binding.back.setOnClickListener {

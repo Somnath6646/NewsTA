@@ -78,6 +78,7 @@
             app:layout_constraintEnd_toStartOf="@id/search"
             app:layout_constraintStart_toEndOf="@+id/back"
             android:singleLine="true"
+            android:imeOptions="actionSearch"
             app:layout_constraintTop_toTopOf="@+id/top_guideline" />
 
         <ImageView

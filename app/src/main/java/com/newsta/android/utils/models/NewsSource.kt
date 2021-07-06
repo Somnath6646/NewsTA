@@ -1,7 +1,10 @@
 package com.newsta.android.utils.models
 
 
+import android.util.Log
 import com.google.gson.annotations.SerializedName
+
+private const val TAG = "NewsSource"
 
 data class NewsSource(
     @SerializedName("created_at")
@@ -12,6 +15,7 @@ data class NewsSource(
     val title: String,
     @SerializedName("url")
     val url: String,
+
     @SerializedName("url_icon")
     val urlIcon: String,
     @SerializedName("news_portal")
@@ -19,6 +23,7 @@ data class NewsSource(
 ) {
     override fun equals(other: Any?): Boolean {
         val source = other as NewsSource
-        return source.urlIcon == this.urlIcon
+        Log.i(TAG, "equals: ${this.name == source.name}")
+        return this.name == source.name
     }
 }

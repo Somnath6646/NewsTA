@@ -113,9 +113,6 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
             }
         }
 
-
-
-
     }
 
     private  fun addTopToBottomOfSourceContainer(){
@@ -158,6 +155,11 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
             .load(event.imgUrl)
             .into(binding.coverimgEvent)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getSources(story.storyId, event.eventId)
     }
 
     private fun setUpAdapters() {
@@ -233,7 +235,9 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
         binding.recyclerViewSourceIcons.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerViewSourceIcons.isNestedScrollingEnabled = false
 
-        sourcesIconsAdapter.addAll(sourcesResponse!!)
+
+
+        sourcesIconsAdapter.addAll(ArrayList(sourcesResponse!!.distinct()))
         binding.btnSeemoreSources.text = if(sourcesResponse!!.size <= 6) "View all" else "+ ${sourcesResponse!!.size - 6} sources"
 
         if (sourcesResponse!!.size == 1) {

@@ -1,5 +1,6 @@
 package com.newsta.android.ui.details.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -14,9 +15,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+private const val TAG = "NewsSourceIconsAdapter"
 class NewsSourceIconsAdapter() : RecyclerView.Adapter<NewsSourceIconsViewHolder>() {
 
-    private val sources = ArrayList<NewsSource>()
+    private var sources = ArrayList<NewsSource>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsSourceIconsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -31,9 +33,10 @@ class NewsSourceIconsAdapter() : RecyclerView.Adapter<NewsSourceIconsViewHolder>
     }
 
     fun addAll(sourcesResponse: ArrayList<NewsSource>): Boolean {
-        sourcesResponse.distinct()
+
         sources.clear()
-        sources.addAll(sourcesResponse)
+        sources.addAll(sourcesResponse.distinct())
+        sources = ArrayList(sources.distinct())
         notifyDataSetChanged()
         return true
     }
