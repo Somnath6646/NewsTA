@@ -22,7 +22,8 @@ class DatabaseClearer
 
     override suspend fun doWork(): Result {
         try {
-            repository.deleteAllStories()
+            val THREE_DAYS_OLD = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+            repository.deleteAllStories(THREE_DAYS_OLD)
             NewstaApp.is_database_empty = true
             NewstaApp.setIsDatabaseEmpty(true)
             prefrences.isDatabaseEmpty(true)

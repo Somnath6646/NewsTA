@@ -306,9 +306,9 @@ class StoriesRepository(
 
     }
 
-    suspend fun deleteAllStories() {
+    suspend fun deleteAllStories(maxTime: Long) {
 
-        storiesDao.deleteAllStories()
+        storiesDao.deleteAllStories(maxTime)
         NewstaApp.is_database_empty = true
         NewstaApp.setIsDatabaseEmpty(true)
 

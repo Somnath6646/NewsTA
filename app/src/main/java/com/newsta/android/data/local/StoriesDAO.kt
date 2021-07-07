@@ -16,8 +16,8 @@ interface StoriesDAO {
     @Query("SELECT * FROM ${Story.TABLE_NAME}")
     suspend fun getAllStories(): List<Story>
 
-    @Query("DELETE FROM ${Story.TABLE_NAME}")
-    suspend fun deleteAllStories()
+    @Query("DELETE FROM ${Story.TABLE_NAME} WHERE updated_at <= :maxTime")
+    suspend fun deleteAllStories(maxTime: Long)
 
     @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE story_id = (SELECT MAX(story_id) FROM ${Story.TABLE_NAME})")
     suspend fun getMaxStory(): Story

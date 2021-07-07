@@ -75,7 +75,7 @@ constructor(private val newsRepository: StoriesRepository,
         viewModelScope.launch {
             preferences.clearData()
             preferences.appInstalledJustNow(false)
-            newsRepository.deleteAllStories()
+            newsRepository.deleteAllStories(maxTime = System.currentTimeMillis())
             Log.i("MYTAG", "clearAllData: Aya hai")
 
         }
