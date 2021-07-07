@@ -14,5 +14,6 @@
     <color name="gray">#474747</color>
     <color name="summary">#737373</color>
     <color name="dividerColor">#D5D5D5</color>
+    <color name="sourceIconBgColor">#fff</color>
 
 </resources>

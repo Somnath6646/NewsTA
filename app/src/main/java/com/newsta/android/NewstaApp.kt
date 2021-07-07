@@ -38,6 +38,7 @@ class NewstaApp : Application(), Configuration.Provider {
         const val LARGE_FONT_NAME = "Large"
         const val SMALL_FONT_NAME = "Small"
 
+        val SOURCE_ICON_COLORS = arrayOf("#BD4C17", "#6C0E42", "#000087", "#3F714C")
 
         var access_token: String? = null
 

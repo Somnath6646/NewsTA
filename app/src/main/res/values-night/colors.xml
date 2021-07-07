@@ -8,4 +8,5 @@
     <color name="colorSecondary">#272727</color>
     <color name="summary">#EAEAEA</color>
     <color name="dividerColor">#282828</color>
+    <color name="sourceIconBgColor">#fff</color>
 </resources>

@@ -1,10 +1,16 @@
 package com.newsta.android.ui.details.adapter
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.SourcesIconItemBinding
 import com.newsta.android.databinding.SourcesItemBinding
@@ -28,6 +34,7 @@ class NewsSourceIconsAdapter() : RecyclerView.Adapter<NewsSourceIconsViewHolder>
 
     override fun getItemCount(): Int = if(sources.size <= 7) sources.size else 7
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: NewsSourceIconsViewHolder, position: Int) {
         holder.bind(sources[position])
     }
@@ -45,11 +52,21 @@ class NewsSourceIconsAdapter() : RecyclerView.Adapter<NewsSourceIconsViewHolder>
 
 class NewsSourceIconsViewHolder(private val binding: SourcesIconItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun bind(source: NewsSource) {
 
-        Picasso.get()
-            .load(source.urlIcon)
-            .into(binding.image)
+        if(source.urlIcon.isNotEmpty()) {
+            Picasso.get()
+                .load(source.urlIcon)
+                .into(binding.image)
+        } else {
+            binding.image.visibility = View.GONE
+            binding.sourceNameLetter.visibility = View.VISIBLE
+            binding.sourceNameLetter.text = source.name[0].toString().capitalize(Locale.ROOT)
+            val random = Random().nextInt(4)
+            binding.sourceNameLetter.background =
+                ColorDrawable(Color.parseColor(NewstaApp.SOURCE_ICON_COLORS[random]))
+        }
 
     }
 

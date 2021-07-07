@@ -6,17 +6,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="4dp"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:paddingHorizontal="4dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/image_card"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:elevation="0dp"
             android:layout_marginVertical="3dp"
+            android:elevation="0dp"
+            app:cardBackgroundColor="@color/sourceIconBgColor"
             app:cardMaxElevation="0dp"
-            app:cardBackgroundColor="#ffffff"
             app:layout_constraintBottom_toBottomOf="@id/source_name"
             app:layout_constraintEnd_toStartOf="@id/source_name"
             app:layout_constraintTop_toTopOf="@id/source_name"
@@ -26,24 +26,38 @@
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/test_img" />
+
+            <TextView
+                android:id="@+id/source_name_letter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@color/sourceIconBgColor"
+                android:textSize="10sp"
+                android:visibility="gone"
+                tools:ignore="SmallSp" />
 
         </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/title"
+            style="@style/SourceAdapterText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            style="@style/SourceAdapterText"
             android:lineHeight="18sp"
+            android:maxLines="4"
             android:text="Weeklong Lockdown in Dist Bordering Maharashtra, Two-day Clampdown in Shajapur as Cases Rise in MP"
             android:textColor="@color/colorSourceTitle"
             android:textStyle="bold"
-            android:maxLines="4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/time"/>
+            app:layout_constraintTop_toBottomOf="@id/time" />
 
 
         <TextView

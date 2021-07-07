@@ -1,9 +1,13 @@
 package com.newsta.android.ui.details.adapter
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.SourcesItemBinding
 import com.newsta.android.utils.models.NewsSource
@@ -48,9 +52,18 @@ class NewsSourceViewHolder(private val binding: SourcesItemBinding, private val 
 
         binding.title.text = source.title
 
-        Picasso.get()
-            .load(source.urlIcon)
-            .into(binding.image)
+        if(source.urlIcon.isNotEmpty()) {
+            Picasso.get()
+                .load(source.urlIcon)
+                .into(binding.image)
+        } else {
+            binding.image.visibility = View.GONE
+            binding.sourceNameLetter.visibility = View.VISIBLE
+            binding.sourceNameLetter.text = source.name[0].toString().capitalize(Locale.ROOT)
+            val random = Random().nextInt(4)
+            binding.sourceNameLetter.background =
+                ColorDrawable(Color.parseColor(NewstaApp.SOURCE_ICON_COLORS[random]))
+        }
 
         println("Width = ${binding.image.width}")
 
@@ -64,8 +77,6 @@ class NewsSourceViewHolder(private val binding: SourcesItemBinding, private val 
         binding.time.text = time
 
         binding.sourceName.text = source.name
-
-
 
         binding.root.setOnClickListener { onClick(source) }
 
