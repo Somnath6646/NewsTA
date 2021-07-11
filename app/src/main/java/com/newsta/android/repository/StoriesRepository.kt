@@ -1,7 +1,5 @@
 package com.newsta.android.repository
 
-import android.content.ContentValues.TAG
-import android.provider.ContactsContract
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -10,15 +8,11 @@ import com.newsta.android.data.local.StoriesDAO
 import com.newsta.android.remote.data.*
 import com.newsta.android.remote.services.NewsService
 import com.newsta.android.responses.LogoutResponse
-import com.newsta.android.responses.NewsSourceResponse
 import com.newsta.android.responses.SearchStory
 import com.newsta.android.utils.models.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import retrofit2.HttpException
 import retrofit2.http.Body
-import java.io.IOException
 import java.lang.Exception
 import java.net.ConnectException
 
@@ -104,8 +98,9 @@ class StoriesRepository(
 
         try {
             val cachedStories = storiesDao.getAllStories()
-            println("CACHED STORIES$cachedStories")
+            println("CACHED STORIES ---> $cachedStories")
             emit(DataState.Success(cachedStories))
+            println("EMITTED CACHED STORIES")
             val maxStory = storiesDao.getMaxStory()
             emit(DataState.Extra(listOf(maxStory)))
 
@@ -121,15 +116,37 @@ class StoriesRepository(
         }
     }
 
+    suspend fun getCategoryFromDatabase(): Flow<DataState<List<Category>>> = flow {
+
+        emit(DataState.Loading)
+        println("LOADING")
+
+        try {
+            val cachedCategories = storiesDao.getAllCategories()
+            println("CACHED CATEGORIES ---> $cachedCategories")
+            emit(DataState.Success(cachedCategories))
+            println("EMITTED CACHED CATEGORIES")
+
+        } catch (e: Exception) {
+
+            val cachedCategories = storiesDao.getAllCategories()
+            if (cachedCategories.size == 0) {
+                if (cachedCategories.isEmpty())
+                else
+                    emit(DataState.Success(cachedCategories))
+            }
+
+        }
+    }
+
     suspend fun getAllStories(
         @Body newsRequest: NewsRequest,
         isRefresh: Boolean = false
     ): Flow<DataState<List<Story>>> = flow {
         emit(DataState.Loading)
+        var isInCatch = false
         try {
             val remoteNewsResponse = newsService.getAllNews(newsRequest)
-
-
             val stories = remoteNewsResponse.data
             stories.sortedByDescending { story: Story -> story.updatedAt }
             emit(DataState.Success(stories))
@@ -146,16 +163,21 @@ class StoriesRepository(
             else
                 println(" ERROR: ${remoteNewsResponse.statusCode}")
         } catch (e: Exception) {
-            val cachedStories = storiesDao.getAllStories()
-            if (cachedStories != null) {
-                println("PRINTING FROM CATCH GET ALL NEWS ${cachedStories}")
-                if (cachedStories.size <= 0) emit(DataState.Error("Error in news response"))
-                else {
-                    if (!isRefresh) {
-                        println("EMITTING FROM CATCH GET ALL NEWS")
-                        emit(DataState.Success(cachedStories))
-                    } else {
-                        emit(DataState.Error("Error in news response"))
+            e.printStackTrace()
+            isInCatch = true
+        } finally {
+            if(isInCatch) {
+                val cachedStories = storiesDao.getAllStories()
+                if (cachedStories != null) {
+                    println("PRINTING FROM CATCH GET ALL NEWS ${cachedStories}")
+                    if (cachedStories.size <= 0) emit(DataState.Error("Error in news response"))
+                    else {
+                        if (!isRefresh) {
+                            println("EMITTING FROM CATCH GET ALL NEWS")
+                            emit(DataState.Success(cachedStories))
+                        } else {
+                            emit(DataState.Error("Error in news response"))
+                        }
                     }
                 }
             }
@@ -166,6 +188,8 @@ class StoriesRepository(
         flow {
 
             emit(DataState.Loading)
+
+            var isInCatch = false
 
             try {
 
@@ -180,7 +204,11 @@ class StoriesRepository(
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                emit(DataState.Error("Error in refreshing new stories"))
+                isInCatch = true
+            } finally {
+                if(isInCatch) {
+                    emit(DataState.Error("Error in refreshing new stories"))
+                }
             }
 
         }
@@ -202,6 +230,7 @@ class StoriesRepository(
     suspend fun getSources(sourceRequest: NewsSourceRequest): Flow<DataState<List<NewsSource>?>> =
         flow {
             emit(DataState.Loading)
+            var isInCatch = false
             try {
                 val sources = newsService.getSource(sourceRequest)
                 if (sources.isSuccessful) {
@@ -217,7 +246,12 @@ class StoriesRepository(
                 }
             } catch (e: Exception) {
                 if (e is ConnectException) {
+                    isInCatch = true
+                }
+            } finally {
+                if(isInCatch) {
                     emit(DataState.Error("To see sources connect to internet"))
+
                 }
             }
         }
@@ -317,6 +351,7 @@ class StoriesRepository(
     suspend fun getCategories(categoryRequest: CategoryRequest): Flow<DataState<List<Category>?>> =
         flow {
             emit(DataState.Loading)
+            var isInCatch = false
             try {
                 val response = newsService.getCategories(categoryRequest)
                 if (response.isSuccessful) {
@@ -331,18 +366,32 @@ class StoriesRepository(
                     var errorResponse: ErrorResponse? =
                         gson.fromJson(response.errorBody()!!.charStream(), type)
                     if (errorResponse != null) {
-                        emit(DataState.Error(errorResponse.detail))
+                        if(response.code() == 401) {
+                            emit(DataState.Error(errorResponse.detail, response.code()))
+                        } else {
+                            println("ERROR RESPONSE $errorResponse")
+                            emit(DataState.Error(errorResponse.detail))
+                        }
                     }
                 }
             } catch (e: Exception) {
-                val categories = storiesDao.getAllCategories()
-                println("CATEGORIES REPO: ${categories}")
-                emit(DataState.Success(categories))
+                e.printStackTrace()
+                isInCatch = true
+            } finally {
+                println("FINALLY MIEN AA GAYA")
+                if(isInCatch) {
+                    val categories = storiesDao.getAllCategories()
+                    println("CATEGORIES REPO: ${categories}")
+                    emit(DataState.Success(categories))
+                }
             }
         }
 
     suspend fun logout(logoutRequest: LogoutRequest): Flow<DataState<LogoutResponse?>> = flow {
         emit(DataState.Loading)
+        var isInCatch = false
+        var isConnectException = false
+        var message = ""
         try {
             val response = newsService.logout(logoutRequest)
             if (response.isSuccessful) {
@@ -360,12 +409,21 @@ class StoriesRepository(
 
         } catch (e: Exception) {
 
+            isInCatch = true
             if (e is ConnectException) {
-                emit(DataState.Error("No network connection"))
+                isConnectException = true
             } else {
-                emit(DataState.Error(" ${e.message.toString()} "))
+                message = e.message.toString()
             }
 
+        } finally {
+            if(isInCatch) {
+                if (isConnectException) {
+                    emit(DataState.Error("No network connection"))
+                } else {
+                    emit(DataState.Error(" $message "))
+                }
+            }
         }
     }
 
@@ -384,7 +442,5 @@ class StoriesRepository(
         }
 
     }
-
-
 
 }

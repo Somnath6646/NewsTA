@@ -29,9 +29,7 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
     private lateinit var categories: ArrayList<Category>
     private val itemTouchHelper by lazy {
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(UP or
-                    DOWN or
-                    START or
-                    END, 0) {
+                    DOWN, 0) {
 
             override fun onMove(
                 recyclerView: RecyclerView,

@@ -43,6 +43,12 @@ constructor(private val newsRepository: StoriesRepository,
     private val _newsDataState = MutableLiveData<DataState<List<Story>>>()
     val newsDataState: LiveData<DataState<List<Story>>> = _newsDataState
 
+    private val _dbNewsDataState = MutableLiveData<DataState<List<Story>>>()
+    val dbNewsDataState: LiveData<DataState<List<Story>>> = _dbNewsDataState
+
+    private val _dbCategoryDataState = MutableLiveData<DataState<List<Category>?>>()
+    val dbCategoryDataState: LiveData<DataState<List<Category>?>> = _dbCategoryDataState
+
     private val _categoryDataState = MutableLiveData<DataState<List<Category>?>>()
     val categoryDataState: LiveData<DataState<List<Category>?>> = _categoryDataState
 
@@ -71,7 +77,7 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    fun clearAllData(){
+    fun clearAllData() {
         viewModelScope.launch {
             preferences.clearData()
             preferences.appInstalledJustNow(false)
@@ -79,8 +85,6 @@ constructor(private val newsRepository: StoriesRepository,
             Log.i("MYTAG", "clearAllData: Aya hai")
 
         }
-
-
     }
 
     fun getSearchResults() {
@@ -130,7 +134,19 @@ constructor(private val newsRepository: StoriesRepository,
 
         viewModelScope.launch {
             newsRepository.getNewsFromDatabase().onEach {
-                _newsDataState.value = it
+                println("NEWS FROM DB: $it")
+                _dbNewsDataState.value = it
+            }.launchIn(viewModelScope)
+        }
+
+    }
+
+    private fun getCategoriesFromDatabase() {
+
+        viewModelScope.launch {
+            newsRepository.getCategoryFromDatabase().onEach {
+                println("NEWS FROM DB: $it")
+                _dbCategoryDataState.value = it
             }.launchIn(viewModelScope)
         }
 
@@ -212,7 +228,7 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    private fun getCategories() {
+    fun getCategories() {
 
         viewModelScope.launch {
             println("NEWSTA APP: ${NewstaApp.access_token}")
@@ -295,7 +311,8 @@ constructor(private val newsRepository: StoriesRepository,
 
     init {
         Log.i("TAG", "init viemodel ")
-        getCategories()
+//        getCategories()
+        getCategoriesFromDatabase()
         getNewsOnInit()
     }
 
@@ -321,6 +338,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     companion object {
         var stories = ArrayList<Story>()
+        var isRefreshedByDefault = false
     }
 
 }

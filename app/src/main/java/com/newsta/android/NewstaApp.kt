@@ -40,6 +40,8 @@ class NewstaApp : Application(), Configuration.Provider {
 
         val SOURCE_ICON_COLORS = arrayOf("#BD4C17", "#6C0E42", "#000087", "#3F714C")
 
+        val UNAUTHORIZED_STATUS_CODE = 401
+
         var access_token: String? = null
 
         fun getAccessToken(): String? = access_token
@@ -80,9 +82,9 @@ class NewstaApp : Application(), Configuration.Provider {
             val years: Int = months / 12
 
             if (minutes <= 30) {
-                return "Few minutes ago"
+                return "$minutes minutes ago"
             }
-            else if (minutes > 30 && minutes < 60) {
+            else if (minutes in 31..59) {
                 return "Less than an hour ago"
             } else {
                 if (hours == 1)

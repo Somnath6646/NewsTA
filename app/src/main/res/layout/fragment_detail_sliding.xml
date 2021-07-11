@@ -37,10 +37,6 @@
                 app:layout_constraintGuide_percent="0.95"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
-
-
-
             <TextView
                 android:id="@+id/title_event"
                 style="@style/DetailPageHeading"
@@ -146,8 +142,7 @@
                 android:layout_marginTop="16dp"
                 app:layout_constraintBottom_toTopOf="@id/extra_space"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
-                app:layout_constraintStart_toStartOf="@id/left_guidline"
-                app:layout_constraintTop_toBottomOf="@id/timeline_container">
+                app:layout_constraintStart_toStartOf="@id/left_guidline">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/source_icons_view"

@@ -47,9 +47,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
     private var isSourceViewIcons = true
     private var sourcesResponse: ArrayList<NewsSource>? = null
 
-
     override fun getFragmentView(): Int = R.layout.fragment_detail_sliding
-
 
     private fun initViews() {
 
@@ -71,7 +69,6 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
             addTopToBottomOfSourceContainer()
 
-
         } else {
             binding.textTimline.visibility = View.GONE
             binding.recyclerViewTimelineEvents.visibility = View.GONE
@@ -81,8 +78,6 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
         viewModel.getSavedStory(story.storyId)
 
-
-
         if (!MainActivity.isConnectedToNetwork) {
             binding.sourcesContainer.visibility = View.INVISIBLE
         } else {
@@ -91,7 +86,8 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
 //        adjustExtraSpace()
 
-        binding.btnSeemoreSources.setOnClickListener { changeSourcesView()
+        binding.btnSeemoreSources.setOnClickListener {
+            changeSourcesView()
             adjustExtraSpace()
             removeConstrainBottomOfSourcesToBottomOfParent()
             addTopToBottomOfSourceContainer()
@@ -99,37 +95,44 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
     }
 
-    private fun adjustExtraSpace(){
+    private fun adjustExtraSpace() {
 
         val scrollView = binding.scrollView
 
-        scrollView.viewTreeObserver.addOnGlobalLayoutListener{
+        scrollView.viewTreeObserver.addOnGlobalLayoutListener {
             val childHeight = binding.constraintLayout.height
-            val isScrollable = scrollView.height < childHeight + scrollView.paddingTop + scrollView.paddingBottom
-            if(isScrollable){
+            val isScrollable =
+                scrollView.height < childHeight + scrollView.paddingTop + scrollView.paddingBottom
+            if (isScrollable) {
                 binding.extraSpace.visibility = View.VISIBLE
-            }else{
+            } else {
                 binding.extraSpace.visibility = View.GONE
             }
         }
 
     }
 
-    private  fun addTopToBottomOfSourceContainer(){
+    private fun addTopToBottomOfSourceContainer() {
         val layout = binding.constraintLayout
         val constraintSet = ConstraintSet()
         constraintSet.clone(layout)
-        constraintSet.connect(binding.sourcesContainer.id, ConstraintSet.TOP, binding.timelineContainer.id, ConstraintSet.BOTTOM, 0)
+        constraintSet.connect(
+            binding.sourcesContainer.id,
+            ConstraintSet.TOP,
+            binding.timelineContainer.id,
+            ConstraintSet.BOTTOM,
+            0
+        )
         constraintSet.applyTo(layout)
     }
 
-    private  fun removeTopToBottomOfSourceContainer(){
+    private fun removeTopToBottomOfSourceContainer() {
         val containerParams = binding.sourcesContainer.layoutParams as ConstraintLayout.LayoutParams
         containerParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
         binding.sourcesContainer.layoutParams = containerParams
     }
 
-    private fun removeConstrainBottomOfSourcesToBottomOfParent(){
+    private fun removeConstrainBottomOfSourcesToBottomOfParent() {
         /*val layout = binding.constraintLayout
         val constraintSet = ConstraintSet()
         constraintSet.clone(layout)
@@ -217,7 +220,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
     private fun changeSourcesView() {
         isSourceViewIcons = !isSourceViewIcons
-        if(isSourceViewIcons)
+        if (isSourceViewIcons)
             setSourcesIconsAdapter()
         else
             setSourcesAdapter()
@@ -232,13 +235,15 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
         sourcesIconsAdapter =
             NewsSourceIconsAdapter()
         binding.recyclerViewSourceIcons.adapter = sourcesIconsAdapter
-        binding.recyclerViewSourceIcons.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerViewSourceIcons.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerViewSourceIcons.isNestedScrollingEnabled = false
 
 
 
         sourcesIconsAdapter.addAll(ArrayList(sourcesResponse!!.distinct()))
-        binding.btnSeemoreSources.text = if(sourcesResponse!!.size <= 6) "View all" else "+ ${sourcesResponse!!.size - 6} sources"
+        binding.btnSeemoreSources.text =
+            if (sourcesResponse!!.size <= 6) "View all" else "+ ${sourcesResponse!!.size - 6} sources"
 
         if (sourcesResponse!!.size == 1) {
             binding.textSourcesIcon.text = "Source:"
@@ -257,7 +262,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
                 openNewsUrl(source)
             }
         binding.recyclerViewSourceEvents.adapter = sourcesAdapter
-        if(!sourcesResponse.isNullOrEmpty()) {
+        if (!sourcesResponse.isNullOrEmpty()) {
             sourcesAdapter.addAll(sourcesResponse!!)
         }
         binding.recyclerViewSourceEvents.layoutManager = LinearLayoutManager(requireContext())
@@ -288,7 +293,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
             when (it) {
                 is DataState.Success -> {
                     sourcesResponse = (it.data) as ArrayList
-                    if(!sourcesResponse.isNullOrEmpty()) {
+                    if (!sourcesResponse.isNullOrEmpty()) {
                         setSourcesIconsAdapter()
                     }
                 }
@@ -302,7 +307,6 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
         })
 
 
-
     }
 
 
@@ -311,7 +315,8 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
 
         arguments?.takeIf {
-            it.containsKey(ARG_OBJECT) }?.apply {
+            it.containsKey(ARG_OBJECT)
+        }?.apply {
             data = getBundle(ARG_OBJECT)?.getParcelable<DetailSlidingPageData>(ARG_OBJECT)!!
             story = data.story
         }
@@ -338,9 +343,6 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
 
     }
-
-
-
 
 
 }

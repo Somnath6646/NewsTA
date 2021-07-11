@@ -1,10 +1,12 @@
 package com.newsta.android.ui.search.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -32,8 +34,35 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        val dataToSearch = arguments?.getString("dataToSearch")
+        println("ARGUMENTS $arguments")
+        println("DATA TO SEARCH: $dataToSearch")
+        if(!dataToSearch.isNullOrEmpty()) {
+            viewModel.searchTerm.value = dataToSearch
+            viewModel.getSearchResults()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (requireActivity().intent.action == Intent.ACTION_SEND) {
+                requireActivity().finish()
+            } else {
+                findNavController().popBackStack()
+            }
+        }
+
+        if(requireActivity().intent.action == Intent.ACTION_SEND) {
+            binding.back.setOnClickListener {
+                requireActivity().finish()
+            }
+        } else {
+            binding.back.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = requireActivity()
+
         setUpAdapter()
 
         binding.searchLayout.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
@@ -49,10 +78,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
             viewModel.getSearchResults()
             binding.root.clearFocus()
-        }
-
-        binding.back.setOnClickListener {
-            findNavController().popBackStack()
         }
 
         viewModel.searchDataState.observe(viewLifecycleOwner, Observer {

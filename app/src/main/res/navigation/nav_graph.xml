@@ -149,6 +149,15 @@
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right" />
+        <action
+            android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment2"
+            app:destination="@id/signupSigninOptionsFragment" />
+        <action
+            android:id="@+id/action_landingFragment_self"
+            app:destination="@id/landingFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment3"
+            app:destination="@id/signupSigninOptionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/signIn_AuthenticationOptionsFragment"

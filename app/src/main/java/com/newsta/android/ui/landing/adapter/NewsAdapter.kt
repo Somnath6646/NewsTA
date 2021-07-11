@@ -40,8 +40,6 @@ class NewsAdapter(private val onClick: (Int, List<Story>) -> Unit) : RecyclerVie
         holder.bind(stories[position], position, stories)
     }
 
-
-
     fun addAll(storiesList: ArrayList<Story>) {
         stories.addAll(storiesList)
         stories = ArrayList(stories.distinct())
