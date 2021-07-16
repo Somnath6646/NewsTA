@@ -36,6 +36,7 @@ import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.Category
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.Story
+import com.newsta.android.utils.models.UserCategory
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.Error
 import java.lang.Exception
@@ -50,8 +51,11 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private var categories: ArrayList<Category> = ArrayList()
     private var category = 0
     private lateinit var adapter: ViewPagerAdapter
+    private var isAppJustOpened = true
 
     private fun setUpAdapter(categories: ArrayList<Category>) {
+
+        println("SETTING UP TAB LAYOUT")
 
         adapter = ViewPagerAdapter(
             fragmentActivity = requireActivity(),
@@ -59,9 +63,15 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             categories = categories
         )
 
+        println("PAGER ADAPTER ---> $adapter")
+
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        binding.pager.setCurrentItem(0, true)
+        if(isAppJustOpened) {
+            isAppJustOpened = false
+            binding.pager.setCurrentItem(0, false)
+            binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
+        }
     }
 
     private fun setUpNavigationDrawer() {
@@ -133,6 +143,39 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     }
 
+    private fun getUserCategories() {
+
+        viewModel.getUserCategories()
+        viewModel.userCategoryDataState.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is DataState.Success -> {
+                    Log.i("TAG", "UserCategoryDatState Success ---> ${it.data}")
+                    val userCategories = ArrayList<Category>()
+//                    StoriesDisplayFragment.categoryState = userCategories[0].categoryId
+                    println("USER CATEGORIES ---> $userCategories")
+                    it.data!!.forEach { category ->
+                        if (category.isEnabled)
+                            userCategories.add(Category(category.category, category.categoryId))
+                    }
+                    categories = userCategories
+                    println("USER CATEGORIES ---> $categories")
+                    isAppJustOpened = true
+                    setUpTabLayout(categories = ArrayList()).let {
+                        setUpTabLayout(categories = categories)
+                    }
+                }
+                is DataState.Error -> {
+                    Log.i("TAG", "onActivityCreated: CategoryDatState Error")
+                    checkIfUnauthorized(it)
+                }
+                is DataState.Loading -> {
+                    Log.i("TAG", "onActivityCreated: CategoryDatState logading")
+                }
+            }
+        })
+
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -171,9 +214,11 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     if(newCategories == categories) {
                         println("CATEGORIES SAME")
                     } else {
-                        println("CATEGORIES DIFFERENT")
-                        categories = newCategories
-                        setUpTabLayout(categories = categories)
+                        if(!NewstaApp.has_changed_preferences!!) {
+                            println("CATEGORIES DIFFERENT")
+                            categories = newCategories
+                            setUpTabLayout(categories = categories)
+                        }
                     }
                 }
                 is DataState.Error -> {
@@ -189,10 +234,15 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         viewModel.dbCategoryDataState.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is DataState.Success -> {
-                    Log.i("TAG", "onActivityCreated: CategoryDatState Success")
+                    Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
                     categories = it.data as ArrayList<Category>
-                    setUpTabLayout(categories = categories)
-                    getNewsFromDatabase()
+                    if(NewstaApp.has_changed_preferences!!) {
+                        println("CHANGED USER PREFERENCES")
+                        getUserCategories()
+                    } else {
+                        println("NOT CHANGED USER PREFERENCES")
+                        setUpTabLayout(categories = categories)
+                    }
                     viewModel.getCategories()
                 }
                 is DataState.Error -> {
@@ -256,63 +306,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         setUpNavigationDrawer()
 
-    }
-
-    private fun getNewsFromDatabase() {
-        /*viewModel.dbNewsDataState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DataState.Success<List<Story>?> -> {
-                    Log.i("newsDataState", " success")
-//                    binding.refreshLayout.isRefreshing = false
-                    viewModel.changeDatabaseState(isDatabaseEmpty = false)
-                    NewsViewModel.stories = ArrayList(it.data)
-                    val filteredStories =
-                        NewsViewModel.stories.filter { story: Story -> story.category == 0 }
-                    if (filteredStories.isNullOrEmpty()) {
-                        NewstaApp.is_database_empty = true
-                        viewModel.changeDatabaseState(true)
-                        viewModel.getNewsOnInit()
-                        NewstaApp.setIsDatabaseEmpty(true)
-                    }
-                    println("FilteredStories  $filteredStories")
-
-                    val stories = ArrayList<Story>(filteredStories)
-                    stories.sortByDescending {
-                            story ->  story.updatedAt
-                    }
-//                    adapter.addAll(stories)
-                }
-                is DataState.Error -> {
-                    Log.i("newsDataState", " errror ${it.exception}")
-//                    binding.refreshLayout.isRefreshing = false
-                }
-                is DataState.Loading -> {
-                    Log.i("newsDataState", " loding")
-//                    binding.refreshLayout.isRefreshing = true
-                }
-                is DataState.Extra<List<Story>?> -> {
-                    try {
-                        if (!it.data.isNullOrEmpty()) {
-                            MainActivity.maxStory = it.data.first()
-                            MainActivity.minStory = it.data.last()
-                            MainActivity.extras = ArrayList(it.data)
-                        }
-                    } catch (e: Exception) {
-//                        Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
-                    }
-                    Log.i(
-                        "newsDataState",
-                        " EXTRA MAX ${MainActivity.maxStory.storyId} ${MainActivity.maxStory.updatedAt} ${MainActivity.maxStory.category} ${MainActivity.maxStory.events}"
-                    )
-                    Log.i(
-                        "newsDataState",
-                        " EXTRA MIN ${MainActivity.maxStory.storyId} ${MainActivity.maxStory.updatedAt} ${MainActivity.maxStory.category} ${MainActivity.maxStory.events}"
-                    )
-//                    viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
-                }
-            }
-        })*/
     }
 
     private fun checkIfUnauthorized(data: DataState.Error) {

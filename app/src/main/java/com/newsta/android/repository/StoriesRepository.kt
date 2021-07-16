@@ -18,7 +18,6 @@ import java.net.ConnectException
 
 class StoriesRepository(
     private val storiesDao: StoriesDAO,
-
     private val newsService: NewsService
 ) {
 
@@ -357,7 +356,25 @@ class StoriesRepository(
                 if (response.isSuccessful) {
                     println("CATEGORIES REPO: ${response.body()?.data}")
                     emit(DataState.Success(response.body()?.data))
-                    response.body()?.data?.let { storiesDao.insertCategories(it) }
+                    response.body()?.data?.let {
+                        storiesDao.insertCategories(it)
+                        if(!NewstaApp.has_changed_preferences!!) {
+                            val userCategoriesDB = storiesDao.getUserCategories()
+                            if(userCategoriesDB.size <= 0) {
+                                val userCategories = ArrayList<UserCategory>()
+                                it.forEach { category ->
+                                    userCategories.add(
+                                        UserCategory(
+                                            category.category,
+                                            category.categoryId
+                                        )
+                                    )
+                                }
+                                println("USER CATEGORIES --> $userCategories")
+                                storiesDao.insertUserCategories(userCategories)
+                            }
+                        }
+                    }
                 } else {
                     val categories = storiesDao.getAllCategories()
                     emit(DataState.Success(categories))
@@ -381,7 +398,7 @@ class StoriesRepository(
                 println("FINALLY MIEN AA GAYA")
                 if(isInCatch) {
                     val categories = storiesDao.getAllCategories()
-                    println("CATEGORIES REPO: ${categories}")
+                    println("CATEGORIES REPO: $categories")
                     emit(DataState.Success(categories))
                 }
             }
@@ -441,6 +458,54 @@ class StoriesRepository(
             emit(DataState.Error("Error in checking saved story"))
         }
 
+    }
+
+    suspend fun getUserCategories(): Flow<DataState<List<UserCategory>>> = flow {
+
+        emit(DataState.Loading)
+        println("LOADING")
+
+        try {
+            val cachedCategories = storiesDao.getUserCategories()
+            println("CACHED CATEGORIES ---> $cachedCategories")
+            emit(DataState.Success(cachedCategories))
+            println("EMITTED CACHED CATEGORIES")
+
+        } catch (e: Exception) {
+
+            val cachedCategories = storiesDao.getUserCategories()
+            if (cachedCategories.size == 0) {
+                if (cachedCategories.isEmpty())
+                else
+                    emit(DataState.Success(cachedCategories))
+            }
+
+        }
+    }
+
+    suspend fun saveUserCategories(userCategories: ArrayList<UserCategory>): Flow<DataState<List<UserCategory>>> = flow {
+
+        emit(DataState.Loading)
+        println("LOADING")
+
+        try {
+
+            println("SAVING ---> $userCategories")
+            storiesDao.deleteAllUserCategories().let {
+                userCategories.forEach { userCategory -> userCategory.primaryKey = 0 }
+                val isInserted = storiesDao.insertUserCategories(userCategories)
+                println("IS INSERTED ---> ${isInserted.last()}")
+                if (isInserted[0] != -1L) {
+                    println("PREFERENCES SAVED")
+                    emit(DataState.Success(userCategories))
+                } else {
+                    emit(DataState.Error("Cannot save user categories", 101))
+                }
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 }

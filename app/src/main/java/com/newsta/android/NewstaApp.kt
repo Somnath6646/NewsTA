@@ -60,9 +60,16 @@ class NewstaApp : Application(), Configuration.Provider {
 
         fun getFontScale(): Float? = font_scale
 
-
         fun setFontScale(fontScale: Float) {
             this.font_scale = fontScale
+        }
+
+        var has_changed_preferences: Boolean? = false
+
+        fun getHasChangedPreferences(): Boolean? = has_changed_preferences
+
+        fun setHasChangedPreferences(hasChanged: Boolean) {
+            this.has_changed_preferences = hasChanged
         }
 
 
@@ -81,11 +88,8 @@ class NewstaApp : Application(), Configuration.Provider {
             val months: Int = days / 30
             val years: Int = months / 12
 
-            if (minutes <= 30) {
+            if (minutes in 1..59) {
                 return "$minutes minutes ago"
-            }
-            else if (minutes in 31..59) {
-                return "Less than an hour ago"
             } else {
                 if (hours == 1)
                     return "1 hour ago"
@@ -129,44 +133,38 @@ class NewstaApp : Application(), Configuration.Provider {
             .setRequiresDeviceIdle(true)
             .build()
 
-        val periodicDatabaseClearRequest = PeriodicWorkRequestBuilder<DatabaseClearer>(3, TimeUnit.DAYS)
-            .build()
+        val periodicDatabaseClearRequest =
+            PeriodicWorkRequestBuilder<DatabaseClearer>(3, TimeUnit.DAYS)
+                .build()
 
         val workManager = WorkManager.getInstance(applicationContext)
 
         prefrences.appInstalledJustNow.onEach {
-            if(it == null){
-
+            if (it == null) {
                 Log.i("AppInstalled", "true")
-
-
                 prefrences.appInstalledJustNow(false)
-
-
-                workManager.enqueueUniquePeriodicWork("Database CLearer", ExistingPeriodicWorkPolicy.KEEP, periodicDatabaseClearRequest)
-            }else{
+                workManager.enqueueUniquePeriodicWork(
+                    "Database CLearer",
+                    ExistingPeriodicWorkPolicy.KEEP,
+                    periodicDatabaseClearRequest
+                )
+            } else {
                 Log.i("AppInstalled", "false")
             }
         }.launchIn(GlobalScope)
-
-
 
         println("METHOD CALLED FOR WORKER")
 
         workManager.getWorkInfoByIdLiveData(periodicDatabaseClearRequest.id)
             .observeForever { info ->
-                if(info.state.isFinished) {
+                if (info.state.isFinished) {
                     is_database_empty = true
                     setIsDatabaseEmpty(true)
-
                 } else {
-
                     is_database_empty = false
                     setIsDatabaseEmpty(false)
-
                 }
             }
-
     }
 
     override fun getWorkManagerConfiguration(): Configuration =

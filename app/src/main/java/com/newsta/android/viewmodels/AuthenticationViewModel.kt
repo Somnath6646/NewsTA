@@ -105,6 +105,7 @@ constructor(private val authRepository: AuthRepository,
             userPrefrences.saveAccessToken(accessToken)
             userPrefrences.isDatabaseEmpty(true)
             userPrefrences.setFontScale(NewstaApp.DEFAULT_FONT_SCALE)
+            userPrefrences.hasChangedPreferences(false)
             _navigate.value =
                 Indicator("Landing")
         }

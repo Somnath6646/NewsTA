@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity(){
     val newsViewModel : NewsViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
 
-
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
@@ -70,7 +69,6 @@ class MainActivity : AppCompatActivity(){
             }
         })
 
-
         viewModel.userPrefrences.fontScale.asLiveData().observe(this, Observer { fontScale ->
 
             if(fontScale != null) {
@@ -81,6 +79,18 @@ class MainActivity : AppCompatActivity(){
                 LocaleConfigurationUtil.adjustFontSize(this, NewstaApp.font_scale!!)
 
                 Log.i("MainActivity", (fontScale == NewstaApp.getFontScale()).toString())
+
+            }
+
+        })
+
+        viewModel.userPrefrences.hasChangedPreferences.asLiveData().observe(this, Observer { hasChanged ->
+
+            if(hasChanged != null) {
+
+                NewstaApp.has_changed_preferences = hasChanged
+                NewstaApp.setHasChangedPreferences(hasChanged)
+                Log.i("MainActivity", (hasChanged == NewstaApp.getHasChangedPreferences()).toString())
 
             }
 

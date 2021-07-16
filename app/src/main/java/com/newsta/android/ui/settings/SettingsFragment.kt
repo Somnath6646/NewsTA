@@ -106,7 +106,8 @@ class  SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
         viewModel.toast.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
-                Toast.makeText(requireContext(), it!!, Toast.LENGTH_SHORT).show()
+                if (!it.isNullOrEmpty())
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })
 

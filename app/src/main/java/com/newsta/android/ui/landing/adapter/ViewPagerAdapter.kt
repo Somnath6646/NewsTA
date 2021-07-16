@@ -14,12 +14,18 @@ class ViewPagerAdapter(private val fragmentActivity: FragmentActivity, private v
     override fun getItemCount(): Int = itemCount
 
     override fun createFragment(position: Int): Fragment {
+        println("CREATING FRAGMENTS")
         val fragment: Fragment = StoriesDisplayFragment()
         fragment.arguments = Bundle().apply {
+            println("CATEGORY ID ---> ${categories[position].categoryId}")
             putInt(ARG_OBJECT, categories[position].categoryId)
         }
         return fragment
+    }
 
+    fun removeAll() {
+        categories.removeAll(categories)
+        notifyDataSetChanged()
     }
 
 }

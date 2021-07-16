@@ -47,6 +47,18 @@ class UserPrefrences(context: Context) {
         }
     }
 
+    val hasChangedPreferences: Flow<Boolean?> = applicationContext.dataStore.data
+        .map { preferences ->
+            preferences[HAS_CHANGED_PREFERENCES]
+        }
+
+    suspend fun hasChangedPreferences(hasChangedPreferences: Boolean) {
+
+        applicationContext.dataStore.edit { settings ->
+            settings[HAS_CHANGED_PREFERENCES] = hasChangedPreferences
+        }
+    }
+
 
     val isDatabaseEmpty: Flow<Boolean?> = applicationContext.dataStore.data
         .map { preferences ->
@@ -78,6 +90,7 @@ class UserPrefrences(context: Context) {
         val IS_DATABASE_EMPTY = booleanPreferencesKey("is_database_empty")
         val FONT_SCALE = floatPreferencesKey("font_scale")
         val APP_INSTALLED_JUST_NOW = booleanPreferencesKey("app_installed_now")
+        val HAS_CHANGED_PREFERENCES = booleanPreferencesKey("has_changed_preferences")
     }
 
 }

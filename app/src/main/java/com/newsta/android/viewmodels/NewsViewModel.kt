@@ -46,6 +46,9 @@ constructor(private val newsRepository: StoriesRepository,
     private val _dbNewsDataState = MutableLiveData<DataState<List<Story>>>()
     val dbNewsDataState: LiveData<DataState<List<Story>>> = _dbNewsDataState
 
+    private val _userCategoryDataState = MutableLiveData<DataState<List<UserCategory>?>>()
+    val userCategoryDataState: LiveData<DataState<List<UserCategory>?>> = _userCategoryDataState
+
     private val _dbCategoryDataState = MutableLiveData<DataState<List<Category>?>>()
     val dbCategoryDataState: LiveData<DataState<List<Category>?>> = _dbCategoryDataState
 
@@ -130,7 +133,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    private fun getNewsFromDatabase() {
+    fun getNewsFromDatabase() {
 
         viewModelScope.launch {
             newsRepository.getNewsFromDatabase().onEach {
@@ -145,8 +148,19 @@ constructor(private val newsRepository: StoriesRepository,
 
         viewModelScope.launch {
             newsRepository.getCategoryFromDatabase().onEach {
-                println("NEWS FROM DB: $it")
+                println("CATEGORIES FROM DB: $it")
                 _dbCategoryDataState.value = it
+            }.launchIn(viewModelScope)
+        }
+
+    }
+
+    fun getUserCategories() {
+
+        viewModelScope.launch {
+            newsRepository.getUserCategories().onEach {
+                println("USER CATEGORIES FROM DB: $it")
+                _userCategoryDataState.value = it
             }.launchIn(viewModelScope)
         }
 
@@ -158,7 +172,7 @@ constructor(private val newsRepository: StoriesRepository,
             println("API ------>        ${NewstaApp.is_database_empty}")
 
 
-            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+            val days3 = System.currentTimeMillis() - (5 * 24 * 60 * 60 * 1000)
 
             //prefrences se idharr lenaa hai
             Log.i("MYTAG", "getNewsOnInit: Aaya biroo")
@@ -307,6 +321,27 @@ constructor(private val newsRepository: StoriesRepository,
                 }.launchIn(viewModelScope)
         }
 
+    }
+
+    private val _userCategorySaveDataState = MutableLiveData<DataState<List<UserCategory>?>>()
+    val userCategorySaveDataState: LiveData<DataState<List<UserCategory>?>> = _userCategorySaveDataState
+
+    fun saveUserCategories(userCategories: ArrayList<UserCategory>) {
+        viewModelScope.launch {
+            newsRepository.saveUserCategories(userCategories).onEach {
+                _userCategorySaveDataState.value = it
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    fun setUserCategoryState(userCategories: ArrayList<UserCategory>) {
+        _userCategoryDataState.value = DataState.Success(userCategories)
+    }
+
+    fun changeUserPreferencesState(hasChanged: Boolean) {
+        viewModelScope.launch {
+            preferences.hasChangedPreferences(hasChanged)
+        }
     }
 
     init {

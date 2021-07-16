@@ -5,6 +5,7 @@ import androidx.room.*
 import com.newsta.android.utils.models.Category
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
+import com.newsta.android.utils.models.UserCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -48,6 +49,15 @@ interface StoriesDAO {
 
     @Query("SELECT * FROM ${Category.TABLE_NAME}")
     suspend fun getAllCategories(): List<Category>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = UserCategory::class)
+    suspend fun insertUserCategories(userCategories: List<UserCategory>): List<Long>
+
+    @Query("SELECT * FROM ${UserCategory.TABLE_NAME}")
+    suspend fun getUserCategories(): List<UserCategory>
+
+    @Query("DELETE FROM ${UserCategory.TABLE_NAME}")
+    suspend fun deleteAllUserCategories()
 
     @Query("DELETE FROM ${Category.TABLE_NAME}")
     suspend fun deleteAllCategories()

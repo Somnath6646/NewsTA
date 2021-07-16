@@ -44,6 +44,9 @@ class NewsAdapter(private val onClick: (Int, List<Story>) -> Unit) : RecyclerVie
         stories.addAll(storiesList)
         stories = ArrayList(stories.distinct())
         println("LIST SIZE ${stories.size}")
+        stories.sortByDescending { story ->
+            story.updatedAt
+        }
         notifyDataSetChanged()
         onDataSetChangeListener.onDataSetChange(stories)
     }
@@ -86,8 +89,8 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
         val event = events.last()
 
         binding.title.text = event.title
-        binding.timeline.text = if(events.size > 1) "View timeline" else ""
-        binding.time.text = "${NewstaApp.setTime(story.updatedAt)}"
+        binding.timeline.text = if (events.size > 1) "View timeline" else ""
+        binding.time.text = NewstaApp.setTime(story.updatedAt)
 
         Picasso.get()
             .load(event.imgUrl)
