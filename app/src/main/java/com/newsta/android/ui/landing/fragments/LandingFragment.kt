@@ -158,11 +158,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                         if (category.isEnabled)
                             userCategories.add(Category(category.category, category.categoryId))
                     }
-                    categories = userCategories
-                    println("USER CATEGORIES ---> $categories")
-                    isAppJustOpened = true
-                    setUpTabLayout(categories = ArrayList()).let {
-                        setUpTabLayout(categories = categories)
+                    println("CATEGORIES ---> $categories")
+                    if(categories != userCategories) {
+                        categories = userCategories
+                        isAppJustOpened = true
+                        setUpTabLayout(categories = ArrayList()).let {
+                            setUpTabLayout(categories = categories)
+                        }
                     }
                 }
                 is DataState.Error -> {
@@ -236,17 +238,20 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             when(it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
-                    if(it.data?.size!! > 0)
-                        categories = it.data as ArrayList<Category>
+                    println("NOT CHANGED USER PREFERENCES ---> $categories")
                     if(isAppJustOpened)
                         viewModel.getCategories()
                     if(NewstaApp.has_changed_preferences!!) {
                         println("CHANGED USER PREFERENCES")
-                        getUserCategories()
+                        if(categories.size == 0)
+                            getUserCategories()
+                        setUpTabLayout(categories = categories)
                     } else {
                         println("NOT CHANGED USER PREFERENCES ---> $categories")
                         setUpTabLayout(categories = categories)
                     }
+                    if(categories.size <= 0)
+                        categories = it.data as ArrayList<Category>
                 }
                 is DataState.Error -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Error")
