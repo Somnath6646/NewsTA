@@ -58,7 +58,7 @@
                 android:layout_width="0dp"
                 android:layout_height="217dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/sample_news_cover"
+                android:src="@drawable/newsta_default"
                 app:layout_constraintBottom_toTopOf="@id/updated_at_event"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

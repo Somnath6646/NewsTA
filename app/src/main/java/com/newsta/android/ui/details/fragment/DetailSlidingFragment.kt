@@ -154,9 +154,11 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
         binding.updatedAtEvent.text = NewstaApp.setTime(event.createdAt)
 
-        Picasso.get()
-            .load(event.imgUrl)
-            .into(binding.coverimgEvent)
+        if(!event.imgUrl.isNullOrEmpty()) {
+            Picasso.get()
+                .load(event.imgUrl)
+                .into(binding.coverimgEvent)
+        }
 
     }
 

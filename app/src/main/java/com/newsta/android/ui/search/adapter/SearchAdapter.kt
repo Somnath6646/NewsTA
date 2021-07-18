@@ -49,9 +49,11 @@ class SearchViewHolder(private val binding: ItemSearchresultBinding, private val
         
         binding.time.text = "${NewstaApp.setTime(story.created_at)}"
 
-        Picasso.get()
+        if(event.img_url.isNotEmpty()) {
+            Picasso.get()
                 .load(event.img_url)
                 .into(binding.image)
+        }
 
         binding.root.setOnClickListener { onClick(story , event.event_id, position) }
 

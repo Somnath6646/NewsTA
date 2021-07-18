@@ -2,6 +2,7 @@ package com.newsta.android
 
 import android.app.Application
 import android.os.Build
+import android.text.format.DateUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -77,7 +78,7 @@ class NewstaApp : Application(), Configuration.Provider {
 
             val time = System.currentTimeMillis()
 
-            val diff = time - updatedAt
+            val diff = Math.abs(time - updatedAt)
 
             val seconds: Long = diff / 1000
 
@@ -87,6 +88,9 @@ class NewstaApp : Application(), Configuration.Provider {
             val days: Int = hours / 24
             val months: Int = days / 30
             val years: Int = months / 12
+
+//            println("$minutes $hours $days $months $years")
+//            println("${time > updatedAt} Time: $time UpdatedAt: $updatedAt")
 
             if (minutes in 1..59) {
                 return "$minutes minutes ago"
@@ -109,7 +113,7 @@ class NewstaApp : Application(), Configuration.Provider {
                             else if (years > 1)
                                 return "$years years ago"
                             else
-                                return "Time unknown"
+                                return "Just now"
                         }
                     }
                 }
