@@ -68,6 +68,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         if(isAppJustOpened) {
+            println("APP JUST OPENED")
             isAppJustOpened = false
             binding.pager.setCurrentItem(0, false)
             binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
@@ -235,15 +236,17 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             when(it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
-                    categories = it.data as ArrayList<Category>
+                    if(it.data?.size!! > 0)
+                        categories = it.data as ArrayList<Category>
+                    if(isAppJustOpened)
+                        viewModel.getCategories()
                     if(NewstaApp.has_changed_preferences!!) {
                         println("CHANGED USER PREFERENCES")
                         getUserCategories()
                     } else {
-                        println("NOT CHANGED USER PREFERENCES")
+                        println("NOT CHANGED USER PREFERENCES ---> $categories")
                         setUpTabLayout(categories = categories)
                     }
-                    viewModel.getCategories()
                 }
                 is DataState.Error -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Error")
