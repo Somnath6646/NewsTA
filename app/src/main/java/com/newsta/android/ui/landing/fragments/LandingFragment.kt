@@ -67,7 +67,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        if(isAppJustOpened) {
+        if (isAppJustOpened) {
             println("APP JUST OPENED")
             isAppJustOpened = false
             binding.pager.setCurrentItem(0, false)
@@ -148,7 +148,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         viewModel.getUserCategories()
         viewModel.userCategoryDataState.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "UserCategoryDatState Success ---> ${it.data}")
                     val userCategories = ArrayList<Category>()
@@ -159,7 +159,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                             userCategories.add(Category(category.category, category.categoryId))
                     }
                     println("CATEGORIES ---> $categories")
-                    if(categories != userCategories) {
+                    if (categories != userCategories) {
                         categories = userCategories
                         isAppJustOpened = true
                         setUpTabLayout(categories = ArrayList()).let {
@@ -182,7 +182,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             println("RETURNED")
         }
 
@@ -196,7 +196,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         binding.back.setOnClickListener {
 
-            if(binding.searchLayout.visibility == View.VISIBLE) {
+            if (binding.searchLayout.visibility == View.VISIBLE) {
                 binding.navDrawer.visibility = View.VISIBLE
                 /*binding.appName.visibility = View.VISIBLE*/
                 binding.searchLayout.visibility = View.GONE
@@ -210,14 +210,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         }
 
         viewModel.categoryDataState.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Success")
                     var newCategories = it.data as ArrayList<Category>
-                    if(newCategories == categories) {
+                    if (newCategories == categories) {
                         println("CATEGORIES SAME")
                     } else {
-                        if(!NewstaApp.has_changed_preferences!!) {
+                        if (!NewstaApp.has_changed_preferences!!) {
                             println("CATEGORIES DIFFERENT")
                             categories = newCategories
                             setUpTabLayout(categories = categories)
@@ -235,22 +235,21 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         })
 
         viewModel.dbCategoryDataState.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
                     println("NOT CHANGED USER PREFERENCES ---> $categories")
-                    if(isAppJustOpened)
+                    if (isAppJustOpened)
                         viewModel.getCategories()
-                    if(NewstaApp.has_changed_preferences!!) {
+                    if (NewstaApp.has_changed_preferences!!) {
                         println("CHANGED USER PREFERENCES")
-                        if(categories.size == 0)
-                            getUserCategories()
+                        getUserCategories()
                         setUpTabLayout(categories = categories)
                     } else {
                         println("NOT CHANGED USER PREFERENCES ---> $categories")
                         setUpTabLayout(categories = categories)
                     }
-                    if(categories.size <= 0)
+                    if (categories.size <= 0)
                         categories = it.data as ArrayList<Category>
                 }
                 is DataState.Error -> {
@@ -265,13 +264,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         viewModel.logoutDataState.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
-                when(it){
+                when (it) {
                     is DataState.Success -> {
                         Log.i("TAG", "Sucess logout ")
 
                         viewModel.clearAllData()
 //                        Toast.makeText(requireContext(), "Cleared!!!", Toast.LENGTH_SHORT).show()
-                        val action = LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
+                        val action =
+                            LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
                         findNavController().navigate(action)
                         LoginManager.getInstance().logOut();
                     }
@@ -281,7 +281,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     is DataState.Error -> {
                         Log.i("TAG", "Error logout ")
                         val dialog = Dialog(requireContext())
-                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
+                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(
+                            LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false
+                        )
                         dialog.setContentView(dialogBinding.root)
 
                         println("Abhi hai $dialogBinding")
@@ -307,8 +309,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         viewModel.toast.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
-                if(it != null)
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                if (it != null)
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -320,7 +322,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         if (data.statusCode == NewstaApp.UNAUTHORIZED_STATUS_CODE) {
             viewModel.toast("We've encountered an issue at our end please log in again to continue. We're sorry for the inconvenience caused.")
             viewModel.clearAllData()
-            val action = LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
+            val action =
+                LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
             findNavController().navigate(action)
             LoginManager.getInstance().logOut();
         } else
@@ -335,7 +338,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                 tab.customView = when (position) {
                     0 -> {
-                        if(category == 0) {
+                        if (category == 0) {
                             addCustomView(
                                 categories[position].category.capitalize(Locale.ROOT), 16f,
                                 Color.WHITE
@@ -469,7 +472,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     }
 
     private fun closeNavigationDrawer() {
-        if(binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
     }
