@@ -216,6 +216,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     var newCategories = it.data as ArrayList<Category>
                     if (newCategories == categories) {
                         println("CATEGORIES SAME")
+                        /*if (!NewstaApp.has_changed_preferences!! && isAppJustOpened) {
+                            setUpTabLayout(categories = categories)
+                        }*/
                     } else {
                         if (!NewstaApp.has_changed_preferences!!) {
                             println("CATEGORIES DIFFERENT")
@@ -238,9 +241,11 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
-                    println("NOT CHANGED USER PREFERENCES ---> $categories")
                     if (isAppJustOpened)
                         viewModel.getCategories()
+                    if (categories.size <= 0)
+                        categories = it.data as ArrayList<Category>
+                    println("NOT CHANGED USER PREFERENCES ---> $categories")
                     if (NewstaApp.has_changed_preferences!!) {
                         println("CHANGED USER PREFERENCES")
                         getUserCategories()
@@ -249,8 +254,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                         println("NOT CHANGED USER PREFERENCES ---> $categories")
                         setUpTabLayout(categories = categories)
                     }
-                    if (categories.size <= 0)
-                        categories = it.data as ArrayList<Category>
                 }
                 is DataState.Error -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Error")

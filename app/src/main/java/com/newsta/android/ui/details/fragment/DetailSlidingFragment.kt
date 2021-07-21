@@ -55,6 +55,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
             it.eventId == data.eventId
         }!!
 
+        println("Story ---> ${story.storyId} \nEvents size ---> ${story.events.size} \nEvents ---> ${story.events}")
         println("Story: ${story.storyId} Event: ${event.eventId}")
 
         showEventData(event)
@@ -343,8 +344,6 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
         initViews()
         observer()
 
-
     }
-
 
 }

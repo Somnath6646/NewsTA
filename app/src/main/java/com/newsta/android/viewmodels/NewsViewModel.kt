@@ -172,7 +172,7 @@ constructor(private val newsRepository: StoriesRepository,
             println("API ------>        ${NewstaApp.is_database_empty}")
 
 
-            val days3 = System.currentTimeMillis() - (5 * 24 * 60 * 60 * 1000)
+            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
 
             //prefrences se idharr lenaa hai
             Log.i("MYTAG", "getNewsOnInit: Aaya biroo")
