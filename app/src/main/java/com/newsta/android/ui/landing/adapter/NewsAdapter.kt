@@ -83,7 +83,7 @@ class NewsAdapter(private val onClick: (Int, List<Story>) -> Unit) : RecyclerVie
 
 class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: (Int, List<Story>) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(story: Story, position: Int, stories:  List<Story>) {
+    fun bind(story: Story, position: Int, stories: List<Story>) {
 
         val events = story.events.sortedByDescending { events -> events.updatedAt }
 
@@ -92,11 +92,12 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
         binding.title.text = event.title
         binding.timeline.text = if (events.size > 1) "View timeline" else ""
         binding.time.text = NewstaApp.setTime(story.updatedAt)
-        if(BuildConfig.DEBUG){
-            binding.time.text = "${NewstaApp.setTime(story.updatedAt)} - ${story.storyId} - ${story.category}"
+        if (BuildConfig.DEBUG) {
+            binding.time.text =
+                "${NewstaApp.setTime(story.updatedAt)} - ${story.storyId} - ${story.category}"
         }
 
-        if(!event.imgUrl.isNullOrEmpty()) {
+        if (!event.imgUrl.isNullOrEmpty()) {
             Picasso.get()
                 .load(event.imgUrl)
                 .into(binding.image)

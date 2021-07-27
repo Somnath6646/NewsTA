@@ -230,7 +230,8 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     Log.i("newsDataState", " errror ${it.exception}")
                 }
                 is DataState.Loading -> {
-                    Log.i("newsDataState", " loding")
+                    Log.i("newsUpdateDataState", " loding")
+                    viewModel.debugToast("newsUpdateDataState: loading")
                 }
                 is DataState.Extra<List<Story>?> -> {
                     try {
@@ -314,6 +315,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             val state = getInt(ARG_OBJECT)
 
             categoryState = state
+            viewModel.debugToast("CATEGORY STATE: $categoryState")
             println("CATEGORY STATE: $categoryState")
             println("STORIES: $stories")
 
