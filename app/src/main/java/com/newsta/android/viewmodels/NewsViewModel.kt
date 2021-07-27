@@ -31,6 +31,8 @@ constructor(private val newsRepository: StoriesRepository,
     @Bindable
     val searchTerm = MutableLiveData<String>("")
 
+    var urlToRequest: String = "http://13.235.50.53/"
+
     private val _selectedStoryList = MutableLiveData<List<Story>>()
 
     val selectedStoryList: LiveData<List<Story>>
@@ -122,8 +124,12 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun getAllNews(storyId: Int = 0, maxDateTime: Long, isRefresh: Boolean = false) {
 
+        urlToRequest  = "http://13.235.50.53/new"
+
         viewModelScope.launch {
-            val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, getMaxDate(maxDateTime))
+            val maxDateTime  = getMaxDate(maxDateTime)
+            val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, maxDateTime )
+            debugToast("storyId : ${storyId} \n maxDateTime: ${maxDateTime} ")
             newsRepository.getAllStories(newsRequest = request, isRefresh = isRefresh)
                     .onEach {
                         _newsDataState.value = it
@@ -146,6 +152,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     private fun getCategoriesFromDatabase() {
 
+        urlToRequest  = "DataBase"
         viewModelScope.launch {
             newsRepository.getCategoryFromDatabase().onEach {
                 println("CATEGORIES FROM DB: $it")
@@ -156,7 +163,6 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
     fun getUserCategories() {
-
         viewModelScope.launch {
             newsRepository.getUserCategories().onEach {
                 println("USER CATEGORIES FROM DB: $it")
@@ -190,7 +196,7 @@ constructor(private val newsRepository: StoriesRepository,
         get() = _newsUpdateState
 
     fun updateNews(storyId: Int, maxDateTime: Long) {
-
+        urlToRequest  = "http://13.235.50.53/existing"
         viewModelScope.launch {
             newsRepository.updateExistingStories(NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, getMaxDate(maxDateTime))).onEach {
                 _newsUpdateState.value = it
@@ -204,7 +210,6 @@ constructor(private val newsRepository: StoriesRepository,
         get() = _minMaxStoryState
 
     fun getMaxAndMinStory() {
-
         viewModelScope.launch {
             newsRepository.getMaxAndMinStory().onEach {
                 _minMaxStoryState.value = it
@@ -214,7 +219,7 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
     fun getSources(storyId: Int, eventId: Int) {
-
+        urlToRequest  = "http://13.235.50.53/sources"
         viewModelScope.launch {
             val request = NewsSourceRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, eventId)
             newsRepository.getSources(request).onEach {
@@ -306,6 +311,14 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun toast(message: String) {
         _toast.value = Indicator(message)
+    }
+
+    private val _debugToast = MutableLiveData<Indicator<String>>()
+    val debugToast: LiveData<Indicator<String>>
+        get() = _debugToast
+
+    fun debugToast(message: String) {
+        _debugToast.value = Indicator(message)
     }
 
     private val _checkSavedStoryState = MutableLiveData<DataState<SavedStory>>()

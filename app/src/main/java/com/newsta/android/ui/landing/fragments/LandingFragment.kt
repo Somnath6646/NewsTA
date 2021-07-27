@@ -24,6 +24,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.facebook.login.LoginManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.newsta.android.BuildConfig
 import com.newsta.android.MainActivity
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
@@ -314,6 +315,17 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             it.getContentIfNotHandled().let {
                 if (it != null)
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.debugToast.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled().let {
+                if (it != null){
+
+                    if(BuildConfig.DEBUG){
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         })
 

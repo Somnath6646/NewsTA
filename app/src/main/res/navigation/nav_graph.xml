@@ -176,7 +176,9 @@
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
+            app:popExitAnim="@anim/out_to_right"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_signIn_AuthenticationOptionsFragment_to_signupSigninOptionsFragment"
             app:destination="@id/signupSigninOptionsFragment"

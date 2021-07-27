@@ -11,6 +11,7 @@ import com.newsta.android.R
 import com.newsta.android.databinding.NewsItemBinding
 import com.newsta.android.utils.helpers.OnDataSetChangedListener
 import com.newsta.android.utils.models.Story
+import com.newsta.android.BuildConfig
 import com.squareup.picasso.Picasso
 
 private var category = 0
@@ -91,7 +92,9 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
         binding.title.text = event.title
         binding.timeline.text = if (events.size > 1) "View timeline" else ""
         binding.time.text = NewstaApp.setTime(story.updatedAt)
-//        binding.time.text = "${NewstaApp.setTime(story.updatedAt)} - ${story.storyId} - ${story.category}"
+        if(BuildConfig.DEBUG){
+            binding.time.text = "${NewstaApp.setTime(story.updatedAt)} - ${story.storyId} - ${story.category}"
+        }
 
         if(!event.imgUrl.isNullOrEmpty()) {
             Picasso.get()

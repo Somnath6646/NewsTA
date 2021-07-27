@@ -56,6 +56,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
         binding.refreshLayout.setOnRefreshListener {
             if (maxStory != null) {
+
                 viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt, true)
                 viewModel.updateNews(maxStory.storyId, maxStory.updatedAt)
             } else if (!extras.isNullOrEmpty()) {
@@ -94,6 +95,9 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             when (it) {
                 is DataState.Success<List<Story>?> -> {
                     Log.i("newsDataState", " success")
+
+                    viewModel.debugToast("newsDataState:  success")
+
                     binding.refreshLayout.isRefreshing = false
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
                     println("STORIES BEFORE ADDING NEW STORIES ---> $stories")
@@ -116,11 +120,14 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     adapter.addAll(stories)
                 }
                 is DataState.Error -> {
-                    Log.i("newsDataState", " errror ${it.exception}")
+                    Log.i("newsDataState", "errror ${it.exception}")
+
+                    viewModel.debugToast("newsDataState:  errror ${it.exception}")
                     binding.refreshLayout.isRefreshing = false
                 }
                 is DataState.Loading -> {
                     Log.i("newsDataState", " loding")
+                    viewModel.debugToast("newsDataState:  loading.....")
                     binding.refreshLayout.isRefreshing = true
                 }
                 is DataState.Extra<List<Story>?> -> {
@@ -131,6 +138,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                             extras = ArrayList(it.data)
                         }
                     } catch (e: Exception) {
+                        viewModel.debugToast("Min Max error")
 //                        Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
                         e.printStackTrace()
                     }
@@ -146,6 +154,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             when (it) {
                 is DataState.Success<List<Story>?> -> {
                     Log.i("newsDataState", " success")
+                    viewModel.debugToast("dBnewsDataState: success")
                     binding.refreshLayout.isRefreshing = false
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
                     stories = ArrayList(it.data)
@@ -166,11 +175,15 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     adapter.addAll(stories)
                 }
                 is DataState.Error -> {
-                    Log.i("newsDataState", " errror ${it.exception}")
+                    Log.i("dBnewsDataState", " errror ${it.exception}")
+                    viewModel.debugToast("dBnewsDataState:  errror ${it.exception}")
+
                     binding.refreshLayout.isRefreshing = false
                 }
                 is DataState.Loading -> {
-                    Log.i("newsDataState", " loding")
+                    Log.i("dBnewsDataState", " loding")
+                    viewModel.debugToast("dBnewsDataState: loading")
+
                     binding.refreshLayout.isRefreshing = true
                 }
                 is DataState.Extra<List<Story>?> -> {
@@ -190,7 +203,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                             }
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
+                        viewModel.debugToast("Min max error")
                         e.printStackTrace()
                     }
                 }

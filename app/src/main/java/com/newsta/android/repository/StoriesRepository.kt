@@ -163,13 +163,14 @@ class StoriesRepository(
                 println(" ERROR: ${remoteNewsResponse.statusCode}")
         } catch (e: Exception) {
             e.printStackTrace()
+            emit(DataState.Error("${ e.localizedMessage}"))
             isInCatch = true
         } finally {
             if(isInCatch) {
                 val cachedStories = storiesDao.getAllStories()
                 if (cachedStories != null) {
                     println("PRINTING FROM CATCH GET ALL NEWS ${cachedStories}")
-                    if (cachedStories.size <= 0) emit(DataState.Error("Error in news response"))
+                    if (cachedStories.size <= 0) emit(DataState.Error("Cached stories is empty"))
                     else {
                         if (!isRefresh) {
                             println("EMITTING FROM CATCH GET ALL NEWS")
