@@ -97,7 +97,8 @@
                 android:layout_marginVertical="16dp"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
-                app:layout_constraintTop_toBottomOf="@id/summary_event">
+                app:layout_constraintTop_toBottomOf="@id/summary_event"
+                app:layout_constraintBottom_toTopOf="@id/sources_container">
 
                 <TextView
                     android:id="@+id/text_timline"

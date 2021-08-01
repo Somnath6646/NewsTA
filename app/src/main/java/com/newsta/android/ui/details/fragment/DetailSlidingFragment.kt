@@ -62,6 +62,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
         binding.updatedAtEvent.text = NewstaApp.setTime(story.updatedAt)
 
+//        binding.recyclerViewTimelineEvents.isNestedScrollingEnabled = false
         setUpAdapters()
 
         if (story.events.size > 1) {
