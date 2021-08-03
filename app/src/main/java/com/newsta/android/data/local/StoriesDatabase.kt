@@ -4,12 +4,9 @@ package com.newsta.android.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.newsta.android.utils.models.Category
-import com.newsta.android.utils.models.SavedStory
-import com.newsta.android.utils.models.Story
-import com.newsta.android.utils.models.UserCategory
+import com.newsta.android.utils.models.*
 
-@Database(entities = arrayOf(Story::class, SavedStory::class, Category::class, UserCategory::class), version = 4, exportSchema = false)
+@Database(entities = arrayOf(Story::class, SavedStory::class, Category::class, UserPreferences::class), version = 5, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class StoriesDatabase : RoomDatabase() {
 

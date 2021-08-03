@@ -17,8 +17,8 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideAuthRepository(authenticationService: AuthenticationService): AuthRepository{
-        return AuthRepository(authenticationService)
+    fun provideAuthRepository(authenticationService: AuthenticationService, dao: StoriesDAO): AuthRepository{
+        return AuthRepository(authenticationService, dao)
     }
 
     @Singleton

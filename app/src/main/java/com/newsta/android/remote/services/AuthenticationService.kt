@@ -1,11 +1,9 @@
 package com.newsta.android.remote.services
 
-import com.newsta.android.remote.data.SignInRequest_Social
-import com.newsta.android.remote.data.SignUpRequest_Social
-import com.newsta.android.remote.data.SigninRequest
-import com.newsta.android.remote.data.SignupRequest
+import com.newsta.android.remote.data.*
 import com.newsta.android.responses.SigninResponse
 import com.newsta.android.responses.SignupResponse
+import com.newsta.android.responses.UserPreferencesResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -24,19 +22,22 @@ interface AuthenticationService {
             @Body signupRequest: SignUpRequest_Social
     ): Response<SignupResponse>
 
-
-
     @Headers("Accept: application/json")
     @POST("login/email")
     suspend fun signin(
             @Body signupRequest: SigninRequest
     ): Response<SigninResponse>
 
-
     @Headers("Accept: application/json")
     @POST("login/si")
     suspend fun signin(
             @Body signinRequest: SignInRequest_Social
     ): Response<SigninResponse>
+
+    @Headers("Accept: application/json")
+    @POST("user_preferences")
+    suspend fun userPreferences(
+            @Body userPreferencesRequest: UserPreferencesRequest
+    ): Response<UserPreferencesResponse>
 
 }

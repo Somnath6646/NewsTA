@@ -99,20 +99,30 @@ constructor(private val authRepository: AuthRepository,
         }
     }
 
-    fun saveTokenAndIss(accessToken: String){
+    fun getUserPreferences(accessToken: String) {
+        viewModelScope.launch {
+            authRepository.getUserPreferences(UserPreferencesRequest(accessToken, NewstaApp.ISSUER_NEWSTA)).onEach {
+                println("USER PREFERENCE DATA ---> $it")
+                if(it is DataState.Success) {
+                    saveTokenAndIss(accessToken, true)
+                } else {
+                    saveTokenAndIss(accessToken, false)
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    fun saveTokenAndIss(accessToken: String, hasChangedPreferences: Boolean = false){
 
         viewModelScope.launch {
             userPrefrences.saveAccessToken(accessToken)
             userPrefrences.isDatabaseEmpty(true)
             userPrefrences.setFontScale(NewstaApp.DEFAULT_FONT_SCALE)
-            userPrefrences.hasChangedPreferences(false)
-            _navigate.value =
-                Indicator("Landing")
+            userPrefrences.hasChangedPreferences(hasChangedPreferences)
+            _navigate.value = Indicator("Landing")
         }
 
     }
-
-
 
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}

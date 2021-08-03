@@ -34,9 +34,12 @@ interface NewsService {
     @POST("/search")
     suspend fun getSearchResults(@Body searchRequest: SearchRequest): Response<SearchResponse>
 
-
     @Headers("Accept: application/json")
     @POST("/logout")
     suspend fun logout(@Body logoutRequest: LogoutRequest): Response<LogoutResponse>
+
+    @Headers("Accept: application/json")
+    @POST("user_preferences/update_categories")
+    suspend fun updateUserCategories(@Body updateUserCategoriesRequest: UpdateUserCategoriesRequest): Response<UpdateUserCategoriesResponse>
 
 }

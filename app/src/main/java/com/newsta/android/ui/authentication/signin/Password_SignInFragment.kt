@@ -80,7 +80,9 @@ class Password_SignInFragment : BaseFragment<FragmentPasswordSignInBinding>() {
                 when(it){
                     is DataState.Success -> {
                         binding.ctabtnProgressBar.visibility = View.GONE
-                        it.data?.data?.let { it1 -> viewModel.saveTokenAndIss(accessToken = it1) }
+                        it.data?.data?.let { it1 ->
+                            viewModel.getUserPreferences(accessToken = it1)
+                        }
                     }
                     is DataState.Loading -> {
                         binding.ctabtnProgressBar.visibility = View.VISIBLE

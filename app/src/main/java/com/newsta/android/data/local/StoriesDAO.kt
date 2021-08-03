@@ -2,10 +2,7 @@ package com.newsta.android.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.newsta.android.utils.models.Category
-import com.newsta.android.utils.models.SavedStory
-import com.newsta.android.utils.models.Story
-import com.newsta.android.utils.models.UserCategory
+import com.newsta.android.utils.models.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -50,14 +47,14 @@ interface StoriesDAO {
     @Query("SELECT * FROM ${Category.TABLE_NAME}")
     suspend fun getAllCategories(): List<Category>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = UserCategory::class)
-    suspend fun insertUserCategories(userCategories: List<UserCategory>): List<Long>
+    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = UserPreferences::class)
+    suspend fun insertUserPreferences(userPreferences: UserPreferences): Long
 
-    @Query("SELECT * FROM ${UserCategory.TABLE_NAME}")
-    suspend fun getUserCategories(): List<UserCategory>
+    @Query("SELECT * FROM ${UserPreferences.TABLE_NAME}")
+    suspend fun getUserPreferences(): List<UserPreferences>
 
-    @Query("DELETE FROM ${UserCategory.TABLE_NAME}")
-    suspend fun deleteAllUserCategories()
+    @Query("DELETE FROM ${UserPreferences.TABLE_NAME}")
+    suspend fun deleteAllUserPreferences()
 
     @Query("DELETE FROM ${Category.TABLE_NAME}")
     suspend fun deleteAllCategories()

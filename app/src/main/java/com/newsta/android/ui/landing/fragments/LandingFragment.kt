@@ -25,7 +25,6 @@ import com.facebook.login.LoginManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.BuildConfig
-import com.newsta.android.MainActivity
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
@@ -36,11 +35,8 @@ import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
 import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.Category
 import com.newsta.android.utils.models.DataState
-import com.newsta.android.utils.models.Story
-import com.newsta.android.utils.models.UserCategory
+import com.newsta.android.utils.models.UserPreferences
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Error
-import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -50,6 +46,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private val viewModel: NewsViewModel by activityViewModels()
 
     private var categories: ArrayList<Category> = ArrayList()
+    private var userCategories: ArrayList<Category> = ArrayList()
+    private lateinit var userPreferences: UserPreferences
     private var category = 0
     private lateinit var adapter: ViewPagerAdapter
     private var isAppJustOpened = true
@@ -148,23 +146,34 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private fun getUserCategories() {
 
         viewModel.getUserCategories()
-        viewModel.userCategoryDataState.observe(viewLifecycleOwner, Observer {
+        viewModel.userPreferencesDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "UserCategoryDatState Success ---> ${it.data}")
-                    val userCategories = ArrayList<Category>()
-//                    StoriesDisplayFragment.categoryState = userCategories[0].categoryId
+                    userPreferences = it.data
                     println("USER CATEGORIES ---> $userCategories")
-                    it.data!!.forEach { category ->
-                        if (category.isEnabled)
-                            userCategories.add(Category(category.category, category.categoryId))
+//                    val userCategories = ArrayList<Category>()
+//                    StoriesDisplayFragment.categoryState = userCategories[0].categoryId
+                    userCategories.clear()
+                    userPreferences.categories?.forEach { categoryId ->
+                        categories.forEach { category ->
+                            if(categoryId == category.categoryId) {
+                                println("${category.categoryId} ---> Present")
+                                userCategories.add(Category(category.category, category.categoryId))
+                            }
+                        }
                     }
+                    println("USER CATEGORIES ---> $userCategories")
                     println("CATEGORIES ---> $categories")
                     if (categories != userCategories) {
-                        categories = userCategories
+//                        categories = userCategories
                         isAppJustOpened = true
                         setUpTabLayout(categories = ArrayList()).let {
-                            setUpTabLayout(categories = categories)
+                            println("USER CATEGORIES ---> $userCategories")
+                            if (userCategories.size > 0)
+                                setUpTabLayout(categories = userCategories)
+                            else
+                                setUpTabLayout(categories = categories)
                         }
                     }
                 }
@@ -217,9 +226,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     var newCategories = it.data as ArrayList<Category>
                     if (newCategories == categories) {
                         println("CATEGORIES SAME")
-                        /*if (!NewstaApp.has_changed_preferences!! && isAppJustOpened) {
+                        if (!NewstaApp.has_changed_preferences!! && userCategories.size == 0) {
                             setUpTabLayout(categories = categories)
-                        }*/
+                        }
                     } else {
                         if (!NewstaApp.has_changed_preferences!!) {
                             println("CATEGORIES DIFFERENT")
@@ -250,7 +259,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     if (NewstaApp.has_changed_preferences!!) {
                         println("CHANGED USER PREFERENCES")
                         getUserCategories()
-                        setUpTabLayout(categories = categories)
+//                        setUpTabLayout(categories = categories)
                     } else {
                         println("NOT CHANGED USER PREFERENCES ---> $categories")
                         setUpTabLayout(categories = categories)

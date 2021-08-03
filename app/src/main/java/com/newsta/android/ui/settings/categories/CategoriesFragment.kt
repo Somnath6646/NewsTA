@@ -17,6 +17,7 @@ import com.newsta.android.ui.settings.categories.adapter.CategoriesAdapter
 import com.newsta.android.utils.models.Category
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.UserCategory
+import com.newsta.android.utils.models.UserPreferences
 import com.newsta.android.viewmodels.NewsViewModel
 
 class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
@@ -24,7 +25,8 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
     private val viewModel by activityViewModels<NewsViewModel>()
     private lateinit var categoriesAdapter: CategoriesAdapter
     private lateinit var categories: ArrayList<Category>
-    private lateinit var userCategories: ArrayList<UserCategory>
+    private var userCategories: ArrayList<UserCategory> = arrayListOf()
+    private lateinit var userPreferences: UserPreferences
     private val itemTouchHelper by lazy {
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(
             UP or
@@ -75,11 +77,14 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
     private fun getUserCategories() {
 
         viewModel.getUserCategories()
-        viewModel.userCategoryDataState.observe(viewLifecycleOwner, Observer {
+        viewModel.userPreferencesDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: UserCategoryDatState Success OBSERVE ---> ${it.data}")
-                    userCategories = it.data as ArrayList<UserCategory>
+                    Log.i("TAG", "CATEGORIES ---> $categories")
+                    userPreferences = it.data
+                    setUserCategories()
+                    Log.i("TAG", "USER CATEGORIES ---> $userCategories")
                     setUpCategoriesAdapter()
                 }
                 is DataState.Error -> {
@@ -93,15 +98,52 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
 
     }
 
+    private fun setUserCategories() {
+        userCategories.clear()
+        if(userPreferences.categories?.size ?: 0 == 0) {
+            categories.forEach { category ->
+                println("${category.categoryId} ---> Present")
+                userCategories.add(UserCategory(category = category.category, categoryId = category.categoryId, isEnabled = true))
+            }
+        } else {
+            userPreferences.categories?.forEach { categoryId ->
+                categories.forEach { category ->
+                    if (categoryId == category.categoryId) {
+                        println("${category.categoryId} ---> Present")
+                        userCategories.add(
+                            UserCategory(
+                                category = category.category,
+                                categoryId = category.categoryId,
+                                isEnabled = true
+                            )
+                        )
+                    }
+                }
+            }
+            categories.forEach { category ->
+                if (!userPreferences.categories!!.contains(category.categoryId)) {
+                    println("${category.categoryId} ---> Present")
+                    userCategories.add(
+                        UserCategory(
+                            category = category.category,
+                            categoryId = category.categoryId,
+                            isEnabled = false
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     private fun saveUserCategories() {
 
-        viewModel.saveUserCategories(userCategories)
-        viewModel.userCategorySaveDataState.observe(viewLifecycleOwner, Observer {
+        viewModel.saveUserPreferences(userPreferences)
+        viewModel.userPreferencesSaveDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: UserCategoryDatState Success ON SAVE ---> ${it.data}")
-                    userCategories = it.data as ArrayList<UserCategory>
-                    viewModel.setUserCategoryState(userCategories).let {
+//                    userCategories = it.data as ArrayList<UserCategory>
+                    viewModel.setUserPreferencesState(userPreferences).let {
                         viewModel.changeUserPreferencesState(true)
                         viewModel.toast("Category preferences saved")
 //                        findNavController().popBackStack()
@@ -128,7 +170,7 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Success")
                     categories = it.data as ArrayList<Category>
-                    println("CATEGORIES MILL GAYI")
+                    println("CATEGORIES MILL GAYI ---> $categories")
                     getUserCategories()
                 }
                 is DataState.Error -> {
@@ -172,14 +214,28 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
     private fun onCategoryChange(category: UserCategory, isChecked: Boolean) {
         println("CATEGORY ---> $category ---- isRemoved ---> $isChecked")
         userCategories[userCategories.indexOf(category)].isEnabled = isChecked
+        userCategoriesToUserPreferences()
         println("USER CATEGORY AFTER REMOVAL ---> $userCategories")
+        println("USER CATEGORY PREF AFTER REMOVAL ---> ${userPreferences.categories}")
     }
 
     private fun onCategoryPositionChange(from: Int, to:Int) {
         val oldCategory = userCategories[from]
         userCategories.removeAt(from)
         userCategories.add(to, oldCategory)
+        userCategoriesToUserPreferences()
         println("USER CATEGORY AFTER REORDER ---> $userCategories")
+        println("USER CATEGORY PREF AFTER REMOVAL ---> ${userPreferences.categories}")
+    }
+
+    private fun userCategoriesToUserPreferences() {
+        val userCats = arrayListOf<Int>()
+        userCategories.forEach { category ->
+            if(category.isEnabled) {
+                userCats.add(category.categoryId)
+            }
+        }
+        userPreferences.categories = userCats
     }
 
     private fun startDragging(viewHolder: RecyclerView.ViewHolder) {

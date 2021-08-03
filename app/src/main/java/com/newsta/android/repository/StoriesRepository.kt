@@ -360,7 +360,8 @@ class StoriesRepository(
                     response.body()?.data?.let {
                         storiesDao.insertCategories(it)
                         if(!NewstaApp.has_changed_preferences!!) {
-                            val userCategoriesDB = storiesDao.getUserCategories()
+                            val userCategoriesDB = storiesDao.getUserPreferences()
+                            val userCategoriesID = arrayListOf<Int>()
                             if(userCategoriesDB.size <= 0) {
                                 val userCategories = ArrayList<UserCategory>()
                                 it.forEach { category ->
@@ -370,9 +371,13 @@ class StoriesRepository(
                                             category.categoryId
                                         )
                                     )
+                                    userCategoriesID.add(category.categoryId)
                                 }
                                 println("USER CATEGORIES --> $userCategories")
-                                storiesDao.insertUserCategories(userCategories)
+                                val userPreferences = UserPreferences(
+                                    categories = userCategoriesID
+                                )
+                                storiesDao.insertUserPreferences(userPreferences)
                             }
                         }
                     }
@@ -461,50 +466,86 @@ class StoriesRepository(
 
     }
 
-    suspend fun getUserCategories(): Flow<DataState<List<UserCategory>>> = flow {
+    suspend fun getUserCategories(): Flow<DataState<UserPreferences>> = flow {
 
         emit(DataState.Loading)
         println("LOADING")
 
         try {
-            val cachedCategories = storiesDao.getUserCategories()
-            println("CACHED CATEGORIES ---> $cachedCategories")
-            emit(DataState.Success(cachedCategories))
+            val cachedPreferences = storiesDao.getUserPreferences()
+            println("CACHED CATEGORIES ---> $cachedPreferences")
+            emit(DataState.Success(cachedPreferences[0]))
             println("EMITTED CACHED CATEGORIES")
 
         } catch (e: Exception) {
 
-            val cachedCategories = storiesDao.getUserCategories()
-            if (cachedCategories.size == 0) {
-                if (cachedCategories.isEmpty())
+            val cachedPreferences = storiesDao.getUserPreferences()
+            if (cachedPreferences.size == 0) {
+                if (cachedPreferences.isEmpty())
                 else
-                    emit(DataState.Success(cachedCategories))
+                    emit(DataState.Success(cachedPreferences[0]))
             }
 
         }
     }
 
-    suspend fun saveUserCategories(userCategories: ArrayList<UserCategory>): Flow<DataState<List<UserCategory>>> = flow {
+    suspend fun saveUserPreferences(userPreferences: UserPreferences): Flow<DataState<UserPreferences>> = flow {
 
         emit(DataState.Loading)
         println("LOADING")
 
         try {
 
-            println("SAVING ---> $userCategories")
-            storiesDao.deleteAllUserCategories().let {
-                userCategories.forEach { userCategory -> userCategory.primaryKey = 0 }
-                val isInserted = storiesDao.insertUserCategories(userCategories)
-                println("IS INSERTED ---> ${isInserted.last()}")
-                if (isInserted[0] != -1L) {
+            println("SAVING ---> $userPreferences")
+            storiesDao.deleteAllUserPreferences().let {
+//                userCategories.forEach { userCategory -> userCategory.primaryKey = 0 }
+                val isInserted = storiesDao.insertUserPreferences(userPreferences)
+                println("IS INSERTED ---> ${isInserted}")
+                if (isInserted != -1L) {
                     println("PREFERENCES SAVED")
-                    emit(DataState.Success(userCategories))
+                    emit(DataState.Success(userPreferences))
                 } else {
                     emit(DataState.Error("Cannot save user categories", 101))
                 }
             }
 
         } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun saveUserCategoriesInServer(userPreferences: UserPreferences): Flow<DataState<UserPreferences>> = flow {
+        try {
+
+            val updateUserCategoriesRequest = UpdateUserCategoriesRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, userPreferences.categories!!)
+            val updateResponse = newsService.updateUserCategories(updateUserCategoriesRequest)
+            if(updateResponse.isSuccessful) {
+                println("RESPONSE SUCCESSFUL")
+                println("SAVING AFTER SERVER ---> $userPreferences")
+                storiesDao.deleteAllUserPreferences().let {
+//                userCategories.forEach { userCategory -> userCategory.primaryKey = 0 }
+                    val isInserted = storiesDao.insertUserPreferences(userPreferences)
+                    println("IS INSERTED ---> $isInserted")
+                    if (isInserted != -1L) {
+                        println("PREFERENCES SAVED")
+                        emit(DataState.Success(userPreferences))
+                    } else {
+                        emit(DataState.Error("Cannot save user categories", 101))
+                    }
+                }
+            } else {
+                Log.i("MYTAG", updateResponse.message())
+                val gson = Gson()
+                val type = object : TypeToken<ErrorResponse>() {}.type
+                var errorResponse: ErrorResponse? =
+                    gson.fromJson(updateResponse.errorBody()!!.charStream(), type)
+                if (errorResponse != null) {
+                    emit(DataState.Error(errorResponse.detail))
+                }
+            }
+
+        } catch (e: Exception) {
+            println("ERRORRRRRRR IN UPDATING USER CATEGORIES IN SERVER")
             e.printStackTrace()
         }
     }

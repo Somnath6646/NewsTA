@@ -7,7 +7,7 @@ import androidx.databinding.Observable
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.facebook.login.LoginManager
+import com.newsta.android.MainActivity
 import com.newsta.android.NewstaApp
 import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
@@ -48,8 +48,8 @@ constructor(private val newsRepository: StoriesRepository,
     private val _dbNewsDataState = MutableLiveData<DataState<List<Story>>>()
     val dbNewsDataState: LiveData<DataState<List<Story>>> = _dbNewsDataState
 
-    private val _userCategoryDataState = MutableLiveData<DataState<List<UserCategory>?>>()
-    val userCategoryDataState: LiveData<DataState<List<UserCategory>?>> = _userCategoryDataState
+    private val _userPreferencesDataState = MutableLiveData<DataState<UserPreferences>?>()
+    val userPreferencesDataState: LiveData<DataState<UserPreferences>?> = _userPreferencesDataState
 
     private val _dbCategoryDataState = MutableLiveData<DataState<List<Category>?>>()
     val dbCategoryDataState: LiveData<DataState<List<Category>?>> = _dbCategoryDataState
@@ -166,7 +166,7 @@ constructor(private val newsRepository: StoriesRepository,
         viewModelScope.launch {
             newsRepository.getUserCategories().onEach {
                 println("USER CATEGORIES FROM DB: $it")
-                _userCategoryDataState.value = it
+                _userPreferencesDataState.value = it
             }.launchIn(viewModelScope)
         }
 
@@ -336,19 +336,23 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    private val _userCategorySaveDataState = MutableLiveData<DataState<List<UserCategory>?>>()
-    val userCategorySaveDataState: LiveData<DataState<List<UserCategory>?>> = _userCategorySaveDataState
+    private val _userPreferencesSaveDataState = MutableLiveData<DataState<UserPreferences?>>()
+    val userPreferencesSaveDataState: LiveData<DataState<UserPreferences?>> = _userPreferencesSaveDataState
 
-    fun saveUserCategories(userCategories: ArrayList<UserCategory>) {
-        viewModelScope.launch {
-            newsRepository.saveUserCategories(userCategories).onEach {
-                _userCategorySaveDataState.value = it
-            }.launchIn(viewModelScope)
+    fun saveUserPreferences(userPreferences: UserPreferences) {
+        if(MainActivity.isConnectedToNetwork) {
+            viewModelScope.launch {
+                newsRepository.saveUserCategoriesInServer(userPreferences).onEach {
+                    _userPreferencesSaveDataState.value = it
+                }.launchIn(viewModelScope)
+            }
+        } else {
+            toast("Please connect to network to save changes.")
         }
     }
 
-    fun setUserCategoryState(userCategories: ArrayList<UserCategory>) {
-        _userCategoryDataState.value = DataState.Success(userCategories)
+    fun setUserPreferencesState(userPreferences: UserPreferences) {
+        _userPreferencesDataState.value = DataState.Success(userPreferences)
     }
 
     fun changeUserPreferencesState(hasChanged: Boolean) {
