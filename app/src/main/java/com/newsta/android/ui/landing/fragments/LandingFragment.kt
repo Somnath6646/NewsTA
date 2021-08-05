@@ -16,6 +16,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.core.view.children
+import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -227,6 +228,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     if (newCategories == categories) {
                         println("CATEGORIES SAME")
                         if (!NewstaApp.has_changed_preferences!! && userCategories.size == 0) {
+                            println("CATEGORY SE SET HUA NOT CHANGED")
                             setUpTabLayout(categories = categories)
                         }
                     } else {
@@ -253,16 +255,18 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
                     if (isAppJustOpened)
                         viewModel.getCategories()
-                    if (categories.size <= 0)
+                    if (categories.size <= 0) {
                         categories = it.data as ArrayList<Category>
-                    println("NOT CHANGED USER PREFERENCES ---> $categories")
-                    if (NewstaApp.has_changed_preferences!!) {
-                        println("CHANGED USER PREFERENCES")
-                        getUserCategories()
-//                        setUpTabLayout(categories = categories)
-                    } else {
                         println("NOT CHANGED USER PREFERENCES ---> $categories")
-                        setUpTabLayout(categories = categories)
+                        if (NewstaApp.has_changed_preferences!!) {
+                            println("CHANGED USER PREFERENCES")
+                            getUserCategories()
+//                        setUpTabLayout(categories = categories)
+                        } else {
+                            println("NOT CHANGED USER PREFERENCES ---> $categories")
+                            if(binding.pager.childCount <= 0)
+                                setUpTabLayout(categories = categories)
+                        }
                     }
                 }
                 is DataState.Error -> {

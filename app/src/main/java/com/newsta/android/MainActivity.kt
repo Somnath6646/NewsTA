@@ -11,8 +11,10 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
@@ -55,6 +57,18 @@ class MainActivity : AppCompatActivity(){
         viewModel.userPrefrences.accessToken.asLiveData().observe(this, Observer { accessToken ->
             NewstaApp.access_token = accessToken
             NewstaApp.setAccessToken(accessToken)
+
+            println("NEWS VIEW MODEL IN MAIN ---> $newsViewModel")
+
+            newsViewModel.toast.observe(this, Observer {
+                it.getContentIfNotHandled().let {
+                    if (it != null)
+                        Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
+                }
+            })
+
+            newsViewModel.toast("MAIN ACTIVITY")
+
             if (!NewstaApp.access_token.isNullOrEmpty())
                 searchWithNewsta()
             Log.i("MainActivity", (accessToken == NewstaApp.getAccessToken()).toString())
