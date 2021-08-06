@@ -106,6 +106,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     val filteredStories =
                         stories.filter { story: Story -> story.category == categoryState }
                     if (filteredStories.isNullOrEmpty()) {
+                        println("FILTERED STORIES MIN GHUS GAYA")
                         NewstaApp.is_database_empty = true
                         viewModel.changeDatabaseState(true)
                         viewModel.getNewsOnInit()
@@ -153,7 +154,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
         viewModel.dbNewsDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success<List<Story>?> -> {
-                    Log.i("newsDataState", " success")
+                    Log.i("DBnewsDataState", " success")
                     viewModel.debugToast("dBnewsDataState: success")
                     binding.refreshLayout.isRefreshing = false
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
@@ -209,6 +210,32 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                 }
             }
         })
+
+        /*viewModel.dbNewsLiveData.observe(viewLifecycleOwner, Observer {
+            if(!it.isNullOrEmpty()) {
+                binding.refreshLayout.isRefreshing = false
+                viewModel.changeDatabaseState(isDatabaseEmpty = false)
+                println("STORIES BEFORE ADDING NEW STORIES ---> $stories")
+                stories.addAll(0, ArrayList(it))
+                println("STORIES AFTER ADDING NEW STORIES ---> $stories")
+                val filteredStories =
+                    stories.filter { story: Story -> story.category == categoryState }
+                if (filteredStories.isNullOrEmpty()) {
+                    println("FILTERED STORIES MIN GHUS GAYA")
+                    NewstaApp.is_database_empty = true
+                    viewModel.changeDatabaseState(true)
+                    viewModel.getNewsOnInit()
+                    NewstaApp.setIsDatabaseEmpty(true)
+                }
+                println("FilteredStories  $filteredStories")
+
+                val stories = ArrayList<Story>(filteredStories)
+                stories.sortByDescending {
+                        story ->  story.updatedAt
+                }
+                adapter.addAll(stories)
+            }
+        })*/
 
         viewModel.newsUpdateState.observeForever( Observer {
 

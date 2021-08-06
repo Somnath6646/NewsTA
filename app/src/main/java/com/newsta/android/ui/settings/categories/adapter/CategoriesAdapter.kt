@@ -69,7 +69,7 @@ class CategoriesViewHolder(val binding: CategoriesItemBinding, private val onCat
 
     fun bind(category: UserCategory) {
         binding.textViewCategory.text = category.category.capitalize(Locale.ROOT)
-            binding.switchCategory.isChecked = category.isEnabled
+        binding.switchCategory.isChecked = category.isEnabled
 
         binding.switchCategory.setOnCheckedChangeListener { buttonView, isChecked ->
             onCategoryChange(category, isChecked)

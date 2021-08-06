@@ -47,6 +47,9 @@ interface StoriesDAO {
     @Query("SELECT * FROM ${Category.TABLE_NAME}")
     suspend fun getAllCategories(): List<Category>
 
+    @Query("UPDATE user_preferences SET categories = :userCategories WHERE `key` = 0")
+    suspend fun updateUserCategories(userCategories: List<Int>): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE, entity = UserPreferences::class)
     suspend fun insertUserPreferences(userPreferences: UserPreferences): Long
 

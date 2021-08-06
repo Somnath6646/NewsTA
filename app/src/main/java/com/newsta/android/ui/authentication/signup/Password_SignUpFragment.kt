@@ -60,7 +60,9 @@ class Password_SignUpFragment : PasswordFragment<FragmentPasswordSignUpBinding>(
                     is DataState.Success -> {
                         Log.i("TAG", "Sucess")
                         binding.ctabtnProgressBar.visibility = View.GONE
-                        it.data?.data?.let { it1 -> viewModel.saveTokenAndIss(accessToken = it1) }
+                        it.data?.data?.let { it1 ->
+                            viewModel.getUserPreferences(accessToken = it1)
+                        }
                     }
                     is DataState.Loading -> {
                         Log.i("TAG", "Loading")

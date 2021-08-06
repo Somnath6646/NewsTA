@@ -16,7 +16,6 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.core.view.children
-import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -146,7 +145,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private fun getUserCategories() {
 
-        viewModel.getUserCategories()
+        /*viewModel.getUserPreferences()
         viewModel.userPreferencesDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
@@ -155,20 +154,24 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     println("USER CATEGORIES ---> $userCategories")
 //                    val userCategories = ArrayList<Category>()
 //                    StoriesDisplayFragment.categoryState = userCategories[0].categoryId
-                    userCategories.clear()
+//                    userCategories.clear()
+                    val tempUserCategories = arrayListOf<Category>()
                     userPreferences.categories?.forEach { categoryId ->
                         categories.forEach { category ->
                             if(categoryId == category.categoryId) {
                                 println("${category.categoryId} ---> Present")
-                                userCategories.add(Category(category.category, category.categoryId))
+                                tempUserCategories.add(Category(category.category, category.categoryId))
                             }
                         }
                     }
+//                    if(userCategories != tempUserCategories)
+                        userCategories = tempUserCategories
+                    setUpTabLayout(categories = userCategories)
                     println("USER CATEGORIES ---> $userCategories")
                     println("CATEGORIES ---> $categories")
-                    if (categories != userCategories) {
+                    *//*if (categories != userCategories) {
 //                        categories = userCategories
-                        isAppJustOpened = true
+//                        isAppJustOpened = true
                         setUpTabLayout(categories = ArrayList()).let {
                             println("USER CATEGORIES ---> $userCategories")
                             if (userCategories.size > 0)
@@ -176,7 +179,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                             else
                                 setUpTabLayout(categories = categories)
                         }
-                    }
+                    }*//*
                 }
                 is DataState.Error -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Error")
@@ -186,8 +189,36 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     Log.i("TAG", "onActivityCreated: CategoryDatState logading")
                 }
             }
+        })*/
+
+        /*if(categories.isNullOrEmpty()) {
+            println("GETTING USER PREFERENCES")
+            viewModel.getUserPreferences()
+        }*/
+        viewModel.userCategoryLiveData.observe(viewLifecycleOwner, Observer {
+            val userCats = it
+            createUserCategories(userCats)
+            setUpTabLayout(categories = userCategories)
         })
 
+    }
+
+    private fun createUserCategories(userCats: List<Int>?) {
+        val tempUserCategories = arrayListOf<Category>()
+
+        userCategories = if(!userCats.isNullOrEmpty()) {
+            userCats.forEach { categoryId ->
+                categories.forEach { category ->
+                    if (categoryId == category.categoryId) {
+                        println("${category.categoryId} ---> Present")
+                        tempUserCategories.add(Category(category.category, category.categoryId))
+                    }
+                }
+            }
+            tempUserCategories
+        } else {
+            categories
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -220,7 +251,20 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             findNavController().navigate(action)
         }
 
-        viewModel.categoryDataState.observe(viewLifecycleOwner, Observer {
+        viewModel.categoryLiveData.observe(viewLifecycleOwner, Observer {
+//                setUpTabLayout(categories)
+//                if(categories.isNullOrEmpty()) {
+            if(categories.isNullOrEmpty()) {
+                println("GETTING USER PREFERENCES")
+                viewModel.getUserPreferences()
+            }
+            categories = it as ArrayList<Category>
+            println("CATEGORIES IN LANDING FRAGMENT ---> $categories")
+            getUserCategories()
+
+        })
+
+        /*viewModel.categoryDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Success")
@@ -247,9 +291,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     Log.i("TAG", "onActivityCreated: CategoryDatState logading")
                 }
             }
-        })
+        })*/
 
-        viewModel.dbCategoryDataState.observe(viewLifecycleOwner, Observer {
+        /*viewModel.dbCategoryDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
@@ -277,7 +321,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     Log.i("TAG", "onActivityCreated: CategoryDatState logading")
                 }
             }
-        })
+        })*/
 
         viewModel.logoutDataState.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {

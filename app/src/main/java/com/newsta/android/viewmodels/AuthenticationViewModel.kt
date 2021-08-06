@@ -51,6 +51,14 @@ constructor(private val authRepository: AuthRepository,
     @Bindable
     val password = MutableLiveData<String>("")
 
+    private val _observerCount = MutableLiveData<Int>()
+    val observerCount: LiveData<Int>
+        get() = _observerCount
+
+    fun incrementObserverCount() {
+        _observerCount.value = _observerCount.value?.plus(1)
+    }
+
     fun signUp(){
 
         viewModelScope.launch {
@@ -103,10 +111,18 @@ constructor(private val authRepository: AuthRepository,
         viewModelScope.launch {
             authRepository.getUserPreferences(UserPreferencesRequest(accessToken, NewstaApp.ISSUER_NEWSTA)).onEach {
                 println("USER PREFERENCE DATA ---> $it")
-                if(it is DataState.Success) {
-                    saveTokenAndIss(accessToken, true)
-                } else {
-                    saveTokenAndIss(accessToken, false)
+                when (it) {
+                    is DataState.Success -> {
+                        saveTokenAndIss(accessToken, true)
+                    }
+
+                    is DataState.Error -> {
+                        if(it.statusCode == 499) {
+                            saveTokenAndIss(accessToken, false)
+                        } else {
+                            println("ERROR IN AUTH ---> ${it.exception}")
+                        }
+                    }
                 }
             }.launchIn(viewModelScope)
         }

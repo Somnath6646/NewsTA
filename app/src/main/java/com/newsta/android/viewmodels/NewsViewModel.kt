@@ -13,11 +13,13 @@ import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
 import com.newsta.android.responses.LogoutResponse
 import com.newsta.android.responses.SearchStory
+import com.newsta.android.ui.landing.fragments.StoriesDisplayFragment
 import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.models.*
 import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -48,6 +50,9 @@ constructor(private val newsRepository: StoriesRepository,
     private val _dbNewsDataState = MutableLiveData<DataState<List<Story>>>()
     val dbNewsDataState: LiveData<DataState<List<Story>>> = _dbNewsDataState
 
+    private val _dbNewsLiveData = MutableLiveData<ArrayList<Story>>()
+    val dbNewsLiveData: LiveData<ArrayList<Story>> = _dbNewsLiveData
+
     private val _userPreferencesDataState = MutableLiveData<DataState<UserPreferences>?>()
     val userPreferencesDataState: LiveData<DataState<UserPreferences>?> = _userPreferencesDataState
 
@@ -56,6 +61,12 @@ constructor(private val newsRepository: StoriesRepository,
 
     private val _categoryDataState = MutableLiveData<DataState<List<Category>?>>()
     val categoryDataState: LiveData<DataState<List<Category>?>> = _categoryDataState
+
+    private val _categoryLiveData = MutableLiveData<List<Category>?>()
+    val categoryLiveData: LiveData<List<Category>?> = _categoryLiveData
+
+    private val _userCategoryLiveData = MutableLiveData<List<Int>?>()
+    val userCategoryLiveData: LiveData<List<Int>?> = _userCategoryLiveData
 
     private val _sourcesDataState = MutableLiveData<DataState<List<NewsSource>?>>()
     val sourcesDataState: LiveData<DataState<List<NewsSource>?>> = _sourcesDataState
@@ -121,16 +132,24 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
+    var hasGotNews = false
 
     fun getAllNews(storyId: Int = 0, maxDateTime: Long, isRefresh: Boolean = false) {
 
         urlToRequest  = "http://13.235.50.53/new"
 
+        println("GET ALL NEWS MEIN AAYA")
+
         viewModelScope.launch {
             val maxDateTime  = getMaxDate(maxDateTime)
-            val request = NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, maxDateTime )
-            debugToast("storyId : ${storyId} \n maxDateTime: ${maxDateTime} ")
-            newsRepository.getAllStories(newsRequest = request, isRefresh = isRefresh)
+                val request = NewsRequest(
+                    NewstaApp.access_token!!,
+                    NewstaApp.ISSUER_NEWSTA,
+                    storyId,
+                    maxDateTime
+                )
+                debugToast("storyId : ${storyId} \n maxDateTime: ${maxDateTime} ")
+                newsRepository.getAllStories(newsRequest = request, isRefresh = isRefresh)
                     .onEach {
                         _newsDataState.value = it
                     }
@@ -144,7 +163,82 @@ constructor(private val newsRepository: StoriesRepository,
         viewModelScope.launch {
             newsRepository.getNewsFromDatabase().onEach {
                 println("NEWS FROM DB: $it")
-                _dbNewsDataState.value = it
+//                _dbNewsDataState.value = it
+//                when(it) {
+//                    is DataState.Success -> {
+                        _dbNewsDataState.value = it
+                    /*}
+                    is DataState.Error -> {
+                        if(NewstaApp.is_database_empty) {
+                            println("DB SE BAAR BAAR CALL HO RAHA HAI")
+                            hasGotNews = true
+                            getNewsFirstTime()
+                        }
+                    }
+                }*/
+                /*when (it) {
+                    is DataState.Success<List<Story>?> -> {
+                        Log.i("DBnewsDataState", " success")
+                        debugToast("dBnewsDataState: success")
+//                        binding.refreshLayout.isRefreshing = false
+                        changeDatabaseState(isDatabaseEmpty = false)
+                        _dbNewsLiveData.value = it.data as ArrayList<Story>
+                        *//*stories = ArrayList(it.data)
+                        val filteredStories =
+                            stories.filter { story: Story -> story.category == StoriesDisplayFragment.categoryState }
+                        if (filteredStories.isNullOrEmpty()) {
+                            NewstaApp.is_database_empty = true
+                            viewModel.changeDatabaseState(true)
+                            viewModel.getNewsOnInit()
+                            NewstaApp.setIsDatabaseEmpty(true)
+                        }
+                        println("FilteredStories  $filteredStories")*//*
+
+                        *//*val stories = ArrayList<Story>(filteredStories)
+                        stories.sortByDescending {
+                                story ->  story.updatedAt
+                        }*//*
+//                        adapter.addAll(stories)
+                    }
+                    is DataState.Error -> {
+                        Log.i("dBnewsDataState", " errror ${it.exception}")
+                        if(NewstaApp.is_database_empty) {
+                            println("DB SE BAAR BAAR CALL HO RAHA HAI")
+                            hasGotNews = true
+                            getNewsFirstTime()
+                        }
+                        *//*viewModel.debugToast("dBnewsDataState:  errror ${it.exception}")
+
+                        binding.refreshLayout.isRefreshing = false*//*
+                    }
+                    is DataState.Loading -> {
+                        Log.i("dBnewsDataState", " loding")
+                        *//*viewModel.debugToast("dBnewsDataState: loading")
+
+                        binding.refreshLayout.isRefreshing = true*//*
+                    }
+                    is DataState.Extra<List<Story>?> -> {
+                        try {
+                            println("EXTRA DB DATA ---> ${it.data}")
+                            if (!it.data.isNullOrEmpty()) {
+                                MainActivity.maxStory = it.data.first()
+                                MainActivity.minStory = it.data.last()
+                                MainActivity.extras = ArrayList(it.data)
+                                Log.i(
+                                    "newsDataState",
+                                    " EXTRA MAX ${MainActivity.maxStory.storyId} ${MainActivity.maxStory.updatedAt} ${MainActivity.maxStory.category} ${MainActivity.maxStory.events}"
+                                )
+                                *//*if(!isRefreshedByDefault) {
+                                    isRefreshedByDefault = true
+                                    viewModel.getAllNews(MainActivity.maxStory.storyId, MainActivity.maxStory.updatedAt)
+                                }*//*
+                            }
+                        } catch (e: Exception) {
+                            debugToast("Min max error")
+                            e.printStackTrace()
+                        }
+                    }
+                }*/
             }.launchIn(viewModelScope)
         }
 
@@ -156,17 +250,64 @@ constructor(private val newsRepository: StoriesRepository,
         viewModelScope.launch {
             newsRepository.getCategoryFromDatabase().onEach {
                 println("CATEGORIES FROM DB: $it")
-                _dbCategoryDataState.value = it
+//                _dbCategoryDataState.value = it
+                    when (it) {
+                        is DataState.Success -> {
+                            Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
+                            val dbCategories = it.data as ArrayList<Category>
+//                            if (isAppJustOpened)
+//                                viewModel.getCategories()
+                            getCategories()
+                            println("CATEGORY LIVE DATA VALUE ---> ${categoryLiveData.value}")
+                            if (categoryLiveData.value.isNullOrEmpty()) {
+                                _categoryLiveData.value = dbCategories
+                                println("NOT CHANGED USER PREFERENCES ---> ${categoryLiveData.value}")
+                                if (NewstaApp.has_changed_preferences!!) {
+                                    println("CHANGED USER PREFERENCES")
+                                    getUserPreferences()
+//                        setUpTabLayout(categories = categories)
+                                } else {
+                                    println("NOT CHANGED USER PREFERENCES ---> ${categoryLiveData.value}")
+                                    if(categoryLiveData.value.isNullOrEmpty())
+                                        _categoryLiveData.value = dbCategories
+//                                        setUpTabLayout(categories = categories)
+                                }
+                            }
+                        }
+                        is DataState.Error -> {
+                            Log.i("TAG", "onActivityCreated: CategoryDatState Error")
+//                            checkIfUnauthorized(it)
+                        }
+                        is DataState.Loading -> {
+                            Log.i("TAG", "onActivityCreated: CategoryDatState logading")
+                        }
+                    }
             }.launchIn(viewModelScope)
         }
 
     }
 
-    fun getUserCategories() {
+    fun setUserCategoryLiveData(userCategories: ArrayList<Int>) {
+        _userCategoryLiveData.value = userCategories
+    }
+
+    fun getUserPreferences() {
         viewModelScope.launch {
             newsRepository.getUserCategories().onEach {
-                println("USER CATEGORIES FROM DB: $it")
-                _userPreferencesDataState.value = it
+//                _userPreferencesDataState.value = it
+                when (it) {
+                    is DataState.Success -> {
+                        val userPreferences = it.data
+                        _userCategoryLiveData.value = userPreferences.categories
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "onActivityCreated: CategoryDatState Error")
+//                        checkIfUnauthorized(it)
+                    }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "onActivityCreated: CategoryDatState logading")
+                    }
+                }
             }.launchIn(viewModelScope)
         }
 
@@ -174,21 +315,21 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun getNewsOnInit() {
 
-        if(NewstaApp.is_database_empty!!) {
-            println("API ------>        ${NewstaApp.is_database_empty}")
-
-
-            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
-
-            //prefrences se idharr lenaa hai
-            Log.i("MYTAG", "getNewsOnInit: Aaya biroo")
-            getAllNews(0, days3)
+        if(NewstaApp.is_database_empty) {
+            getNewsFirstTime()
         } else {
             println("DATABASE ------>        ${NewstaApp.is_database_empty}")
             Log.i("MYTAG", "getNewsOnInit:Nhi Aaya biroo")
             getNewsFromDatabase()
         }
 
+    }
+
+    private fun getNewsFirstTime() {
+        println("IS DB EMPTY FIRST TIME ------>        ${NewstaApp.is_database_empty}")
+        val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+        Log.i("MYTAG", "getNewsOnInit: Aaya biroo")
+        getAllNews(0, days3)
     }
 
     private val _newsUpdateState = MutableLiveData<DataState<List<Story>>>()
@@ -253,7 +394,22 @@ constructor(private val newsRepository: StoriesRepository,
             println("NEWSTA APP: ${NewstaApp.access_token}")
             val request = CategoryRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA)
             newsRepository.getCategories(request).onEach {
-                _categoryDataState.value = it
+//                _categoryDataState.value = it
+                when (it) {
+                    is DataState.Success -> {
+                        Log.i("TAG", "onActivityCreated: CategoryDatState Success")
+                        var newCategories = it.data as ArrayList<Category>
+                        _categoryLiveData.value = newCategories
+                        println("CATEGORY KAA NAYA VALUE --> ${categoryLiveData.value}")
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "onActivityCreated: CategoryDatState Error")
+//                        checkIfUnauthorized(it)
+                    }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "onActivityCreated: CategoryDatState logading")
+                    }
+                }
             }.launchIn(viewModelScope)
         }
 
@@ -336,14 +492,14 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    private val _userPreferencesSaveDataState = MutableLiveData<DataState<UserPreferences?>>()
-    val userPreferencesSaveDataState: LiveData<DataState<UserPreferences?>> = _userPreferencesSaveDataState
+    private val _userCategoriesSaveDataState = MutableLiveData<DataState<ArrayList<Int>?>>()
+    val userCategoriesSaveDataState: LiveData<DataState<ArrayList<Int>?>> = _userCategoriesSaveDataState
 
-    fun saveUserPreferences(userPreferences: UserPreferences) {
+    fun saveUserPreferences(userCategories: ArrayList<Int>) {
         if(MainActivity.isConnectedToNetwork) {
             viewModelScope.launch {
-                newsRepository.saveUserCategoriesInServer(userPreferences).onEach {
-                    _userPreferencesSaveDataState.value = it
+                newsRepository.saveUserCategoriesInServer(userCategories).onEach {
+                    _userCategoriesSaveDataState.value = it
                 }.launchIn(viewModelScope)
             }
         } else {

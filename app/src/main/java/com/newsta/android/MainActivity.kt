@@ -2,6 +2,7 @@ package com.newsta.android
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity(){
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
+    @SuppressLint("LongLogTag")
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,20 +59,9 @@ class MainActivity : AppCompatActivity(){
         viewModel.userPrefrences.accessToken.asLiveData().observe(this, Observer { accessToken ->
             NewstaApp.access_token = accessToken
             NewstaApp.setAccessToken(accessToken)
+            viewModel.incrementObserverCount()
 
-            println("NEWS VIEW MODEL IN MAIN ---> $newsViewModel")
-
-            newsViewModel.toast.observe(this, Observer {
-                it.getContentIfNotHandled().let {
-                    if (it != null)
-                        Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
-                }
-            })
-
-            newsViewModel.toast("MAIN ACTIVITY")
-
-            if (!NewstaApp.access_token.isNullOrEmpty())
-                searchWithNewsta()
+            if (!NewstaApp.access_token.isNullOrEmpty()) {}
             Log.i("MainActivity", (accessToken == NewstaApp.getAccessToken()).toString())
         })
 
@@ -78,8 +69,12 @@ class MainActivity : AppCompatActivity(){
             if (isDatabaseEmpty != null) {
                 NewstaApp.is_database_empty = isDatabaseEmpty
                 NewstaApp.setIsDatabaseEmpty(isDatabaseEmpty)
+                viewModel.incrementObserverCount()
 
-                Log.i("MainActivity", (isDatabaseEmpty == NewstaApp.getIsDatabaseEmpty()).toString())
+                Log.i("MainActivity IS DB EMPTY --->", (NewstaApp.getIsDatabaseEmpty()).toString())
+                Log.i("MainActivity IS DB EMPTY", (isDatabaseEmpty == NewstaApp.getIsDatabaseEmpty()).toString())
+            } else {
+                Log.i("MainActivity IS DB EMPTY", "null")
             }
         })
 
@@ -89,6 +84,7 @@ class MainActivity : AppCompatActivity(){
 
                 NewstaApp.font_scale = fontScale
                 NewstaApp.setFontScale(fontScale)
+                viewModel.incrementObserverCount()
 
                 LocaleConfigurationUtil.adjustFontSize(this, NewstaApp.font_scale!!)
 
@@ -105,13 +101,36 @@ class MainActivity : AppCompatActivity(){
                 NewstaApp.has_changed_preferences = hasChanged
                 NewstaApp.setHasChangedPreferences(hasChanged)
                 Log.i("MainActivity", (hasChanged == NewstaApp.getHasChangedPreferences()).toString())
+                viewModel.incrementObserverCount()
 
             }
 
         })
 
+        viewModel.observerCount.observe(this, Observer {
+            if(it == 4) {
+                newsTasks()
+                viewModel.observerCount.removeObservers(this)
+            }
+        })
+
         observeUserNetworkConnection()
 
+    }
+
+    private fun newsTasks() {
+        searchWithNewsta()
+        println("NEWS VIEW MODEL IN MAIN ---> $newsViewModel")
+        println("NEWSTA ACCESS TOKEN ---> ${NewstaApp.access_token}")
+
+        newsViewModel.toast.observe(this, Observer {
+            it.getContentIfNotHandled().let {
+                if (it != null)
+                    Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        newsViewModel.toast("MAIN ACTIVITY")
     }
 
     private fun searchWithNewsta() {

@@ -1,4 +1,4 @@
-package com.newsta.android.repository
+  package com.newsta.android.repository
 
 import android.util.Log
 import com.google.gson.Gson
@@ -59,19 +59,12 @@ class AuthRepository (
                     if(response.code() == 499) {
                         println("SAVING USER PREFERENCES IN DB EMPTY")
                         if (errorResponse != null) {
-                            emit(DataState.Error(errorResponse.detail))
+                            emit(DataState.Error(errorResponse.detail, 499))
                         }
-                    }
-                    if (errorResponse != null) {
-                        emit(DataState.Error(errorResponse.detail))
-                    }
-                } else {
-//                    emit(DataState.Success(prefresponse))
-                    val userPreferences = UserPreferences()
-                    storiesDao.deleteAllUserPreferences().let {
+                        val userPreferences = UserPreferences()
 //                userCategories.forEach { userCategory -> userCategory.primaryKey = 0 }
                         val isInserted = storiesDao.insertUserPreferences(userPreferences)
-                        println("IS INSERTED ---> ${isInserted}")
+                        println("IS INSERTED ---> $isInserted")
                         if (isInserted != -1L) {
                             println("PREFERENCES SAVED")
                             emit(DataState.Success(userPreferences))
@@ -79,6 +72,22 @@ class AuthRepository (
                             emit(DataState.Error("Cannot save user categories", 101))
                         }
                     }
+                    if (errorResponse != null) {
+                        emit(DataState.Error(errorResponse.detail))
+                    }
+                } else {
+//                    emit(DataState.Success(prefresponse))
+                    val userPreferences = prefresponse!!
+//                userCategories.forEach { userCategory -> userCategory.primaryKey = 0 }
+                        val isInserted = storiesDao.insertUserPreferences(userPreferences)
+                        println("IS INSERTED ---> $isInserted")
+                        if (isInserted != -1L) {
+                            println("PREFERENCES SAVED")
+                            emit(DataState.Success(userPreferences))
+                        } else {
+                            emit(DataState.Error("Cannot save user categories", 101))
+                        }
+
                 }
             } catch (e: Exception) {
 
