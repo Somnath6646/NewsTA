@@ -26,6 +26,10 @@ interface StoriesDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSavedStory(story: SavedStory): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSavedStory(stories: List<SavedStory>): Array<Long>
+
+
     @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE category = (SELECT :category FROM ${Story.TABLE_NAME})")
     suspend fun getFilteredStories(category: Int): List<Story>
 
@@ -49,6 +53,10 @@ interface StoriesDAO {
 
     @Query("UPDATE user_preferences SET categories = :userCategories WHERE `key` = 0")
     suspend fun updateUserCategories(userCategories: List<Int>): Int
+
+
+    @Query("UPDATE user_preferences SET saved = :savedStoryIds WHERE `key` = 0")
+    suspend fun updateSavedStoryIds(savedStoryIds: List<Int>): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE, entity = UserPreferences::class)
     suspend fun insertUserPreferences(userPreferences: UserPreferences): Long

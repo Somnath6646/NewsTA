@@ -1,5 +1,6 @@
 package com.newsta.android.repository
 
+import android.provider.ContactsContract
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -256,7 +257,31 @@ class StoriesRepository(
             }
         }
 
-    suspend fun saveStory(story: SavedStory): Flow<DataState<SavedStory>> = flow {
+
+    suspend fun getStoriesByIds(savedStoryIds: ArrayList<Int>): Flow<DataState<ArrayList<SavedStory>>> = flow{
+        emit(DataState.Loading)
+        try{
+            val request = StoriesByIdsRequest(accessToken = NewstaApp.access_token!!, iss = NewstaApp.ISSUER_NEWSTA, storyIds = savedStoryIds)
+            val response = newsService.savedStoryByIds(request)
+            if(response.isSuccessful){
+                val responseBody = response.body()
+                if(responseBody!= null ){
+                val savedStories = responseBody.data
+                    storiesDao.insertSavedStory(savedStories)
+                    Log.i("Stories by ids", "saved stories $savedStoryIds")
+                    emit(DataState.Success(savedStories))
+                }else{
+                    Log.i("Stories by ids", "response body is null")
+                }
+            }else{
+                Log.i("Stories by ids", "response unsuccessfull")
+            }
+        }catch (e: Exception){
+            emit(DataState.Error("Error in getting stories by ids"))
+        }
+    }
+
+    suspend fun saveStoryInDB(story: SavedStory): Flow<DataState<SavedStory>> = flow {
 
         emit(DataState.Loading)
 
@@ -272,7 +297,7 @@ class StoriesRepository(
 
     }
 
-    suspend fun getSavedStories(): Flow<DataState<List<SavedStory>>> = flow {
+    suspend fun getSavedStoriesFromDB(): Flow<DataState<List<SavedStory>>> = flow {
 
         emit(DataState.Loading)
 
@@ -287,7 +312,7 @@ class StoriesRepository(
 
     }
 
-    suspend fun deleteSavedStory(story: SavedStory): Flow<DataState<SavedStory>> = flow {
+    suspend fun deleteSavedStoryInDB(story: SavedStory): Flow<DataState<SavedStory>> = flow {
 
         emit(DataState.Loading)
 
@@ -305,7 +330,7 @@ class StoriesRepository(
 
     }
 
-    suspend fun deleteSavedStory(story: List<SavedStory>): Flow<DataState<SavedStory>> = flow {
+    suspend fun deleteSavedStoryInDB(story: List<SavedStory>): Flow<DataState<SavedStory>> = flow {
 
         emit(DataState.Loading)
 
@@ -359,7 +384,7 @@ class StoriesRepository(
                     emit(DataState.Success(response.body()?.data))
                     response.body()?.data?.let {
                         storiesDao.insertCategories(it)
-                        if(!NewstaApp.has_changed_preferences!!) {
+
                             val userCategoriesDB = storiesDao.getUserPreferences()
                             val userCategoriesID = arrayListOf<Int>()
                             if(userCategoriesDB.size <= 0) {
@@ -379,7 +404,7 @@ class StoriesRepository(
                                 )
                                 storiesDao.updateUserCategories(userCategoriesID)
                             }
-                        }
+
                     }
                 } else {
                     val categories = storiesDao.getAllCategories()
@@ -466,7 +491,7 @@ class StoriesRepository(
 
     }
 
-    suspend fun getUserCategories(): Flow<DataState<UserPreferences>> = flow {
+    suspend fun getUserPrefrences(): Flow<DataState<UserPreferences>> = flow {
 
         emit(DataState.Loading)
         println("LOADING")
@@ -489,30 +514,7 @@ class StoriesRepository(
         }
     }
 
-    suspend fun saveUserPreferences(userPreferences: UserPreferences): Flow<DataState<UserPreferences>> = flow {
 
-        emit(DataState.Loading)
-        println("LOADING")
-
-        try {
-
-//            println("SAVING ---> $userPreferences")
-//            storiesDao.deleteAllUserPreferences().let {
-////                userCategories.forEach { userCategory -> userCategory.primaryKey = 0 }
-////                val isInserted = storiesDao.updateUserCategories(userPreferences)
-//                println("IS INSERTED ---> ${isInserted}")
-//                if (isInserted != -1L) {
-//                    println("PREFERENCES SAVED")
-//                    emit(DataState.Success(userPreferences))
-//                } else {
-//                    emit(DataState.Error("Cannot save user categories", 101))
-//                }
-//            }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     suspend fun saveUserCategoriesInServer(userCategories: ArrayList<Int>): Flow<DataState<ArrayList<Int>>> = flow {
         try {
@@ -548,5 +550,39 @@ class StoriesRepository(
             e.printStackTrace()
         }
     }
+
+    suspend fun saveSavedStoryIdsInServer(savedStoryIds: ArrayList<Int>): Flow<DataState<ArrayList<Int>>> = flow {
+        try {
+
+            val updateSavedStoryIdsRequest = UpdateSavedStoryIdsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, savedStoryIds)
+            val updateResponse = newsService.updateUserSavedStories(updateSavedStoryIdsRequest)
+            if(updateResponse.isSuccessful) {
+                println("RESPONSE SUCCESSFUL")
+                val isInserted = storiesDao.updateSavedStoryIds(savedStoryIds)
+                println("IS INSERTED ---> $isInserted")
+                if (isInserted != -1) {
+                    println("PREFERENCES SAVED")
+                    emit(DataState.Success(savedStoryIds))
+                } else {
+                    emit(DataState.Error("Cannot save story id", 101))
+                }
+
+            } else {
+                Log.i("MYTAG", updateResponse.message())
+                val gson = Gson()
+                val type = object : TypeToken<ErrorResponse>() {}.type
+                var errorResponse: ErrorResponse? =
+                    gson.fromJson(updateResponse.errorBody()!!.charStream(), type)
+                if (errorResponse != null) {
+                    emit(DataState.Error(errorResponse.detail))
+                }
+            }
+
+        } catch (e: Exception) {
+            println("ERRORRRRRRR IN UPDATING USER CATEGORIES IN SERVER")
+            e.printStackTrace()
+        }
+    }
+
 
 }

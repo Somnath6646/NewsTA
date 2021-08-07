@@ -13,6 +13,7 @@
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
+        tools:context=".ui.landing.fragments.LandingFragment"
         android:layout_height="match_parent">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -23,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/bg_color"
-                tools:context=".ui.landing.fragments.LandingFragment">
+                >
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/top_guideline"

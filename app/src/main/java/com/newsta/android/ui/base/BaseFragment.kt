@@ -18,6 +18,7 @@ abstract class BaseFragment <T: ViewDataBinding/*, VM: ViewModel*/>: Fragment(){
 
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

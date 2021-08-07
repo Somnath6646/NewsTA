@@ -123,6 +123,8 @@ class MainActivity : AppCompatActivity(){
         println("NEWS VIEW MODEL IN MAIN ---> $newsViewModel")
         println("NEWSTA ACCESS TOKEN ---> ${NewstaApp.access_token}")
 
+
+
         newsViewModel.toast.observe(this, Observer {
             it.getContentIfNotHandled().let {
                 if (it != null)

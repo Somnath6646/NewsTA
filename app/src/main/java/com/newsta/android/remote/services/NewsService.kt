@@ -42,4 +42,17 @@ interface NewsService {
     @POST("user_preferences/update_categories")
     suspend fun updateUserCategories(@Body updateUserCategoriesRequest: UpdateUserCategoriesRequest): Response<UpdateUserCategoriesResponse>
 
+    @Headers("Accept: application/json")
+    @POST("user_preferences/update_saved_stories")
+    suspend fun updateUserSavedStories(@Body updateSavedStoryIdsRequest: UpdateSavedStoryIdsRequest): Response<SaveStoriesUpdatedResponse>
+
+    @Headers("Accept: application/json")
+    @POST("user_preferences/update_notify_stories")
+    suspend fun updateUserNotifyStories(@Body updateNotifyStoryIdsRequest: UpdateNotifyStoryIdsRequest): Response<UpdateNotifyStoryIdsResponse>
+
+
+    @Headers("Accept: application/json")
+    @POST("stories/ids")
+    suspend fun savedStoryByIds(@Body storyByIdsRequest: StoriesByIdsRequest): Response<StoriesByIdsResponse>
+
 }

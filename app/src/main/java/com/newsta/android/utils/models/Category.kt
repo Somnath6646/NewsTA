@@ -15,6 +15,9 @@ data class Category(
     @SerializedName("category_id")
     val categoryId: Int
 ){
+    override fun equals(other: Any?): Boolean {
+        return (other as Category).categoryId == this.categoryId
+    }
     companion object{
         const val TABLE_NAME = "Category"
     }

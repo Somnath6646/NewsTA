@@ -96,12 +96,14 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
         })*/
 
         viewModel.userCategoryLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                userCategoryIds = it
-            }
-            setUserCategories()
-            setUpCategoriesAdapter()
-        })
+
+                if (it != null) {
+                    userCategoryIds = it
+                }
+                setUserCategories()
+                setUpCategoriesAdapter()
+            })
+
 
     }
 
@@ -144,25 +146,14 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
 
     private fun saveUserCategories() {
 
-        viewModel.saveUserPreferences(userCategoryIds as ArrayList<Int>)
+        viewModel.saveUserCategories(userCategoryIds as ArrayList<Int>)
         viewModel.userCategoriesSaveDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {
                     Log.i("TAG", "onActivityCreated: UserCategoryDatState Success ON SAVE ---> ${it.data}")
                     val userPref = it.data
-//                    user
-//                    val cats = arrayListOf<Category>()
-//                    tempUserCategories.forEach { userCat ->
-//                        cats.add(Category(userCat.category, userCat.categoryId))
-//                    }
-//                    viewModel.setUserCategoryLiveData(cats)
                     viewModel.setUserCategoryLiveData(userPref as ArrayList<Int>)
                     println("CATEGORIES ---> $categories")
-//                    viewModel.setUserPreferencesState(userCategoryIds).let {
-//                        viewModel.changeUserPreferencesState(true)
-//                        viewModel.toast("Category preferences saved")
-////                        findNavController().popBackStack()
-//                    }
                 }
                 is DataState.Error -> {
                     Log.i("TAG", "onActivityCreated: UserCategoryDatState Error ON SAVE ---> ${it.exception}")

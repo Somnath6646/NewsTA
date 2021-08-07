@@ -88,6 +88,28 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     }
 
+    private fun updateStoryOnServer(savedStoryIds: ArrayList<Int>, action : () -> Unit){
+
+            viewModel.saveSavedStoryIds(savedStoryIds as ArrayList<Int>)
+            viewModel.userSavedStorySaveDataState.observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    is DataState.Success -> {
+                        viewModel.setSavedStoryIds( it.data as ArrayList<Int>)
+                        action()
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "onActivityCreated: UserCategoryDatState Error ON SAVE ---> ${it.exception}")
+                        if (it.statusCode == 101)
+                            viewModel.toast("Cannot save storyId")
+                    }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "onActivityCreated: SavedStoryDatState ON SAVE loading")
+                    }
+                }
+            })
+
+    }
+
     private fun saveStory() {
 
         println("SAVING STORY")
@@ -100,8 +122,27 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             updatedAt = story.updatedAt,
             events = story.events
         )
+        var savedStoryIds =  viewModel.savedStoryIdLiveData.value?.toMutableList()
 
-        viewModel.saveStory(savedStory)
+        if (savedStoryIds == null) {
+            savedStoryIds = mutableListOf()
+        }
+
+        if (savedStoryIds != null) {
+            savedStoryIds.add(story.storyId)
+            println("savedstory list is $savedStoryIds")
+            updateStoryOnServer(savedStoryIds = savedStoryIds as ArrayList<Int>) {
+                viewModel.saveStory(savedStory)
+            }
+        }else{
+            println("savedstory list is null")
+        }
+
+
+
+
+
+
         Snackbar.make(binding.root, "News story saved", Snackbar.LENGTH_SHORT).show()
         binding.btnDownload.visibility = View.INVISIBLE
 
@@ -118,7 +159,23 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             events = story.events
         )
 
-        viewModel.deleteSavedStory(savedStory)
+        var savedStoryIds =  viewModel.savedStoryIdLiveData.value?.toMutableList()
+
+        if (savedStoryIds == null) {
+            savedStoryIds = mutableListOf()
+        }
+
+        if (savedStoryIds != null) {
+            savedStoryIds.remove(story.storyId)
+            println("savedstory list is $savedStoryIds")
+            updateStoryOnServer(savedStoryIds = savedStoryIds as ArrayList<Int>) {
+                viewModel.deleteSavedStory(savedStory)
+            }
+        }else{
+            println("savedstory list is null")
+        }
+
+
         binding.btnDownload.visibility = View.VISIBLE
         Snackbar.make(binding.root, "News story unsaved", Snackbar.LENGTH_SHORT).show()
     }

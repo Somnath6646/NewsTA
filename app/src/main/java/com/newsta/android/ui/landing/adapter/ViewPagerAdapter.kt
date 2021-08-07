@@ -9,12 +9,22 @@ import com.newsta.android.utils.models.Category
 
 const val ARG_OBJECT = "object"
 
-class ViewPagerAdapter(private val fragmentActivity: FragmentActivity, private val itemCount: Int, private val categories: ArrayList<Category>) : FragmentStateAdapter(fragmentActivity) {
+class ViewPagerAdapter(private val fragmentActivity: FragmentActivity, ) : FragmentStateAdapter(fragmentActivity) {
 
-    override fun getItemCount(): Int = itemCount
+    val categories : ArrayList<Category> = arrayListOf()
+
+    override fun getItemCount(): Int = categories.size
+
+    override fun containsItem(itemId: Long): Boolean {
+        return categories.contains(Category("he", itemId.toInt()))
+    }
+
+    override fun getItemId(position: Int): Long {
+        return categories[position].categoryId.toLong()
+    }
 
     override fun createFragment(position: Int): Fragment {
-        println("CREATING FRAGMENTS")
+        println("CREATING FRAGMENTS, pos -: $position id -: ${categories[position].categoryId}")
         val fragment: Fragment = StoriesDisplayFragment()
         fragment.arguments = Bundle().apply {
             println("CATEGORY ID ---> ${categories[position].categoryId}")
@@ -22,6 +32,19 @@ class ViewPagerAdapter(private val fragmentActivity: FragmentActivity, private v
         }
         return fragment
     }
+
+    fun setCategories(list: List<Category>){
+
+
+            categories.clear()
+            categories.addAll(list)
+            println("aya hai $categories")
+
+            notifyDataSetChanged()
+
+
+    }
+
 
     fun removeAll() {
         categories.removeAll(categories)

@@ -76,7 +76,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
     private fun observer() {
 
-        /*viewModel.categoryState.observe(viewLifecycleOwner, Observer { state ->
+        /*viewModel.categoryState.observe(requireActivity(), Observer { state ->
             println("CATEGORY STATE CHANGED TO: $state")
             adapter.setCategory(state)
             categoryState = state
@@ -91,7 +91,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             viewModel.getMaxAndMinStory()
         })*/
 
-        viewModel.newsDataState.observe(viewLifecycleOwner, Observer {
+        viewModel.newsDataState.observe(requireActivity(), Observer {
             when (it) {
                 is DataState.Success<List<Story>?> -> {
                     Log.i("newsDataState", " success")
@@ -151,7 +151,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             }
         })
 
-        viewModel.dbNewsDataState.observe(viewLifecycleOwner, Observer {
+        viewModel.dbNewsDataState.observe(requireActivity(), Observer {
             when (it) {
                 is DataState.Success<List<Story>?> -> {
                     Log.i("DBnewsDataState", " success")
@@ -211,7 +211,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             }
         })
 
-        /*viewModel.dbNewsLiveData.observe(viewLifecycleOwner, Observer {
+        /*viewModel.dbNewsLiveData.observe(requireActivity(), Observer {
             if(!it.isNullOrEmpty()) {
                 binding.refreshLayout.isRefreshing = false
                 viewModel.changeDatabaseState(isDatabaseEmpty = false)
@@ -331,8 +331,8 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
         setUpAdapter()
 
-        Log.i("1TAG", "onActivityCreated: aya hai ")
-        println("ARGUMENTS: $arguments")
+        Log.i("CREATING FRAGMENTS", "onActivityCreated: aya hai ")
+        println("CREATING FRAGMENTS ARGUMENTS: $arguments")
 
         arguments?.takeIf {
 
@@ -353,6 +353,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             stories.sortByDescending { story ->
                 story.updatedAt
             }
+            println("CREATING FRAGMENTS FilteredStories  $stories")
             adapter.clear()
             adapter.addAll(stories)
             viewModel.getMaxAndMinStory()

@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -145,7 +146,10 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
         dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
 
         dialogBinding.btnAction.setOnClickListener {
-            viewModel.deleteSavedStory(savedStory)
+           deleteFromServerandLocaldb(savedStory){
+               viewModel.deleteSavedStory(savedStory)
+           }
+
             dialog.dismiss()
         }
 
@@ -157,6 +161,50 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
 
     }
 
+    private fun updateStoryOnServer(savedStoryIds: ArrayList<Int>, action : () -> Unit){
+
+        viewModel.saveSavedStoryIds(savedStoryIds as ArrayList<Int>)
+        viewModel.userSavedStorySaveDataState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is DataState.Success -> {
+                    viewModel.setSavedStoryIds( it.data as ArrayList<Int>)
+                    action()
+                }
+                is DataState.Error -> {
+                    Log.i("TAG", "onActivityCreated: UserCategoryDatState Error ON SAVE ---> ${it.exception}")
+                    if (it.statusCode == 101)
+                        viewModel.toast("Cannot save storyId")
+                }
+                is DataState.Loading -> {
+                    Log.i("TAG", "onActivityCreated: SavedStoryDatState ON SAVE loading")
+                }
+            }
+        })
+
+    }
+
+    private fun deleteFromServerandLocaldb(toDeleteList: List<SavedStory>, action: () -> Unit){
+        var savedStoryIds =  viewModel.savedStoryIdLiveData.value?.toMutableList()
+
+        if (savedStoryIds == null) {
+            savedStoryIds = mutableListOf()
+        }
+
+        if (savedStoryIds != null) {
+            val idList = arrayListOf<Int>()
+            toDeleteList.forEach {
+                idList.add(it.storyId)
+            }
+            savedStoryIds.removeAll(idList)
+            println("savedstory list is $savedStoryIds")
+            updateStoryOnServer(savedStoryIds = savedStoryIds as ArrayList<Int>) {
+               action()
+            }
+        }else{
+            println("savedstory list is null")
+        }
+    }
+
     private fun observer() {
 
         viewModel.toast.observe(viewLifecycleOwner, Observer {
@@ -166,19 +214,11 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
             }
         })
 
-        viewModel.savedStoriesState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DataState.Success<List<SavedStory>> -> {
-                    savedStories = ArrayList(it.data)
+        viewModel.savedStoriesList.observe(viewLifecycleOwner, Observer {
+
+                    savedStories = ArrayList(it)
                     adapter.addAll(savedStories)
-                }
-                is DataState.Error -> {
-                    println("NEWS SAVED FETCH ERROR")
-                }
-                is DataState.Loading -> {
-                    println("NEWS SAVED LOADING")
-                }
-            }
+
         })
 
         viewModel.savedStoriesDeleteState.observe(viewLifecycleOwner, Observer {

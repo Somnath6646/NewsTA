@@ -13,13 +13,11 @@ import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
 import com.newsta.android.responses.LogoutResponse
 import com.newsta.android.responses.SearchStory
-import com.newsta.android.ui.landing.fragments.StoriesDisplayFragment
 import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.models.*
 import com.newsta.android.utils.prefrences.UserPrefrences
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -66,7 +64,10 @@ constructor(private val newsRepository: StoriesRepository,
     val categoryLiveData: LiveData<List<Category>?> = _categoryLiveData
 
     private val _userCategoryLiveData = MutableLiveData<List<Int>?>()
-    val userCategoryLiveData: LiveData<List<Int>?> = _userCategoryLiveData
+    val userCategoryLiveData: LiveData<List<Int>?> = _userCategoryLiveData.distinctUntilChanged()
+
+    private val _savedStoryIdLiveData = MutableLiveData<List<Int>?>(arrayListOf())
+    val savedStoryIdLiveData: LiveData<List<Int>?> = _savedStoryIdLiveData
 
     private val _sourcesDataState = MutableLiveData<DataState<List<NewsSource>?>>()
     val sourcesDataState: LiveData<DataState<List<NewsSource>?>> = _sourcesDataState
@@ -79,6 +80,8 @@ constructor(private val newsRepository: StoriesRepository,
 
     private val _searchDataState = MutableLiveData<DataState<List<SearchStory>?>>()
     val searchDataState: LiveData<DataState<List<SearchStory>?>> = _searchDataState
+
+
 
     fun logOut() {
         viewModelScope.launch {
@@ -99,7 +102,6 @@ constructor(private val newsRepository: StoriesRepository,
             preferences.appInstalledJustNow(false)
             newsRepository.deleteAllStories(maxTime = System.currentTimeMillis())
             Log.i("MYTAG", "clearAllData: Aya hai")
-
         }
     }
 
@@ -132,7 +134,6 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    var hasGotNews = false
 
     fun getAllNews(storyId: Int = 0, maxDateTime: Long, isRefresh: Boolean = false) {
 
@@ -162,11 +163,11 @@ constructor(private val newsRepository: StoriesRepository,
 
         viewModelScope.launch {
             newsRepository.getNewsFromDatabase().onEach {
-                println("NEWS FROM DB: $it")
+//                println("NEWS FROM DB: $it")
 //                _dbNewsDataState.value = it
 //                when(it) {
 //                    is DataState.Success -> {
-                        _dbNewsDataState.value = it
+                      _dbNewsDataState.value = it
                     /*}
                     is DataState.Error -> {
                         if(NewstaApp.is_database_empty) {
@@ -250,33 +251,19 @@ constructor(private val newsRepository: StoriesRepository,
         viewModelScope.launch {
             newsRepository.getCategoryFromDatabase().onEach {
                 println("CATEGORIES FROM DB: $it")
-//                _dbCategoryDataState.value = it
                     when (it) {
                         is DataState.Success -> {
                             Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
                             val dbCategories = it.data as ArrayList<Category>
-//                            if (isAppJustOpened)
-//                                viewModel.getCategories()
                             getCategories()
                             println("CATEGORY LIVE DATA VALUE ---> ${categoryLiveData.value}")
                             if (categoryLiveData.value.isNullOrEmpty()) {
                                 _categoryLiveData.value = dbCategories
-                                println("NOT CHANGED USER PREFERENCES ---> ${categoryLiveData.value}")
-                                if (NewstaApp.has_changed_preferences!!) {
-                                    println("CHANGED USER PREFERENCES")
-                                    getUserPreferences()
-//                        setUpTabLayout(categories = categories)
-                                } else {
-                                    println("NOT CHANGED USER PREFERENCES ---> ${categoryLiveData.value}")
-                                    if(categoryLiveData.value.isNullOrEmpty())
-                                        _categoryLiveData.value = dbCategories
-//                                        setUpTabLayout(categories = categories)
-                                }
                             }
                         }
                         is DataState.Error -> {
                             Log.i("TAG", "onActivityCreated: CategoryDatState Error")
-//                            checkIfUnauthorized(it)
+
                         }
                         is DataState.Loading -> {
                             Log.i("TAG", "onActivityCreated: CategoryDatState logading")
@@ -291,14 +278,20 @@ constructor(private val newsRepository: StoriesRepository,
         _userCategoryLiveData.value = userCategories
     }
 
+    fun setSavedStoryIds(userCategories: ArrayList<Int>) {
+        _savedStoryIdLiveData.value = userCategories
+    }
+
     fun getUserPreferences() {
         viewModelScope.launch {
-            newsRepository.getUserCategories().onEach {
+            newsRepository.getUserPrefrences().onEach {
 //                _userPreferencesDataState.value = it
                 when (it) {
                     is DataState.Success -> {
                         val userPreferences = it.data
-                        _userCategoryLiveData.value = userPreferences.categories
+                        Log.i("getUserPreferences", "${it.data.categories}")
+                        _userCategoryLiveData.value = (userPreferences.categories)
+                        _savedStoryIdLiveData.value = userPreferences.saved
                     }
                     is DataState.Error -> {
                         Log.i("TAG", "onActivityCreated: CategoryDatState Error")
@@ -376,7 +369,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun saveStory(story: SavedStory) {
         viewModelScope.launch {
-            newsRepository.saveStory(story).onEach {
+            newsRepository.saveStoryInDB(story).onEach {
                 _saveNewsState.value = it
             }.launchIn(viewModelScope)
         }
@@ -415,14 +408,46 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    private val _savedStoriesState = MutableLiveData<DataState<List<SavedStory>>>()
-    val savedStoriesState: LiveData<DataState<List<SavedStory>>>
-        get() = _savedStoriesState
+    private val _savedStoriesList = MutableLiveData<List<SavedStory>>()
+    val savedStoriesList: LiveData<List<SavedStory>>
+        get() = _savedStoriesList
 
     fun getSavedStories() {
         viewModelScope.launch {
-            newsRepository.getSavedStories().onEach {
-                _savedStoriesState.value = it
+            newsRepository.getSavedStoriesFromDB().onEach {
+                when(it){
+                    is DataState.Success -> {
+                        val list = it.data
+                        if(list.isEmpty()){
+                           getStoriesByIds()
+                        }
+                        _savedStoriesList.value = it.data
+                    }
+                    is DataState.Loading -> {
+                        Log.i("Saved stories by ids", "loading")
+                    }
+                    is DataState.Error -> {
+                        Log.i("Saved Stories by ids", "error")
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    fun getStoriesByIds(){
+        viewModelScope.launch {
+            newsRepository.getStoriesByIds(savedStoryIds = savedStoryIdLiveData.value as ArrayList<Int>).onEach {
+                when(it){
+                    is DataState.Success -> {
+                        _savedStoriesList.value = it.data
+                    }
+                    is DataState.Loading -> {
+                        Log.i("Stories by ids", "loading")
+                    }
+                    is DataState.Error -> {
+                        Log.i("Stories by ids", "error")
+                    }
+                }
             }.launchIn(viewModelScope)
         }
     }
@@ -433,7 +458,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun deleteSavedStory(savedStory: SavedStory) {
         viewModelScope.launch {
-            newsRepository.deleteSavedStory(savedStory).onEach {
+            newsRepository.deleteSavedStoryInDB(savedStory).onEach {
                 _savedStoriesDeleteState.value = it
             }.launchIn(viewModelScope)
         }
@@ -441,7 +466,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun deleteSavedStory(savedStory: List<SavedStory>) {
         viewModelScope.launch {
-            newsRepository.deleteSavedStory(savedStory).onEach {
+            newsRepository.deleteSavedStoryInDB(savedStory).onEach {
                 _savedStoriesDeleteState.value = it
             }.launchIn(viewModelScope)
         }
@@ -495,11 +520,26 @@ constructor(private val newsRepository: StoriesRepository,
     private val _userCategoriesSaveDataState = MutableLiveData<DataState<ArrayList<Int>?>>()
     val userCategoriesSaveDataState: LiveData<DataState<ArrayList<Int>?>> = _userCategoriesSaveDataState
 
-    fun saveUserPreferences(userCategories: ArrayList<Int>) {
+    fun saveUserCategories(userCategories: ArrayList<Int>) {
         if(MainActivity.isConnectedToNetwork) {
             viewModelScope.launch {
                 newsRepository.saveUserCategoriesInServer(userCategories).onEach {
                     _userCategoriesSaveDataState.value = it
+                }.launchIn(viewModelScope)
+            }
+        } else {
+            toast("Please connect to network to save changes.")
+        }
+    }
+
+    private val _userSavedStorySaveDataState = MutableLiveData<DataState<ArrayList<Int>?>>()
+    val userSavedStorySaveDataState: LiveData<DataState<ArrayList<Int>?>> = _userSavedStorySaveDataState
+
+    fun saveSavedStoryIds(savedStoryIds: ArrayList<Int>) {
+        if(MainActivity.isConnectedToNetwork) {
+            viewModelScope.launch {
+                newsRepository.saveSavedStoryIdsInServer(savedStoryIds).onEach {
+                    _userSavedStorySaveDataState.value = it
                 }.launchIn(viewModelScope)
             }
         } else {
@@ -521,6 +561,7 @@ constructor(private val newsRepository: StoriesRepository,
         Log.i("TAG", "init viemodel ")
 //        getCategories()
         getCategoriesFromDatabase()
+        getUserPreferences()
         getNewsOnInit()
     }
 

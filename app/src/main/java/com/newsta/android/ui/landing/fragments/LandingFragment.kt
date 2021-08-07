@@ -37,6 +37,7 @@ import com.newsta.android.utils.models.Category
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.UserPreferences
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_landing.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -45,33 +46,28 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private val viewModel: NewsViewModel by activityViewModels()
 
-    private var categories: ArrayList<Category> = ArrayList()
+    private var rawCategories: ArrayList<Category> = ArrayList()
     private var userCategories: ArrayList<Category> = ArrayList()
     private lateinit var userPreferences: UserPreferences
     private var category = 0
     private lateinit var adapter: ViewPagerAdapter
     private var isAppJustOpened = true
 
-    private fun setUpAdapter(categories: ArrayList<Category>) {
+    private fun setUpAdapter() {
 
-        println("SETTING UP TAB LAYOUT")
+
+
 
         adapter = ViewPagerAdapter(
             fragmentActivity = requireActivity(),
-            itemCount = categories.size,
-            categories = categories
         )
 
         println("PAGER ADAPTER ---> $adapter")
 
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        if (isAppJustOpened) {
-            println("APP JUST OPENED")
-            isAppJustOpened = false
-            binding.pager.setCurrentItem(0, false)
-            binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
-        }
+
+
     }
 
     private fun setUpNavigationDrawer() {
@@ -144,71 +140,35 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     }
 
     private fun getUserCategories() {
+        viewModel.userCategoryLiveData.observe(requireActivity(), Observer {
 
-        /*viewModel.getUserPreferences()
-        viewModel.userPreferencesDataState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DataState.Success -> {
-                    Log.i("TAG", "UserCategoryDatState Success ---> ${it.data}")
-                    userPreferences = it.data
-                    println("USER CATEGORIES ---> $userCategories")
-//                    val userCategories = ArrayList<Category>()
-//                    StoriesDisplayFragment.categoryState = userCategories[0].categoryId
-//                    userCategories.clear()
-                    val tempUserCategories = arrayListOf<Category>()
-                    userPreferences.categories?.forEach { categoryId ->
-                        categories.forEach { category ->
-                            if(categoryId == category.categoryId) {
-                                println("${category.categoryId} ---> Present")
-                                tempUserCategories.add(Category(category.category, category.categoryId))
-                            }
-                        }
-                    }
-//                    if(userCategories != tempUserCategories)
-                        userCategories = tempUserCategories
-                    setUpTabLayout(categories = userCategories)
-                    println("USER CATEGORIES ---> $userCategories")
-                    println("CATEGORIES ---> $categories")
-                    *//*if (categories != userCategories) {
-//                        categories = userCategories
-//                        isAppJustOpened = true
-                        setUpTabLayout(categories = ArrayList()).let {
-                            println("USER CATEGORIES ---> $userCategories")
-                            if (userCategories.size > 0)
-                                setUpTabLayout(categories = userCategories)
-                            else
-                                setUpTabLayout(categories = categories)
-                        }
-                    }*//*
-                }
-                is DataState.Error -> {
-                    Log.i("TAG", "onActivityCreated: CategoryDatState Error")
-                    checkIfUnauthorized(it)
-                }
-                is DataState.Loading -> {
-                    Log.i("TAG", "onActivityCreated: CategoryDatState logading")
-                }
-            }
-        })*/
+                val userCats = it
+            println("aya hai t $userCats")
+            println("aya hai t $rawCategories")
+            println("seq usercategoryLiveData")
+                createUserCategories(userCats)
+                Log.i("Categories", "RAW  $rawCategories")
+                Log.i("Categories", "USER  $userCats")
+            println(userCategories)
 
-        /*if(categories.isNullOrEmpty()) {
-            println("GETTING USER PREFERENCES")
-            viewModel.getUserPreferences()
-        }*/
-        viewModel.userCategoryLiveData.observe(viewLifecycleOwner, Observer {
-            val userCats = it
-            createUserCategories(userCats)
-            setUpTabLayout(categories = userCategories)
+
+
+
         })
 
     }
 
     private fun createUserCategories(userCats: List<Int>?) {
+        println("createUserCategories $userCats")
         val tempUserCategories = arrayListOf<Category>()
+
+        val initUserCats = userCategories
+        var isSame = true
 
         userCategories = if(!userCats.isNullOrEmpty()) {
             userCats.forEach { categoryId ->
-                categories.forEach { category ->
+
+                rawCategories.forEach { category ->
                     if (categoryId == category.categoryId) {
                         println("${category.categoryId} ---> Present")
                         tempUserCategories.add(Category(category.category, category.categoryId))
@@ -217,12 +177,25 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             }
             tempUserCategories
         } else {
-            categories
+            rawCategories
         }
+        println("aya hai"+"$isSame ${userCategories}")
+
+
+
+
+            println("seq setCategores in adapter and setUpTablayout")
+
+            adapter.setCategories(userCategories)
+            setUpTabLayout()
+
+
+
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+
 
         if (savedInstanceState != null) {
             println("RETURNED")
@@ -235,6 +208,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         binding.lifecycleOwner = requireActivity()
 
         println("VIEWMODEL: $viewModel")
+
+        println("Hey recreated")
 
         binding.back.setOnClickListener {
 
@@ -251,18 +226,16 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             findNavController().navigate(action)
         }
 
-        viewModel.categoryLiveData.observe(viewLifecycleOwner, Observer {
-//                setUpTabLayout(categories)
+        setUpAdapter()
+        viewModel.categoryLiveData.observe(requireActivity(), Observer {
+               //setUpTabLayout(categories)
 //                if(categories.isNullOrEmpty()) {
-            if(categories.isNullOrEmpty()) {
-                println("GETTING USER PREFERENCES")
-                viewModel.getUserPreferences()
-            }
-            categories = it as ArrayList<Category>
-            println("CATEGORIES IN LANDING FRAGMENT ---> $categories")
+            println("seq categoryLiveData")
+            rawCategories = it as ArrayList<Category>
+            println("CATEGORIES IN LANDING FRAGMENT ---> $rawCategories")
             getUserCategories()
-
         })
+
 
         /*viewModel.categoryDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -402,9 +375,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             Toast.makeText(requireContext(), data.exception, Toast.LENGTH_SHORT).show()
     }
 
-    private fun setUpTabLayout(categories: ArrayList<Category>) {
+    private fun setUpTabLayout() {
 
-        setUpAdapter(categories)
 
         TabLayoutMediator(binding.tabLayout, binding.pager,
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
@@ -412,23 +384,26 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     0 -> {
                         if (category == 0) {
                             addCustomView(
-                                categories[position].category.capitalize(Locale.ROOT), 16f,
+                                adapter.categories[position].category.capitalize(Locale.ROOT), 16f,
                                 Color.WHITE
                             )
                         } else {
-                            addCustomView(categories[position].category.capitalize(Locale.ROOT))
+                            addCustomView(adapter.categories[position].category.capitalize(Locale.ROOT))
                         }
                     }
                     else -> {
-                        if (position < categories.size)
-                            addCustomView(categories[position].category.capitalize(Locale.ROOT))
+                        if (position < adapter.categories.size)
+                            addCustomView(adapter.categories[position].category.capitalize(Locale.ROOT))
                         else
                             return@TabConfigurationStrategy
                     }
                 }
             }).attach()
 
-        binding.tabLayout.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+
+       binding.tabLayout
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
 
@@ -437,8 +412,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 println("TAB POSITION: $category")
 
 
-                binding.tabLayout.setScrollPosition(category, 0f, true)
-                binding.pager.currentItem = category
 
                 tab.view.children.forEach {
                     if (it is LinearLayout) {
@@ -487,8 +460,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                 println("TAB POSITION: $category")
 
-                binding.tabLayout.setScrollPosition(category, 0f, true)
-                binding.pager.currentItem = category
 
                 tab.view.children.forEach {
                     if (it is LinearLayout) {
