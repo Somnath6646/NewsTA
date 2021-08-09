@@ -35,7 +35,6 @@ class NewsAdapter(private val onClick: (Int, List<Story>) -> Unit) : RecyclerVie
     }
 
 
-
     override fun getItemCount(): Int = stories.size
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {

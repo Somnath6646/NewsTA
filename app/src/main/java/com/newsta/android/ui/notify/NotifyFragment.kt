@@ -204,15 +204,18 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
     private fun observer(){
         viewModel.notifyStoriesLiveData.observe(viewLifecycleOwner, Observer {payloads ->
             if(payloads != null) {
-
+                var payloads2 = payloads
                 val list = arrayListOf<Int>()
-                payloads.forEach {
+                payloads2 = payloads2.sortedBy {
+                    it.storyId
+                }
+                payloads2.forEach {
                     list.add(it.storyId)
                 }
                     viewModel.getStoriesByIds(list) {
 
                         notifyStories = it
-                        adapter.addAll(notifyStories, ArrayList(payloads))
+                        adapter.addAll(notifyStories, ArrayList(payloads2))
                     }
 
 

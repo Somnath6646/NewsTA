@@ -51,11 +51,9 @@ class NotifyStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Ad
         tracker.let {
             if (it != null) {
                 val story = stories[position]
-                println("notify adapter payload ${payloads}")
                 holder.bind(story, payloads[0] , it.isSelected(position.toLong() ), position)
             }
         }
-
     }
 
     fun addAll(storiesResponse: ArrayList<SavedStory>, payloads: ArrayList<Payload>) {
