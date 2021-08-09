@@ -273,5 +273,13 @@
     <fragment
         android:id="@+id/tutorialFragment"
         android:name="com.newsta.android.ui.authentication.TutorialFragment"
-        android:label="TutorialFragment" />
+        android:label="TutorialFragment" >
+        <action
+            android:id="@+id/action_tutorialFragment_to_signupSigninOptionsFragment"
+            app:destination="@id/signupSigninOptionsFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

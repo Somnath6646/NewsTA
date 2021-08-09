@@ -49,7 +49,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
     }
 
     fun navigateToAuthenticationOptionsFragment() {
-        findNavController().navigate(R.id.action_splashFragment_to_signupSigninOptionsFragment)
+        findNavController().navigate(R.id.action_splashFragment_to_tutorialFragment)
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_splash

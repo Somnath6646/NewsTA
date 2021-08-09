@@ -26,14 +26,14 @@
             app:dotsSpacing="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btn_signInEmail"
+            app:layout_constraintBottom_toTopOf="@id/next_btn"
             app:dotsWidthFactor="2"
             android:layout_marginVertical="16dp"
             app:selectedDotColor="@color/colorPrimary"
             app:progressMode="true" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/btn_signInEmail"
+            android:id="@+id/next_btn"
             style="@style/Ctabutton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

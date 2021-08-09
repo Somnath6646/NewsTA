@@ -12,9 +12,12 @@ class TutorialAdapter() : RecyclerView.Adapter<TutorialViewHolder>() {
 
     private val list = arrayListOf<TutorialData>(
         TutorialData("Stay updated on the news with our Timeline.", R.drawable.timeline),
-        TutorialData("Stay updated on the news with our Timeline.", R.drawable.timeline),
-        TutorialData("Stay updated on the news with our Timeline.", R.drawable.timeline)
+        TutorialData("Save, share & click the bell icon to stay updated on a story.", R.drawable.actions),
+        TutorialData("Swipe effortlessly between stories.", R.drawable.swipe),
+        TutorialData("Enable, disable & reorder categories to read news the way you want.", R.drawable.categories)
     )
+
+    val listSize = list.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TutorialViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -22,7 +25,7 @@ class TutorialAdapter() : RecyclerView.Adapter<TutorialViewHolder>() {
         return TutorialViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = 5
+    override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: TutorialViewHolder, position: Int) {
         holder.bind(list[position])
