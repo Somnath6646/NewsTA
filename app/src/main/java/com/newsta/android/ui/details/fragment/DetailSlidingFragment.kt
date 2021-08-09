@@ -74,7 +74,6 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
         } else {
             binding.textTimline.visibility = View.GONE
             binding.recyclerViewTimelineEvents.visibility = View.GONE
-            binding.extraSpace.visibility = View.VISIBLE
             removeTopToBottomOfSourceContainer()
         }
 
@@ -103,11 +102,6 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
             val childHeight = binding.constraintLayout.height
             val isScrollable =
                 scrollView.height < childHeight + scrollView.paddingTop + scrollView.paddingBottom
-            if (isScrollable) {
-                binding.extraSpace.visibility = View.VISIBLE
-            } else {
-                binding.extraSpace.visibility = View.GONE
-            }
         }
 
     }

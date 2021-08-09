@@ -5,9 +5,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/bg_color</item>
         <item name="colorAccent">@color/colorPrimary</item>
-        <item name="materialAlertDialogTheme">@style/Theme.MaterialComponents.Light.Dialog.Alert
-        </item>
-        <item name="navigationIconTint">@color/colorWhite</item>
+        <item name="materialAlertDialogTheme">@style/Theme.MaterialComponents.Light.Dialog.Alert</item>
+<!--        <item name="navigationIconTint">@color/colorText</item>-->
         <item name="android:windowContentTransitions">true</item>
     </style>
 

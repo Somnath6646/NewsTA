@@ -332,7 +332,6 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             println("STORIES: $stories")
 
             val filteredStories = stories.filter { story: Story -> story.category == state }
-            println("FilteredStories  $filteredStories")
 
             val stories = ArrayList<Story>(filteredStories)
             stories.sortByDescending { story ->

@@ -44,7 +44,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintGuide_percent="0.04"
+                app:layout_constraintGuide_percent="0.02"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView

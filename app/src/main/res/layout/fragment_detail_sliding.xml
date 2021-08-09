@@ -85,7 +85,6 @@
                 android:lineHeight="28sp"
                 android:text="The Serum Institute of India has told Brazil, Saudi Arabia and Morocco that further supplies of the AstraZeneca COVID-19 vaccine will be delayed. The news comes as India is being criticised domestically for donating or selling more doses than inoculations conducted at home."
                 android:textColor="@color/summary"
-                app:layout_constraintBottom_toTopOf="@id/timeline_container"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
                 app:layout_constraintTop_toBottomOf="@id/updated_at_event" />
@@ -141,7 +140,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:layout_constraintBottom_toTopOf="@id/extra_space"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
                 app:layout_constraintStart_toStartOf="@id/left_guidline">
 
@@ -226,13 +225,6 @@
                     app:layout_constraintBottom_toBottomOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <View
-                android:id="@+id/extra_space"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -86,6 +86,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         val view = binding.sideNavDrawer.menu.getItem(0).subMenu.getItem(2).actionView
         val modeSwitch = view.findViewById<SwitchCompat>(R.id.switchCompatMode)
 
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            modeSwitch.isChecked = true
+            println("Night mode hai")
+        } else {
+            println("Night mode nahi hai ---> ${AppCompatDelegate.MODE_NIGHT_YES} ---> ${AppCompatDelegate.getDefaultNightMode()}")
+            modeSwitch.isChecked = false
+        }
+
         binding.sideNavDrawer.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.log_out -> {

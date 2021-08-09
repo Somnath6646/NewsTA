@@ -3,12 +3,12 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/bg_color</item>
+        <item name="colorPrimaryDark">@color/colorText</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="materialAlertDialogTheme">@style/Theme.MaterialComponents.DayNight.Dialog.Alert</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:navigationBarColor">@color/bg_color</item>
-        <item name="navigationIconTint">@color/colorWhite</item>
+<!--        <item name="android:navigationBarColor">@color/bg_color</item>-->
+<!--        <item name="navigationIconTint">@color/colorText</item>-->
     </style>
 
     <style name="Cardviewripple" parent="CardView">
