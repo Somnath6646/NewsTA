@@ -3,13 +3,15 @@ package com.newsta.android.ui.landing.adapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.newsta.android.ui.landing.fragments.StoriesDisplayFragment
 import com.newsta.android.utils.models.Category
 
 const val ARG_OBJECT = "object"
 
-class ViewPagerAdapter(private val fragmentActivity: FragmentActivity, ) : FragmentStateAdapter(fragmentActivity) {
+class ViewPagerAdapter(private val fragmentManager: FragmentManager, val lifecycle: Lifecycle ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     val categories : ArrayList<Category> = arrayListOf()
 

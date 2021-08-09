@@ -105,13 +105,13 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSigninOptionsB
                 when(it){
                     is DataState.Success -> {
                         Log.i("TAG", "Sucess")
-                        it.data?.data?.let { it1 -> viewModel.saveTokenAndIss(accessToken = it1) }
+                        it.data?.data?.let { it1 -> viewModel.getUserPreferences(accessToken = it1) }
                     }
                     is DataState.Loading -> {
                         Log.i("TAG", "Loading")
                     }
                     is DataState.Error -> {
-                        Log.i("TAG", "eror")
+                        Log.i("TAG", "error")
                         LoginManager.getInstance().logOut()
 
                         val dialog = Dialog(requireContext())

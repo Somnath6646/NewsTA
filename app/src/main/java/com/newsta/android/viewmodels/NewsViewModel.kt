@@ -69,6 +69,9 @@ constructor(private val newsRepository: StoriesRepository,
     private val _savedStoryIdLiveData = MutableLiveData<List<Int>?>(arrayListOf())
     val savedStoryIdLiveData: LiveData<List<Int>?> = _savedStoryIdLiveData
 
+    private val _notifyStoriesLiveData = MutableLiveData<List<Payload>?>(arrayListOf())
+    val notifyStoriesLiveData: LiveData<List<Payload>?> = _notifyStoriesLiveData
+
     private val _sourcesDataState = MutableLiveData<DataState<List<NewsSource>?>>()
     val sourcesDataState: LiveData<DataState<List<NewsSource>?>> = _sourcesDataState
 
@@ -160,93 +163,14 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
     fun getNewsFromDatabase() {
-
         viewModelScope.launch {
             newsRepository.getNewsFromDatabase().onEach {
-//                println("NEWS FROM DB: $it")
-//                _dbNewsDataState.value = it
-//                when(it) {
-//                    is DataState.Success -> {
                       _dbNewsDataState.value = it
-                    /*}
-                    is DataState.Error -> {
-                        if(NewstaApp.is_database_empty) {
-                            println("DB SE BAAR BAAR CALL HO RAHA HAI")
-                            hasGotNews = true
-                            getNewsFirstTime()
-                        }
-                    }
-                }*/
-                /*when (it) {
-                    is DataState.Success<List<Story>?> -> {
-                        Log.i("DBnewsDataState", " success")
-                        debugToast("dBnewsDataState: success")
-//                        binding.refreshLayout.isRefreshing = false
-                        changeDatabaseState(isDatabaseEmpty = false)
-                        _dbNewsLiveData.value = it.data as ArrayList<Story>
-                        *//*stories = ArrayList(it.data)
-                        val filteredStories =
-                            stories.filter { story: Story -> story.category == StoriesDisplayFragment.categoryState }
-                        if (filteredStories.isNullOrEmpty()) {
-                            NewstaApp.is_database_empty = true
-                            viewModel.changeDatabaseState(true)
-                            viewModel.getNewsOnInit()
-                            NewstaApp.setIsDatabaseEmpty(true)
-                        }
-                        println("FilteredStories  $filteredStories")*//*
-
-                        *//*val stories = ArrayList<Story>(filteredStories)
-                        stories.sortByDescending {
-                                story ->  story.updatedAt
-                        }*//*
-//                        adapter.addAll(stories)
-                    }
-                    is DataState.Error -> {
-                        Log.i("dBnewsDataState", " errror ${it.exception}")
-                        if(NewstaApp.is_database_empty) {
-                            println("DB SE BAAR BAAR CALL HO RAHA HAI")
-                            hasGotNews = true
-                            getNewsFirstTime()
-                        }
-                        *//*viewModel.debugToast("dBnewsDataState:  errror ${it.exception}")
-
-                        binding.refreshLayout.isRefreshing = false*//*
-                    }
-                    is DataState.Loading -> {
-                        Log.i("dBnewsDataState", " loding")
-                        *//*viewModel.debugToast("dBnewsDataState: loading")
-
-                        binding.refreshLayout.isRefreshing = true*//*
-                    }
-                    is DataState.Extra<List<Story>?> -> {
-                        try {
-                            println("EXTRA DB DATA ---> ${it.data}")
-                            if (!it.data.isNullOrEmpty()) {
-                                MainActivity.maxStory = it.data.first()
-                                MainActivity.minStory = it.data.last()
-                                MainActivity.extras = ArrayList(it.data)
-                                Log.i(
-                                    "newsDataState",
-                                    " EXTRA MAX ${MainActivity.maxStory.storyId} ${MainActivity.maxStory.updatedAt} ${MainActivity.maxStory.category} ${MainActivity.maxStory.events}"
-                                )
-                                *//*if(!isRefreshedByDefault) {
-                                    isRefreshedByDefault = true
-                                    viewModel.getAllNews(MainActivity.maxStory.storyId, MainActivity.maxStory.updatedAt)
-                                }*//*
-                            }
-                        } catch (e: Exception) {
-                            debugToast("Min max error")
-                            e.printStackTrace()
-                        }
-                    }
-                }*/
             }.launchIn(viewModelScope)
         }
-
     }
 
     private fun getCategoriesFromDatabase() {
-
         urlToRequest  = "DataBase"
         viewModelScope.launch {
             newsRepository.getCategoryFromDatabase().onEach {
@@ -278,20 +202,24 @@ constructor(private val newsRepository: StoriesRepository,
         _userCategoryLiveData.value = userCategories
     }
 
-    fun setSavedStoryIds(userCategories: ArrayList<Int>) {
-        _savedStoryIdLiveData.value = userCategories
+    fun setSavedStoryIds(savedStoryIds: ArrayList<Int>) {
+        _savedStoryIdLiveData.value = savedStoryIds
+    }
+
+    fun setNotifyStories(notifyStories: List<Payload>) {
+        _notifyStoriesLiveData.value = notifyStories
     }
 
     fun getUserPreferences() {
         viewModelScope.launch {
             newsRepository.getUserPrefrences().onEach {
-//                _userPreferencesDataState.value = it
                 when (it) {
                     is DataState.Success -> {
-                        val userPreferences = it.data
+                         val userPreferences = it.data
                         Log.i("getUserPreferences", "${it.data.categories}")
-                        _userCategoryLiveData.value = (userPreferences.categories)
+                        _userCategoryLiveData.value = userPreferences.categories
                         _savedStoryIdLiveData.value = userPreferences.saved
+                        _notifyStoriesLiveData.value = userPreferences.notify
                     }
                     is DataState.Error -> {
                         Log.i("TAG", "onActivityCreated: CategoryDatState Error")
@@ -329,18 +257,44 @@ constructor(private val newsRepository: StoriesRepository,
     val newsUpdateState: LiveData<DataState<List<Story>>>
         get() = _newsUpdateState
 
+    inline fun List<Story>.checkIfHasThisStoryId(storyId: Int): Boolean {
+        return this.contains(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
+    }
+
     fun updateNews(storyId: Int, maxDateTime: Long) {
         urlToRequest  = "http://13.235.50.53/existing"
         viewModelScope.launch {
             newsRepository.updateExistingStories(NewsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, getMaxDate(maxDateTime))).onEach {
                 _newsUpdateState.value = it
+
+                when(it){
+                    is DataState.Success -> {
+                        val list = arrayListOf<Payload>()
+                        val origList = notifyStoriesLiveData.value
+                        println("notifystory onupdate $origList")
+                        if(origList != null){
+                            val stories = it.data
+
+                            origList.forEach {
+                                if(stories.checkIfHasThisStoryId(it.storyId)){
+                                    list.add(Payload(storyId = it.storyId, read = ArticleState.UNREAD))
+                                }else{
+                                    list.add(it)
+                                }
+                            }
+
+                        }
+                        println("notifystory afterupdate $list")
+                        saveNotifyStories(list)
+                    }
+                }
+
             }.launchIn(viewModelScope)
         }
-
     }
 
-    private val _minMaxStoryState = MutableLiveData<DataState<List<Story>>>()
-    val minMaxStoryState: LiveData<DataState<List<Story>>>
+    private val _minMaxStoryState = MutableLiveData<DataState<MaxStoryAndUpdateTime>>()
+    val minMaxStoryState: LiveData<DataState<MaxStoryAndUpdateTime>>
         get() = _minMaxStoryState
 
     fun getMaxAndMinStory() {
@@ -349,7 +303,6 @@ constructor(private val newsRepository: StoriesRepository,
                 _minMaxStoryState.value = it
             }.launchIn(viewModelScope)
         }
-
     }
 
     fun getSources(storyId: Int, eventId: Int) {
@@ -360,7 +313,6 @@ constructor(private val newsRepository: StoriesRepository,
                 _sourcesDataState.value = it
             }.launchIn(viewModelScope)
         }
-
     }
 
     private val _saveNewsState = MutableLiveData<DataState<SavedStory>>()
@@ -387,7 +339,6 @@ constructor(private val newsRepository: StoriesRepository,
             println("NEWSTA APP: ${NewstaApp.access_token}")
             val request = CategoryRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA)
             newsRepository.getCategories(request).onEach {
-//                _categoryDataState.value = it
                 when (it) {
                     is DataState.Success -> {
                         Log.i("TAG", "onActivityCreated: CategoryDatState Success")
@@ -397,7 +348,6 @@ constructor(private val newsRepository: StoriesRepository,
                     }
                     is DataState.Error -> {
                         Log.i("TAG", "onActivityCreated: CategoryDatState Error")
-//                        checkIfUnauthorized(it)
                     }
                     is DataState.Loading -> {
                         Log.i("TAG", "onActivityCreated: CategoryDatState logading")
@@ -418,8 +368,11 @@ constructor(private val newsRepository: StoriesRepository,
                 when(it){
                     is DataState.Success -> {
                         val list = it.data
-                        if(list.isEmpty()){
-                           getStoriesByIds()
+                        if(list.isEmpty() && !_savedStoryIdLiveData.value.isNullOrEmpty()){
+                           getStoriesByIds(savedStoryIdLiveData.value?.toMutableList() as ArrayList<Int>){
+                               _savedStoriesList.value = it
+                           }
+
                         }
                         _savedStoriesList.value = it.data
                     }
@@ -434,12 +387,12 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    fun getStoriesByIds(){
+    fun getStoriesByIds(ids: ArrayList<Int>, assignTask: (ArrayList<SavedStory>) -> Unit, ){
         viewModelScope.launch {
-            newsRepository.getStoriesByIds(savedStoryIds = savedStoryIdLiveData.value as ArrayList<Int>).onEach {
+            newsRepository.getStoriesByIds(savedStoryIds = ids).onEach {
                 when(it){
                     is DataState.Success -> {
-                        _savedStoriesList.value = it.data
+                        assignTask(it.data)
                     }
                     is DataState.Loading -> {
                         Log.i("Stories by ids", "loading")
@@ -477,7 +430,6 @@ constructor(private val newsRepository: StoriesRepository,
         get() = filteredStoriesState
 
     fun getFilteredStories(categoryState: Int) {
-
         viewModelScope.launch {
             newsRepository.getFilteredStories(categoryState).onEach {
                 _filteredStoriesState.value = it
@@ -540,6 +492,33 @@ constructor(private val newsRepository: StoriesRepository,
             viewModelScope.launch {
                 newsRepository.saveSavedStoryIdsInServer(savedStoryIds).onEach {
                     _userSavedStorySaveDataState.value = it
+                }.launchIn(viewModelScope)
+            }
+        } else {
+            toast("Please connect to network to save changes.")
+        }
+    }
+
+    private val _userNotifyStorySaveDataState = MutableLiveData<DataState<List<Payload>?>>()
+    val userNotifyStorySaveDataState: LiveData<DataState<List<Payload>?>> = _userNotifyStorySaveDataState
+
+    fun saveNotifyStories(notifyStories: ArrayList<Payload>) {
+        if(MainActivity.isConnectedToNetwork) {
+            viewModelScope.launch {
+                newsRepository.saveNotifyStoriesInServer(notifyStories).onEach {
+                    when (it) {
+                        is DataState.Success -> {
+                            setNotifyStories(notifyStories)
+                        }
+                        is DataState.Error -> {
+                            Log.i("TAG", "onActivityCreated: UserCategoryDatState Error ON SAVE ---> ${it.exception}")
+                            if (it.statusCode == 101)
+                                debugToast("Cannot save notify story")
+                        }
+                        is DataState.Loading -> {
+                            Log.i("TAG", "onActivityCreated: SavedStoryDatState ON SAVE loading")
+                        }
+                    }
                 }.launchIn(viewModelScope)
             }
         } else {

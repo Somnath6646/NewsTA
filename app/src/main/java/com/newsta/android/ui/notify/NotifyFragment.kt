@@ -1,4 +1,4 @@
-package com.newsta.android.ui.saved.fragment
+package com.newsta.android.ui.notify
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -6,10 +6,10 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
@@ -21,29 +21,34 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.R
-import com.newsta.android.databinding.FragmentSavedStoriesBinding
+import com.newsta.android.databinding.FragmentNotifyBinding
 import com.newsta.android.databinding.LogoutDialogBinding
+import com.newsta.android.remote.data.ArticleState
+import com.newsta.android.remote.data.Payload
 import com.newsta.android.ui.base.BaseFragment
-import com.newsta.android.viewmodels.NewsViewModel
+import com.newsta.android.ui.notify.adapter.NotifyStoriesAdapter
 import com.newsta.android.ui.saved.adapter.SavedStoryAdapter
-import com.newsta.android.utils.SavedStoryItemDetailsLookup
 import com.newsta.android.utils.MyItemKeyProvider
+import com.newsta.android.utils.NotifyStoryItemDetailsLookup
+import com.newsta.android.utils.SavedStoryItemDetailsLookup
 import com.newsta.android.utils.helpers.OnDataSetChangedListener
-import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
+import com.newsta.android.viewmodels.NewsViewModel
+import kotlinx.android.synthetic.main.fragment_categories.*
 
-class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnDataSetChangedListener {
+
+class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedListener {
 
     private val viewModel: NewsViewModel by activityViewModels()
     private var tracker: SelectionTracker<Long>? = null
 
-    private lateinit var adapter: SavedStoryAdapter
-    private var savedStories = ArrayList<SavedStory>()
+    private lateinit var adapter: NotifyStoriesAdapter
+    private var notifyStories = ArrayList<SavedStory>()
 
     private fun setUpAdapter() {
-        adapter = SavedStoryAdapter({ position: Int-> openDetails(position) }, {  true })
+        adapter = NotifyStoriesAdapter({ position: Int-> openDetails(position) })
         adapter.setDataSetChangeListener(this)
         binding.recyclerView.adapter = adapter
         initTracker()
@@ -51,14 +56,13 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
-
     private fun initTracker(){
         tracker = SelectionTracker.Builder<Long>(
 
-            "mySelection123",
+            "mySelection143",
             binding.recyclerView,
             MyItemKeyProvider(binding.recyclerView),
-            SavedStoryItemDetailsLookup(binding.recyclerView),
+            NotifyStoryItemDetailsLookup(binding.recyclerView),
             StorageStrategy.createLongStorage()
 
         ).withSelectionPredicate(
@@ -115,7 +119,7 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
         binding.deleteNumberText.text = selection.size().toString()
         binding.deleteCardContainer.setOnClickListener {
             val list = selection.map {
-              savedStories.get(it.toInt())
+                notifyStories.get(it.toInt())
             }
 
             showDeleteDialog(list)
@@ -129,7 +133,8 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
         val detailsPageData = DetailsPageData(position
         )
         val bundle = bundleOf("data" to detailsPageData)
-        findNavController().navigate(R.id.action_savedStoriesFragment_to_detailsFragment, bundle)
+        updateStateOfArticleOnServer(position, notifyStories.get(position), ArticleState.READ)
+        findNavController().navigate(R.id.action_notifyFragment_to_detailsFragment, bundle)
     }
 
     private fun showDeleteDialog(savedStory: List<SavedStory>): Boolean {
@@ -138,15 +143,15 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
         val dialogBinding = DataBindingUtil.inflate<LogoutDialogBinding>(LayoutInflater.from(requireContext()), R.layout.logout_dialog, null, false)
         dialog.setContentView(dialogBinding.root)
 
-        dialogBinding.message.text = "Are you sure you want to delete this story?"
-        dialogBinding.buttonTextAction.text = "Delete"
+        dialogBinding.message.text = "Are you sure you want to remove this story from notify list?"
+        dialogBinding.buttonTextAction.text = "Remove"
 
         dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
 
         dialogBinding.btnAction.setOnClickListener {
-           deleteFromServerandLocaldb(savedStory){
-               viewModel.deleteSavedStory(savedStory)
-           }
+            deleteFromServerandLocaldb(savedStory){
+
+            }
 
             dialog.dismiss()
         }
@@ -159,83 +164,63 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
 
     }
 
-    private fun updateStoryOnServer(savedStoryIds: ArrayList<Int>, action : () -> Unit){
+    private fun updateNotifyStoryOnServer(state: Int, list: List<SavedStory>, actionWithListBeforeUpload: (MutableList<Payload>, ArrayList<Payload>) -> MutableList<Payload>){
 
-        viewModel.saveSavedStoryIds(savedStoryIds as ArrayList<Int>)
-        viewModel.userSavedStorySaveDataState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DataState.Success -> {
-                    viewModel.setSavedStoryIds( it.data as ArrayList<Int>)
-                    action()
-                }
-                is DataState.Error -> {
-                    Log.i("TAG", "onActivityCreated: UserCategoryDatState Error ON SAVE ---> ${it.exception}")
-                    if (it.statusCode == 101)
-                        viewModel.toast("Cannot save storyId")
-                }
-                is DataState.Loading -> {
-                    Log.i("TAG", "onActivityCreated: SavedStoryDatState ON SAVE loading")
-                }
+
+        var notifyStoryIds =  viewModel.notifyStoriesLiveData.value?.toMutableList()
+
+        if (notifyStoryIds == null) {
+            notifyStoryIds = mutableListOf()
+        }
+
+        if (notifyStoryIds != null) {
+            val payloadList = arrayListOf<Payload>()
+            list.forEach {
+                payloadList.add(Payload(storyId = it.storyId, read = state))
             }
-        })
+            notifyStoryIds = actionWithListBeforeUpload(notifyStoryIds, payloadList)
+            println("notifystory list is $notifyStoryIds")
+        }else{
+            println("notifystory list is null")
+        }
 
+        viewModel.saveNotifyStories(notifyStoryIds as ArrayList<Payload>)
+
+    }
+
+    private fun updateStateOfArticleOnServer(position: Int, savedStory: SavedStory, state: Int){
+        updateNotifyStoryOnServer(state, listOf(savedStory)) { notifyStoryIds, payloadList ->
+            notifyStoryIds.set(position, payloadList[0])
+            notifyStoryIds
+        }
     }
 
     private fun deleteFromServerandLocaldb(toDeleteList: List<SavedStory>, action: () -> Unit){
-        var savedStoryIds =  viewModel.savedStoryIdLiveData.value?.toMutableList()
-
-        if (savedStoryIds == null) {
-            savedStoryIds = mutableListOf()
-        }
-
-        if (savedStoryIds != null) {
-            val idList = arrayListOf<Int>()
-            toDeleteList.forEach {
-                idList.add(it.storyId)
-            }
-            savedStoryIds.removeAll(idList)
-            println("savedstory list is $savedStoryIds")
-            updateStoryOnServer(savedStoryIds = savedStoryIds as ArrayList<Int>) {
-               action()
-            }
-        }else{
-            println("savedstory list is null")
-        }
+        updateNotifyStoryOnServer(ArticleState.READ, toDeleteList, { notifyStoryIds, payloadList ->
+            notifyStoryIds.removeAll(payloadList)
+            notifyStoryIds
+        })
     }
 
-    private fun observer() {
+    private fun observer(){
+        viewModel.notifyStoriesLiveData.observe(viewLifecycleOwner, Observer {payloads ->
+            if(payloads != null) {
 
-        viewModel.toast.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled().let { message ->
-                if (!message.isNullOrBlank())
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                val list = arrayListOf<Int>()
+                payloads.forEach {
+                    list.add(it.storyId)
+                }
+                    viewModel.getStoriesByIds(list) {
+
+                        notifyStories = it
+                        adapter.addAll(notifyStories, ArrayList(payloads))
+                    }
+
+
             }
-        })
-
-        viewModel.savedStoriesList.observe(viewLifecycleOwner, Observer {
-
-                    savedStories = ArrayList(it)
-                    adapter.addAll(savedStories)
 
         })
-
-        viewModel.savedStoriesDeleteState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DataState.Success<SavedStory> -> {
-                    viewModel.getSavedStories()
-                }
-                is DataState.Error -> {
-                    println("NEWS DELETE ERROR")
-                }
-                is DataState.Loading -> {
-                    println("NEWS DELETING")
-                }
-            }
-        })
-
     }
-
-    private fun toast(message: String) = viewModel.toast(message)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -244,16 +229,18 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
 
         setUpAdapter()
 
-        viewModel.getSavedStories()
 
         binding.back.setOnClickListener {
             findNavController().popBackStack() }
 
     }
 
-    override fun getFragmentView(): Int = R.layout.fragment_saved_stories
+    override fun getFragmentView(): Int {
+        return R.layout.fragment_notify
+    }
+
     override fun onDataSetChange(stories: List<Story>) {
-       viewModel.setSelectedStoryList(stories)
+        viewModel.setSelectedStoryList(stories)
     }
 
 }

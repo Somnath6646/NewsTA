@@ -1,6 +1,5 @@
 package com.newsta.android.repository
 
-import android.provider.ContactsContract
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -102,7 +101,7 @@ class StoriesRepository(
             emit(DataState.Success(cachedStories))
             println("EMITTED CACHED STORIES")
             val maxStory = storiesDao.getMaxStory()
-            emit(DataState.Extra(listOf(maxStory)))
+            emit(DataState.Extra(maxStory))
 
         } catch (e: Exception) {
 
@@ -155,8 +154,7 @@ class StoriesRepository(
             println("INSERTED LONG: ${isInserted[0]}")
             if (isInserted[0] > 0) {
                 val maxStory = storiesDao.getMaxStory()
-                val minStory = storiesDao.getMinStory()
-                emit(DataState.Extra(listOf(maxStory, minStory)))
+                emit(DataState.Extra(maxStory))
             }
             if (remoteNewsResponse.statusCode == 200)
                 println("SUCCESSFUL RESPONSE")
@@ -199,8 +197,8 @@ class StoriesRepository(
                 storiesDao.insertStories(stories)
                 emit(DataState.Success(stories)).let {
                     val maxStory = storiesDao.getMaxStory()
-                    val minStory = storiesDao.getMinStory()
-                    emit(DataState.Extra(listOf(maxStory, minStory)))
+
+                    emit(DataState.Extra(maxStory))
                 }
 
             } catch (e: Exception) {
@@ -214,14 +212,13 @@ class StoriesRepository(
 
         }
 
-    suspend fun getMaxAndMinStory(): Flow<DataState<List<Story>>> = flow {
+    suspend fun getMaxAndMinStory(): Flow<DataState<MaxStoryAndUpdateTime>> = flow {
 
         emit(DataState.Loading)
 
         try {
             val maxStory = storiesDao.getMaxStory()
-            val minStory = storiesDao.getMinStory()
-            emit(DataState.Success(listOf(maxStory, minStory)))
+            emit(DataState.Success(maxStory))
         } catch (e: Exception) {
             println("ERROR IN FETCHING EXTRAS")
         }
@@ -277,7 +274,6 @@ class StoriesRepository(
                 Log.i("Stories by ids", "response unsuccessfull")
             }
         }catch (e: Exception){
-            emit(DataState.Error("Error in getting stories by ids"))
         }
     }
 
@@ -563,6 +559,39 @@ class StoriesRepository(
                 if (isInserted != -1) {
                     println("PREFERENCES SAVED")
                     emit(DataState.Success(savedStoryIds))
+                } else {
+                    emit(DataState.Error("Cannot save story id", 101))
+                }
+
+            } else {
+                Log.i("MYTAG", updateResponse.message())
+                val gson = Gson()
+                val type = object : TypeToken<ErrorResponse>() {}.type
+                var errorResponse: ErrorResponse? =
+                    gson.fromJson(updateResponse.errorBody()!!.charStream(), type)
+                if (errorResponse != null) {
+                    emit(DataState.Error(errorResponse.detail))
+                }
+            }
+
+        } catch (e: Exception) {
+            println("ERRORRRRRRR IN UPDATING USER CATEGORIES IN SERVER")
+            e.printStackTrace()
+        }
+    }
+
+
+    suspend fun saveNotifyStoriesInServer(notifyStories: List<Payload>): Flow<DataState<List<Payload>>> = flow {
+        try {
+            val updateNotifyStoryIdsRequest = UpdateNotifyStoryIdsRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, notifyStories)
+            val updateResponse = newsService.updateUserNotifyStories(updateNotifyStoryIdsRequest)
+            if(updateResponse.isSuccessful) {
+                println("RESPONSE SUCCESSFUL")
+                val isInserted = storiesDao.updateNotifyStories(notifyStories)
+                println("IS INSERTED ---> $isInserted")
+                if (isInserted != -1) {
+                    println("PREFERENCES SAVED")
+                    emit(DataState.Success(notifyStories))
                 } else {
                     emit(DataState.Error("Cannot save story id", 101))
                 }

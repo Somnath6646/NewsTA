@@ -134,7 +134,8 @@
             app:popExitAnim="@anim/out_to_right" />
         <action
             android:id="@+id/action_landingFragment_to_searchFragment"
-            app:destination="@id/searchFragment"/>
+            app:destination="@id/searchFragment"
+            />
         <action
             android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment"
             app:destination="@id/signupSigninOptionsFragment"
@@ -153,11 +154,15 @@
             android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment2"
             app:destination="@id/signupSigninOptionsFragment" />
         <action
-            android:id="@+id/action_landingFragment_self"
-            app:destination="@id/landingFragment" />
-        <action
             android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment3"
             app:destination="@id/signupSigninOptionsFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_notifyFragment"
+            app:destination="@id/notifyFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/signIn_AuthenticationOptionsFragment"
@@ -246,4 +251,16 @@
         android:id="@+id/categoriesFragment"
         android:name="com.newsta.android.ui.settings.categories.CategoriesFragment"
         android:label="CategoriesFragment" />
+    <fragment
+        android:id="@+id/notifyFragment"
+        android:name="com.newsta.android.ui.notify.NotifyFragment"
+        android:label="NotifyFragment" >
+        <action
+            android:id="@+id/action_notifyFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
+    </fragment>
 </navigation>

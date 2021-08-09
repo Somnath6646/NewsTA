@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
@@ -30,6 +31,7 @@ import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentLandingBinding
 import com.newsta.android.databinding.LogoutDialogBinding
+import com.newsta.android.remote.data.ArticleState
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
 import com.newsta.android.viewmodels.NewsViewModel
@@ -59,7 +61,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
 
         adapter = ViewPagerAdapter(
-            fragmentActivity = requireActivity(),
+            childFragmentManager, lifecycle
         )
 
         println("PAGER ADAPTER ---> $adapter")
@@ -221,12 +223,36 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             }
         }
 
+        binding.notifyCardContainer.setOnClickListener {
+           findNavController().navigate(LandingFragmentDirections.actionLandingFragmentToNotifyFragment())
+        }
+
         binding.search.setOnClickListener {
             val action = LandingFragmentDirections.actionLandingFragmentToSearchFragment()
             findNavController().navigate(action)
         }
 
         setUpAdapter()
+
+        viewModel.notifyStoriesLiveData.observe(requireActivity(), Observer {payloads ->
+            var count = 0
+            if(payloads !=null){
+                payloads.forEach {
+                    if(it.read == ArticleState.UNREAD){
+                        count++
+                    }
+                }
+                if(count <1){
+                    binding.notifyNumberTextContainer.visibility = View.INVISIBLE
+                }else{
+                    binding.notifyNumberTextContainer.visibility = View.VISIBLE
+                    binding.notifyNumberText.text = "$count"
+                }
+
+
+            }
+        })
+
         viewModel.categoryLiveData.observe(requireActivity(), Observer {
                //setUpTabLayout(categories)
 //                if(categories.isNullOrEmpty()) {
@@ -237,64 +263,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         })
 
 
-        /*viewModel.categoryDataState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DataState.Success -> {
-                    Log.i("TAG", "onActivityCreated: CategoryDatState Success")
-                    var newCategories = it.data as ArrayList<Category>
-                    if (newCategories == categories) {
-                        println("CATEGORIES SAME")
-                        if (!NewstaApp.has_changed_preferences!! && userCategories.size == 0) {
-                            println("CATEGORY SE SET HUA NOT CHANGED")
-                            setUpTabLayout(categories = categories)
-                        }
-                    } else {
-                        if (!NewstaApp.has_changed_preferences!!) {
-                            println("CATEGORIES DIFFERENT")
-                            categories = newCategories
-                            setUpTabLayout(categories = categories)
-                        }
-                    }
-                }
-                is DataState.Error -> {
-                    Log.i("TAG", "onActivityCreated: CategoryDatState Error")
-                    checkIfUnauthorized(it)
-                }
-                is DataState.Loading -> {
-                    Log.i("TAG", "onActivityCreated: CategoryDatState logading")
-                }
-            }
-        })*/
 
-        /*viewModel.dbCategoryDataState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is DataState.Success -> {
-                    Log.i("TAG", "onActivityCreated: CategoryDatState Success DB")
-                    if (isAppJustOpened)
-                        viewModel.getCategories()
-                    if (categories.size <= 0) {
-                        categories = it.data as ArrayList<Category>
-                        println("NOT CHANGED USER PREFERENCES ---> $categories")
-                        if (NewstaApp.has_changed_preferences!!) {
-                            println("CHANGED USER PREFERENCES")
-                            getUserCategories()
-//                        setUpTabLayout(categories = categories)
-                        } else {
-                            println("NOT CHANGED USER PREFERENCES ---> $categories")
-                            if(binding.pager.childCount <= 0)
-                                setUpTabLayout(categories = categories)
-                        }
-                    }
-                }
-                is DataState.Error -> {
-                    Log.i("TAG", "onActivityCreated: CategoryDatState Error")
-                    checkIfUnauthorized(it)
-                }
-                is DataState.Loading -> {
-                    Log.i("TAG", "onActivityCreated: CategoryDatState logading")
-                }
-            }
-        })*/
 
         viewModel.logoutDataState.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
@@ -303,7 +272,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                         Log.i("TAG", "Sucess logout ")
 
                         viewModel.clearAllData()
-//                        Toast.makeText(requireContext(), "Cleared!!!", Toast.LENGTH_SHORT).show()
                         val action =
                             LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
                         findNavController().navigate(action)
@@ -401,7 +369,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             }).attach()
 
 
-       binding.tabLayout
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
@@ -412,6 +379,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 println("TAB POSITION: $category")
 
 
+                binding.tabLayout.setScrollPosition(category, 0f, true)
+                binding.pager.currentItem = category
 
                 tab.view.children.forEach {
                     if (it is LinearLayout) {
@@ -460,6 +429,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
                 println("TAB POSITION: $category")
 
+                binding.tabLayout.setScrollPosition(category, 0f, true)
+                binding.pager.currentItem = category
 
                 tab.view.children.forEach {
                     if (it is LinearLayout) {

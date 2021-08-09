@@ -32,6 +32,8 @@ data class Story(
         return this.storyId == new.storyId
     }
 
+
+
     companion object {
         const val TABLE_NAME = "newsta_stories"
     }

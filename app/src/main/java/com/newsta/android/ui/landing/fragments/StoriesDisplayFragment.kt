@@ -24,6 +24,7 @@ import com.newsta.android.utils.helpers.OnDataSetChangedListener
 import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
+import com.newsta.android.utils.models.MaxStoryAndUpdateTime
 import com.newsta.android.utils.models.Story
 import com.newsta.android.viewmodels.NewsViewModel.Companion.isRefreshedByDefault
 import com.newsta.android.viewmodels.NewsViewModel.Companion.stories
@@ -131,12 +132,11 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     viewModel.debugToast("newsDataState:  loading.....")
                     binding.refreshLayout.isRefreshing = true
                 }
-                is DataState.Extra<List<Story>?> -> {
+                is DataState.Extra -> {
                     try {
-                        if (!it.data.isNullOrEmpty()) {
-                            maxStory = it.data.first()
-                            minStory = it.data.last()
-                            extras = ArrayList(it.data)
+                        if (it.data != null) {
+                            maxStory = it.data
+                            extras = arrayListOf(it.data)
                         }
                     } catch (e: Exception) {
                         viewModel.debugToast("Min Max error")
@@ -145,7 +145,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     }
                     Log.i(
                         "newsDataState",
-                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
+                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} "
                     )
                 }
             }
@@ -187,16 +187,15 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
                     binding.refreshLayout.isRefreshing = true
                 }
-                is DataState.Extra<List<Story>?> -> {
+                is DataState.Extra -> {
                     try {
                         println("EXTRA DB DATA ---> ${it.data}")
-                        if (!it.data.isNullOrEmpty()) {
-                            maxStory = it.data.first()
-                            minStory = it.data.last()
-                            extras = ArrayList(it.data)
+                        if (it.data != null) {
+                            maxStory = it.data
+                            extras = arrayListOf(it.data)
                             Log.i(
                                 "newsDataState",
-                                " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
+                                " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt}"
                             )
                             if(!isRefreshedByDefault) {
                                 isRefreshedByDefault = true
@@ -241,17 +240,6 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
             when (it) {
                 is DataState.Success<List<Story>?> -> {
-                    /*Log.i("newsDataState", " success")
-                    viewModel.changeDatabaseState(isDatabaseEmpty = false)
-                    stories = ArrayList(it.data)
-                    val filteredStories =
-                        stories.filter { story: Story -> story.category == categoryState }
-                    val stories = ArrayList<Story>(filteredStories)
-                    println("FilteredStories Updated  $stories")
-                    stories.sortByDescending {
-                            story ->  story.updatedAt
-                    }
-                    adapter.refreshAdd(stories)*/
                 }
                 is DataState.Error -> {
                     Log.i("newsDataState", " errror ${it.exception}")
@@ -260,42 +248,40 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     Log.i("newsUpdateDataState", " loding")
                     viewModel.debugToast("newsUpdateDataState: loading")
                 }
-                is DataState.Extra<List<Story>?> -> {
+                is DataState.Extra -> {
                     try {
-                        if (!it.data.isNullOrEmpty()) {
-                            maxStory = it.data.first()
-                            minStory = it.data.last()
-                            extras = ArrayList(it.data)
+                        println("EXTRA DB DATA ---> ${it.data}")
+                        if (it.data != null)
+                            maxStory = it.data
+                        extras = arrayListOf(it.data)
+                        Log.i(
+                            "newsDataState",
+                            " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt}"
+                        )
+                        if (!isRefreshedByDefault) {
+                            isRefreshedByDefault = true
+                            viewModel.getAllNews(maxStory.storyId, maxStory.updatedAt)
                         }
                     } catch (e: Exception) {
-                        println("** MIN MAX ERROR **")
+                        viewModel.debugToast("Min max error")
                         e.printStackTrace()
                     }
-                    Log.i(
-                        "newsDataState",
-                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
-                    )
                 }
-            }
 
+            }
         })
 
         viewModel.minMaxStoryState.observe(requireActivity(), Observer {
 
             when (it) {
-                is DataState.Success<List<Story>?> -> {
-                    if (!it.data.isNullOrEmpty()) {
-                        maxStory = it.data.first()
-                        minStory = it.data.last()
-                        extras = ArrayList(it.data)
+                is DataState.Success<MaxStoryAndUpdateTime>-> {
+                    if (it.data != null) {
+                        maxStory = it.data
+                        extras = arrayListOf(it.data)
                     }
                     Log.i(
                         "newsDataState",
-                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
-                    )
-                    Log.i(
-                        "newsDataState",
-                        " EXTRA MIN ${minStory.storyId} ${minStory.updatedAt} ${minStory.category} ${minStory.events}"
+                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt}"
                     )
                 }
                 is DataState.Error -> {
@@ -304,15 +290,14 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                 is DataState.Loading -> {
                     Log.i("newsDataState", " loding")
                 }
-                is DataState.Extra<List<Story>?> -> {
-                    if (!it.data.isNullOrEmpty()) {
-                        maxStory = it.data.first()
-                        minStory = it.data.last()
-                        extras = ArrayList(it.data)
+                is DataState.Extra -> {
+                    if (it.data != null) {
+                        maxStory = it.data
+                        extras = arrayListOf(it.data)
                     }
                     Log.i(
                         "newsDataState",
-                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} ${maxStory.category} ${maxStory.events}"
+                        " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt}"
                     )
                 }
             }

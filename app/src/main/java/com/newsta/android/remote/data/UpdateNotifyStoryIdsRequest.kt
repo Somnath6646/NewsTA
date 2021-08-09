@@ -9,5 +9,5 @@ data class UpdateNotifyStoryIdsRequest(
     @SerializedName("iss")
     val iss: String,
     @SerializedName("payload")
-    val payload: List<Int>
+    val payload: List<Payload>
 )

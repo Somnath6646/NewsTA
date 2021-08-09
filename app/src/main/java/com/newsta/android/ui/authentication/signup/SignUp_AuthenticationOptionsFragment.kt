@@ -81,7 +81,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
                 when(it){
                     is DataState.Success -> {
                         Log.i("TAG", "Sucess")
-                        it.data?.data?.let { it1 -> viewModel.saveTokenAndIss(accessToken = it1) }
+                        it.data?.data?.let { it1 -> viewModel.getUserPreferences(accessToken = it1) }
                     }
                     is DataState.Loading -> {
                         Log.i("TAG", "Loading")

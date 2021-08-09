@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.newsta.android.utils.models.*
 
-@Database(entities = arrayOf(Story::class, SavedStory::class, Category::class, UserPreferences::class), version = 5, exportSchema = false)
+@Database(entities = arrayOf(Story::class, SavedStory::class, Category::class, UserPreferences::class), version = 6, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class StoriesDatabase : RoomDatabase() {
 

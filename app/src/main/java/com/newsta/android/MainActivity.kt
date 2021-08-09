@@ -30,6 +30,7 @@ import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.utils.NetworkObserver
 import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.helpers.LocaleConfigurationUtil
+import com.newsta.android.utils.models.MaxStoryAndUpdateTime
 import com.newsta.android.utils.models.Story
 import com.newsta.android.utils.workers.DatabaseClearer
 import com.newsta.android.viewmodels.NewsViewModel
@@ -200,9 +201,9 @@ class MainActivity : AppCompatActivity(){
 
     companion object {
 
-        var extras = ArrayList<Story>()
+        var extras = ArrayList<MaxStoryAndUpdateTime>()
         lateinit var minStory: Story
-        lateinit var maxStory: Story
+        lateinit var maxStory: MaxStoryAndUpdateTime
         var isConnectedToNetwork = true
 
     }

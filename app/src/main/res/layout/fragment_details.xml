@@ -70,6 +70,29 @@
                 app:tint="@color/colorPrimary" />
 
             <ImageView
+                android:id="@+id/btn_notify"
+                style="@style/Rippleeffect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:src="@drawable/ic_notification_unfilled"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_share"
+                app:layout_constraintEnd_toStartOf="@id/btn_download"
+                app:layout_constraintTop_toTopOf="@id/top_guidline" />
+            <ImageView
+                android:id="@+id/btn_notify_filled"
+                style="@style/Rippleeffect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:src="@drawable/ic_notification_filled"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_share"
+                app:layout_constraintEnd_toStartOf="@id/btn_download"
+                app:layout_constraintTop_toTopOf="@id/top_guidline" />
+
+            <ImageView
                 android:id="@+id/btn_download"
                 style="@style/Rippleeffect"
                 android:layout_width="30dp"

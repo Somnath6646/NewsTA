@@ -11,3 +11,4 @@ data class UpdateSavedStoryIdsRequest(
     @SerializedName("payload")
     val payload: List<Int>
 )
+

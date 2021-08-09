@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -33,6 +34,8 @@ import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
 import com.newsta.android.databinding.LogoutDialogBinding
+import com.newsta.android.remote.data.ArticleState
+import com.newsta.android.remote.data.Payload
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.details.adapter.*
 import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
@@ -66,6 +69,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 story = stories[position]
+                setIconForNotified(viewModel.notifyStoriesLiveData.value)
                 viewModel.getSavedStory(storyId = story.storyId)
                 viewModel.getSources(story.storyId, story.events.last().eventId)
             }
@@ -82,6 +86,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         binding.btnShare.setOnClickListener { shareImage() }
 
         binding.btnDownload.setOnClickListener { saveStory() }
+
+        binding.btnNotify.setOnClickListener { saveAsNotified() }
+
+        binding.btnNotifyFilled.setOnClickListener { removeFromNotified() }
 
         binding.btnDownloaded.setOnClickListener { deleteSavedStory() }
 
@@ -108,6 +116,93 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
                 }
             })
 
+    }
+
+    private fun updateNotifyStoryOnServer(notifyStories: List<Payload>){
+
+
+        viewModel.saveNotifyStories(notifyStories as ArrayList<Payload>)
+
+
+    }
+
+    private fun saveAsNotified() {
+
+        println("SAVING STORY")
+
+
+
+       val notified = Payload(
+           storyId = story.storyId,
+           read = ArticleState.READ
+       )
+        var notifyStories =  viewModel.notifyStoriesLiveData.value?.toMutableList()
+
+        if (notifyStories == null) {
+            notifyStories = mutableListOf()
+        }
+
+        if (notifyStories != null) {
+            notifyStories.add(notified)
+            println("notifyStories list is $notifyStories")
+            updateNotifyStoryOnServer(notifyStories = notifyStories )
+        }else{
+            println("notifyStories list is null")
+        }
+
+
+
+
+
+
+        Snackbar.make(binding.root, "We'll notify you 😀", Snackbar.LENGTH_SHORT).show()
+        setIconForNotified(notifyStories)
+
+    }
+
+    private fun removeFromNotified() {
+
+        println("SAVING STORY")
+
+
+
+        val notified = Payload(
+            storyId = story.storyId,
+            read = ArticleState.READ
+        )
+        var notifyStories =  viewModel.notifyStoriesLiveData.value?.toMutableList()
+
+        if (notifyStories == null) {
+            notifyStories = mutableListOf()
+        }
+
+        if (notifyStories != null) {
+            notifyStories.remove(notified)
+            println("notifyStories list is $notifyStories")
+            updateNotifyStoryOnServer(notifyStories = notifyStories )
+
+
+        }else{
+            println("notifyStories list is null")
+        }
+
+
+
+
+
+
+        Snackbar.make(binding.root, "No notifications will be given", Snackbar.LENGTH_SHORT).show()
+        setIconForNotified(notifyStories)
+
+    }
+    fun setIconForNotified(it: List<Payload>?){
+        if(it != null) {
+            if (it.contains(Payload(0, story.storyId))){
+                binding.btnNotifyFilled.visibility = View.VISIBLE
+            }else{
+                binding.btnNotifyFilled.visibility = View.GONE
+            }
+        }
     }
 
     private fun saveStory() {
@@ -182,7 +277,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
 
 
+
+
     private fun observer() {
+
+
 
 
         viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {
@@ -236,6 +335,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         stories = viewModel.selectedStoryList.value!!
         if(stories!=null)
         story = stories.get(position)
+
+        setIconForNotified(viewModel.notifyStoriesLiveData.value)
+
 
         binding.lifecycleOwner = requireActivity()
 

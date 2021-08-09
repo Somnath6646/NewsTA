@@ -1,5 +1,6 @@
-package com.newsta.android.ui.saved.adapter
+package com.newsta.android.ui.notify.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,18 +11,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.NewsItemBinding
+import com.newsta.android.remote.data.ArticleState
+import com.newsta.android.remote.data.Payload
+import com.newsta.android.ui.details.adapter.pos
 import com.newsta.android.utils.helpers.OnDataSetChangedListener
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
 import com.squareup.picasso.Picasso
 
-private var category = 0
-
-class SavedStoryAdapter(private val onClick: (Int) -> Unit, private val onLongClick: (SavedStory) -> Boolean) : RecyclerView.Adapter<SavedStoryViewHolder>() {
+class NotifyStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Adapter<NotifyStoriesViewHolder>() {
 
     private lateinit var onDataSetChangeListener: OnDataSetChangedListener
 
     private val stories = ArrayList<SavedStory>()
+    private val payloads = ArrayList<Payload>()
 
     fun setDataSetChangeListener(onDataSetChangeListener: OnDataSetChangedListener){
         this.onDataSetChangeListener = onDataSetChangeListener
@@ -33,10 +36,10 @@ class SavedStoryAdapter(private val onClick: (Int) -> Unit, private val onLongCl
         setHasStableIds(true)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedStoryViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotifyStoriesViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = DataBindingUtil.inflate<NewsItemBinding>(inflater, R.layout.news_item, parent, false)
-        return SavedStoryViewHolder(binding, onClick, onLongClick)
+        return NotifyStoriesViewHolder(binding, onClick)
     }
 
     override fun getItemId(position: Int): Long = position.toLong()
@@ -44,20 +47,21 @@ class SavedStoryAdapter(private val onClick: (Int) -> Unit, private val onLongCl
 
     override fun getItemCount(): Int = stories.size
 
-    override fun onBindViewHolder(holder: SavedStoryViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: NotifyStoriesViewHolder, position: Int) {
         tracker.let {
             if (it != null) {
-                holder.bind(stories[position], it.isSelected(position.toLong() ), position)
+                val story = stories[position]
+                println("stories $stories \npayloads $payloads")
+                holder.bind(story, payloads[position] , it.isSelected(position.toLong() ), position)
             }
         }
 
     }
 
-    fun addAll(storiesResponse: ArrayList<SavedStory>) {
+    fun addAll(storiesResponse: ArrayList<SavedStory>, payloads: ArrayList<Payload>) {
         stories.clear()
-        storiesResponse.sortByDescending {
-                story ->  story.updatedAt
-        }
+        this.payloads.clear()
+        this.payloads.addAll(payloads)
         stories.addAll(storiesResponse)
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
@@ -65,30 +69,26 @@ class SavedStoryAdapter(private val onClick: (Int) -> Unit, private val onLongCl
         onDataSetChangeListener.onDataSetChange(stories = convertStoryType(stories) )
     }
 
-    fun setCategory(categoryState: Int) {
-        category = categoryState
-        notifyDataSetChanged()
-    }
-
     fun convertStoryType(stories: List<SavedStory>): ArrayList<Story>{
         val newStories: ArrayList<Story> = ArrayList()
         stories.forEach {story ->
             newStories.add(
                 Story(
-                storyId = story.storyId,
+                    storyId = story.storyId,
                     events = story.events,
                     category = story.category,
                     updatedAt = story.updatedAt
-            ))
+                )
+            )
         }
         return newStories
     }
 
 }
 
-class SavedStoryViewHolder(private val binding: NewsItemBinding, private val onClick: (Int) -> Unit, private val onLongClick: (SavedStory) -> Boolean) : RecyclerView.ViewHolder(binding.root) {
+class NotifyStoriesViewHolder(private val binding: NewsItemBinding, private val onClick: (Int) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(story: SavedStory, isSelected: Boolean = false, position: Int) {
+    fun bind(story: SavedStory, payload: Payload, isSelected: Boolean = false, position: Int) {
 
         val events = story.events.sortedByDescending { events -> events.updatedAt }
 
@@ -97,6 +97,10 @@ class SavedStoryViewHolder(private val binding: NewsItemBinding, private val onC
         binding.title.text = event.title
         binding.timeline.text = if(events.size > 1) "View timeline" else ""
         binding.time.text = NewstaApp.setTime(story.updatedAt)
+
+        if(payload.read == ArticleState.READ){
+            binding.title.setTextColor(Color.GRAY)
+        }
 
         Picasso.get()
             .load(event.imgUrl)
@@ -114,7 +118,7 @@ class SavedStoryViewHolder(private val binding: NewsItemBinding, private val onC
     }
 
 
-      fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
+    fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
 
         object : ItemDetailsLookup.ItemDetails<Long>() {
 

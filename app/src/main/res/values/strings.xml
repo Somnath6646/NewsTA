@@ -32,5 +32,6 @@
     <string name="longLabel">Search With Newsta</string>
     <string name="shortLabel">Search</string>
     <string name="type_here_to_search">Type here to search</string>
+    <string name="notify_stories">Notify Stories</string>
 
 </resources>
