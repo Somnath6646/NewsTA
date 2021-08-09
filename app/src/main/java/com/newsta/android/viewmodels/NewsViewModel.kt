@@ -258,9 +258,9 @@ constructor(private val newsRepository: StoriesRepository,
     val newsUpdateState: LiveData<DataState<List<Story>>>
         get() = _newsUpdateState
 
-    inline fun List<Story>.checkIfHasThisStoryId(storyId: Int): Boolean {
-        return this.contains(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
-    }
+    inline fun List<Story>.checkIfHasThisStoryId(storyId: Int): Boolean = this.contains(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
+
+    inline fun List<Story>.getIndexByStoryId(storyId: Int): Int = this.indexOf(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
 
     fun updateNews(storyId: Int, maxDateTime: Long) {
         urlToRequest  = "http://13.235.50.53/existing"

@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -21,6 +22,7 @@ import com.facebook.login.LoginResult
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentSignupOptionsBinding
+import com.newsta.android.ui.authentication.adapter.TutorialAdapter
 import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.utils.models.DataState
@@ -41,7 +43,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
 
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
-        ViewCompat.setTransitionName(binding.imageView, "logoTransition")
+//        ViewCompat.setTransitionName(binding.imageView, "logoTransition")
 
         binding.btnSignup.setOnClickListener {
             val action =
@@ -143,9 +145,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
             findNavController().navigate(action)
         }
 
-
     }
-
 
     fun navigateToMainFragment(){
         val action = SignUp_AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToLandingFragment()

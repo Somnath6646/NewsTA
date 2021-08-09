@@ -49,11 +49,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
     }
 
     fun navigateToAuthenticationOptionsFragment() {
-        val action =
-            SplashFragmentDirections.actionSplashFragmentToSignupSigninOptionsFragment()
-        val extras = FragmentNavigatorExtras(binding.logo to "logoTransition")
-
-        findNavController().navigate(action, extras)
+        findNavController().navigate(R.id.action_splashFragment_to_tutorialFragment)
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_splash

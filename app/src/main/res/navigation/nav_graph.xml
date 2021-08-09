@@ -57,6 +57,13 @@
         <action
             android:id="@+id/action_splashFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_tutorialFragment"
+            app:destination="@id/tutorialFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/email_SignUpFragment"
@@ -263,4 +270,8 @@
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
     </fragment>
+    <fragment
+        android:id="@+id/tutorialFragment"
+        android:name="com.newsta.android.ui.authentication.TutorialFragment"
+        android:label="TutorialFragment" />
 </navigation>

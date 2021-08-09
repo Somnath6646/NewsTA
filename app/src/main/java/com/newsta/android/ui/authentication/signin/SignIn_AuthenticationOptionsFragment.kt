@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -19,6 +20,7 @@ import com.facebook.login.LoginResult
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentSigninOptionsBinding
+import com.newsta.android.ui.authentication.adapter.TutorialAdapter
 import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.utils.models.DataState
@@ -64,12 +66,6 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSigninOptionsB
             }
 
         })
-
-
-
-
-
-
 
         val loginButton = binding.loginButton
         loginButton.setReadPermissions(Arrays.asList(EMAIL))
@@ -137,9 +133,7 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSigninOptionsB
             }
         })
 
-
     }
-
 
     fun navigateToMainFragment(){
         val action = SignIn_AuthenticationOptionsFragmentDirections.actionSignInAuthenticationOptionsFragmentToLandingFragment()
