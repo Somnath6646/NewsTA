@@ -268,6 +268,7 @@ class StoriesRepository(
                     storiesDao.insertSavedStory(savedStories)
                     }
                     Log.i("Stories by ids", " stories $savedStoryIds")
+                    Log.i("Stories by ids", " count ${savedStoryIds.size} ${savedStories.size}")
                     emit(DataState.Success(savedStories))
                 }else{
                     Log.i("Stories by ids", "response body is null")
