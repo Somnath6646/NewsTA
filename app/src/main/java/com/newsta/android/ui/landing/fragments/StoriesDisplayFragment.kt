@@ -337,7 +337,6 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             stories.sortByDescending { story ->
                 story.updatedAt
             }
-            println("CREATING FRAGMENTS FilteredStories  $stories")
             adapter.clear()
             adapter.addAll(stories)
             viewModel.getMaxAndMinStory()

@@ -162,8 +162,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             println(userCategories)
 
 
-
-
         })
 
     }
@@ -189,10 +187,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         } else {
             rawCategories
         }
-        println("aya hai"+"$isSame ${userCategories}")
-
-
-
+            println("aya hai"+"$isSame ${userCategories}")
 
             println("seq setCategores in adapter and setUpTablayout")
 
@@ -204,8 +199,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-
 
         if (savedInstanceState != null) {
             println("RETURNED")
@@ -353,32 +346,29 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private fun setUpTabLayout() {
 
-
         TabLayoutMediator(binding.tabLayout, binding.pager,
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                 tab.customView = when (position) {
                     0 -> {
                         if (category == 0) {
                             addCustomView(
-                                adapter.categories[position].category.capitalize(Locale.ROOT), 16f,
+                                rawCategories[position].category.capitalize(Locale.ROOT), 16f,
                                 Color.WHITE
                             )
                         } else {
-                            addCustomView(adapter.categories[position].category.capitalize(Locale.ROOT))
+                            addCustomView(rawCategories[position].category.capitalize(Locale.ROOT))
                         }
                     }
                     else -> {
-                        if (position < adapter.categories.size)
-                            addCustomView(adapter.categories[position].category.capitalize(Locale.ROOT))
+                        if (position < rawCategories.size)
+                            addCustomView(rawCategories[position].category.capitalize(Locale.ROOT))
                         else
                             return@TabConfigurationStrategy
                     }
                 }
             }).attach()
 
-
-
-        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabLayout.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
 
