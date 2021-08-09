@@ -260,7 +260,6 @@ constructor(private val newsRepository: StoriesRepository,
 
     inline fun List<Story>.checkIfHasThisStoryId(storyId: Int): Boolean = this.contains(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
 
-    inline fun List<Story>.getIndexByStoryId(storyId: Int): Int = this.indexOf(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
 
     fun updateNews(storyId: Int, maxDateTime: Long) {
         urlToRequest  = "http://13.235.50.53/existing"
@@ -554,7 +553,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     @SuppressLint("SimpleDateFormat")
     private fun getMaxDate(maxDateTime: Long): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val dateIst = sdf.format(maxDateTime)
         sdf.timeZone = TimeZone.getTimeZone("UTC")
         val dateUtc = sdf.format(maxDateTime)

@@ -352,16 +352,16 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     0 -> {
                         if (category == 0) {
                             addCustomView(
-                                rawCategories[position].category.capitalize(Locale.ROOT), 16f,
+                                userCategories[position].category.capitalize(Locale.ROOT), 16f,
                                 Color.WHITE
                             )
                         } else {
-                            addCustomView(rawCategories[position].category.capitalize(Locale.ROOT))
+                            addCustomView(userCategories[position].category.capitalize(Locale.ROOT))
                         }
                     }
                     else -> {
-                        if (position < rawCategories.size)
-                            addCustomView(rawCategories[position].category.capitalize(Locale.ROOT))
+                        if (position < userCategories.size)
+                            addCustomView(userCategories[position].category.capitalize(Locale.ROOT))
                         else
                             return@TabConfigurationStrategy
                     }

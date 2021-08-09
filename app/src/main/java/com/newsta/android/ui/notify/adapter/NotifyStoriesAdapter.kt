@@ -23,7 +23,7 @@ class NotifyStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Ad
 
     private lateinit var onDataSetChangeListener: OnDataSetChangedListener
 
-    private val stories = ArrayList<SavedStory>()
+    private var stories = ArrayList<SavedStory>()
     private val payloads = ArrayList<Payload>()
 
     fun setDataSetChangeListener(onDataSetChangeListener: OnDataSetChangedListener){
@@ -51,8 +51,8 @@ class NotifyStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Ad
         tracker.let {
             if (it != null) {
                 val story = stories[position]
-                println("stories $stories \npayloads $payloads")
-                holder.bind(story, payloads[position] , it.isSelected(position.toLong() ), position)
+                println("notify adapter payload ${payloads}")
+                holder.bind(story, payloads[0] , it.isSelected(position.toLong() ), position)
             }
         }
 
@@ -63,6 +63,7 @@ class NotifyStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Ad
         this.payloads.clear()
         this.payloads.addAll(payloads)
         stories.addAll(storiesResponse)
+        stories = stories.distinct().toMutableList() as ArrayList<SavedStory>
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
 

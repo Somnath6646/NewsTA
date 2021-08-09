@@ -21,7 +21,8 @@ class NewsAdapter(private val onClick: (Int, List<Story>) -> Unit) : RecyclerVie
     private lateinit var onDataSetChangeListener: OnDataSetChangedListener
 
 
-    private var stories = ArrayList<Story>()
+    var stories = ArrayList<Story>()
+    private set
 
     fun setDataSetChangeListener(onDataSetChangeListener: OnDataSetChangedListener){
         this.onDataSetChangeListener = onDataSetChangeListener

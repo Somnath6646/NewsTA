@@ -240,6 +240,35 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
             when (it) {
                 is DataState.Success<List<Story>?> -> {
+                    val updatedStories = it.data
+                    val allStories = stories
+                    binding.refreshLayout.isRefreshing = false
+                    viewModel.changeDatabaseState(isDatabaseEmpty = false)
+                    if(updatedStories!=null){
+                    updatedStories.forEach {
+                        val indexOfUpdatedStory = allStories.toList().getIndexByStoryId(it.storyId)
+                        if(indexOfUpdatedStory > -1)
+                        allStories.set(indexOfUpdatedStory, it)
+
+                    }
+                        println("allStories afterSet $allStories")
+                        stories = allStories
+                        val filteredStories =
+                            stories.filter { story: Story -> story.category == categoryState }
+                        if (filteredStories.isNullOrEmpty()) {
+                            NewstaApp.is_database_empty = true
+                            viewModel.changeDatabaseState(true)
+                            viewModel.getNewsOnInit()
+                            NewstaApp.setIsDatabaseEmpty(true)
+                        }
+                        println("FilteredStories  $filteredStories")
+
+                        val stories = ArrayList<Story>(filteredStories)
+                        stories.sortByDescending {
+                                story ->  story.updatedAt
+                        }
+                        adapter.addAll(stories)
+                    }
                 }
                 is DataState.Error -> {
                     Log.i("newsDataState", " errror ${it.exception}")
@@ -305,7 +334,10 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
         })
 
     }
-    
+
+    fun List<Story>.getIndexByStoryId(storyId: Int): Int = this.indexOf(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
+
+
     override fun onResume() {
         super.onResume()
         Log.i("1TAG", "onResume: aya hai ")
