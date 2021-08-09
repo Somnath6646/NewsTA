@@ -78,8 +78,6 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
             removeTopToBottomOfSourceContainer()
         }
 
-        viewModel.getSavedStory(story.storyId)
-
         if (!MainActivity.isConnectedToNetwork) {
             binding.sourcesContainer.visibility = View.INVISIBLE
         } else {

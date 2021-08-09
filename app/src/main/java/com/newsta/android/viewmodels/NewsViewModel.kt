@@ -219,6 +219,7 @@ constructor(private val newsRepository: StoriesRepository,
                         Log.i("getUserPreferences", "${it.data.categories}")
                         _userCategoryLiveData.value = userPreferences.categories
                         _savedStoryIdLiveData.value = userPreferences.saved
+                        println("saved stories2 userpref ${_savedStoryIdLiveData.value}")
                         _notifyStoriesLiveData.value = userPreferences.notify
                     }
                     is DataState.Error -> {
@@ -369,12 +370,13 @@ constructor(private val newsRepository: StoriesRepository,
                     is DataState.Success -> {
                         val list = it.data
                         if(list.isEmpty() && !_savedStoryIdLiveData.value.isNullOrEmpty()){
-                           getStoriesByIds(savedStoryIdLiveData.value?.toMutableList() as ArrayList<Int>){
+                           getStoriesByIds(savedStoryIdLiveData.value?.toMutableList() as ArrayList<Int>, true){
+                               Log.i("saved stories", " aya hai value set hone k liye")
                                _savedStoriesList.value = it
                            }
-
-                        }
+                        }else{
                         _savedStoriesList.value = it.data
+                        }
                     }
                     is DataState.Loading -> {
                         Log.i("Saved stories by ids", "loading")
@@ -387,9 +389,9 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    fun getStoriesByIds(ids: ArrayList<Int>, assignTask: (ArrayList<SavedStory>) -> Unit, ){
+    fun getStoriesByIds(ids: ArrayList<Int>, shouldInsertInSavedStoriesDB: Boolean = false, assignTask: (ArrayList<SavedStory>) -> Unit ){
         viewModelScope.launch {
-            newsRepository.getStoriesByIds(savedStoryIds = ids).onEach {
+            newsRepository.getStoriesByIds(savedStoryIds = ids,shouldInsertInSavedStoriesDB = shouldInsertInSavedStoriesDB).onEach {
                 when(it){
                     is DataState.Success -> {
                         assignTask(it.data)

@@ -69,8 +69,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 story = stories[position]
+                Log.i("selectedstory", "$story")
                 setIconForNotified(viewModel.notifyStoriesLiveData.value)
-                viewModel.getSavedStory(storyId = story.storyId)
+                setIconForSaved()
                 viewModel.getSources(story.storyId, story.events.last().eventId)
             }
         })
@@ -79,7 +80,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     private fun initViews() {
 
 
-        viewModel.getSavedStory(story.storyId)
+        setIconForSaved()
 
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
 
@@ -128,9 +129,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun saveAsNotified() {
 
-        println("SAVING STORY")
-
-
 
        val notified = Payload(
            storyId = story.storyId,
@@ -144,16 +142,12 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         if (notifyStories != null) {
             notifyStories.add(notified)
+            notifyStories = notifyStories.toList().distinct().toMutableList()
             println("notifyStories list is $notifyStories")
             updateNotifyStoryOnServer(notifyStories = notifyStories )
         }else{
             println("notifyStories list is null")
         }
-
-
-
-
-
 
         Snackbar.make(binding.root, "We'll notify you 😀", Snackbar.LENGTH_SHORT).show()
         setIconForNotified(notifyStories)
@@ -205,11 +199,21 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         }
     }
 
+    fun setIconForSaved(){
+        val it = viewModel.savedStoryIdLiveData.value
+        println("saved stories2 $it")
+        if(it != null) {
+            if (it.contains(story.storyId)){
+                binding.btnDownload.visibility = View.INVISIBLE
+            }else{
+                binding.btnDownload.visibility = View.VISIBLE
+            }
+        }
+    }
+
     private fun saveStory() {
 
         println("SAVING STORY")
-
-
 
         val savedStory = SavedStory(
             storyId = story.storyId,
@@ -217,6 +221,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             updatedAt = story.updatedAt,
             events = story.events
         )
+
         var savedStoryIds =  viewModel.savedStoryIdLiveData.value?.toMutableList()
 
         if (savedStoryIds == null) {
@@ -232,10 +237,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         }else{
             println("savedstory list is null")
         }
-
-
-
-
 
 
         Snackbar.make(binding.root, "News story saved", Snackbar.LENGTH_SHORT).show()
@@ -281,9 +282,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun observer() {
 
-
-
-
         viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success<SavedStory> -> {
@@ -301,28 +299,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             }
         })
 
-        viewModel.checkSavedStoryState.observe(viewLifecycleOwner, Observer {
-
-            when (it) {
-                is DataState.Success<SavedStory?> -> {
-                    val savedStory = it.data
-                    if (it.data != null) {
-                        binding.btnDownload.visibility = View.INVISIBLE
-                        println("NEWS WAS SAVED")
-                    }
-                }
-                is DataState.Error -> {
-                    binding.btnDownload.visibility = View.VISIBLE
-                    println("NEWS SAVE ERROR")
-                }
-                is DataState.Loading -> {
-                    binding.btnDownload.visibility = View.VISIBLE
-                    println("NEWS SAVING")
-                }
-            }
-
-        })
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -337,7 +313,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         story = stories.get(position)
 
         setIconForNotified(viewModel.notifyStoriesLiveData.value)
-
+        setIconForSaved()
 
         binding.lifecycleOwner = requireActivity()
 

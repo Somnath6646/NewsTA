@@ -255,7 +255,7 @@ class StoriesRepository(
         }
 
 
-    suspend fun getStoriesByIds(savedStoryIds: ArrayList<Int>): Flow<DataState<ArrayList<SavedStory>>> = flow{
+    suspend fun getStoriesByIds(savedStoryIds: ArrayList<Int>, shouldInsertInSavedStoriesDB: Boolean): Flow<DataState<ArrayList<SavedStory>>> = flow{
         emit(DataState.Loading)
         try{
             val request = StoriesByIdsRequest(accessToken = NewstaApp.access_token!!, iss = NewstaApp.ISSUER_NEWSTA, storyIds = savedStoryIds)
@@ -264,8 +264,10 @@ class StoriesRepository(
                 val responseBody = response.body()
                 if(responseBody!= null ){
                 val savedStories = responseBody.data
+                    if(shouldInsertInSavedStoriesDB){
                     storiesDao.insertSavedStory(savedStories)
-                    Log.i("Stories by ids", "saved stories $savedStoryIds")
+                    }
+                    Log.i("Stories by ids", " stories $savedStoryIds")
                     emit(DataState.Success(savedStories))
                 }else{
                     Log.i("Stories by ids", "response body is null")

@@ -130,8 +130,7 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
     }
 
     private fun openDetails(position: Int) {
-        val detailsPageData = DetailsPageData(position
-        )
+        val detailsPageData = DetailsPageData(position)
         val bundle = bundleOf("data" to detailsPageData)
         updateStateOfArticleOnServer(position, notifyStories.get(position), ArticleState.READ)
         findNavController().navigate(R.id.action_notifyFragment_to_detailsFragment, bundle)
