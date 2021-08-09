@@ -1,46 +1,30 @@
 package com.newsta.android.ui.details.fragment
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.drawToBitmap
-import androidx.core.view.marginBottom
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
-import com.newsta.android.MainActivity.Companion.isConnectedToNetwork
-import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
-import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.remote.data.ArticleState
 import com.newsta.android.remote.data.Payload
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.details.adapter.*
-import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
 import com.newsta.android.viewmodels.NewsViewModel
-import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.collections.ArrayList
 import com.newsta.android.utils.models.*
@@ -70,7 +54,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
                 super.onPageSelected(position)
                 story = stories[position]
                 Log.i("selectedstory", "$story")
+
                 setIconForNotified(viewModel.notifyStoriesLiveData.value)
+                updateStateOfArticleOnServer()
                 setIconForSaved()
                 viewModel.getSources(story.storyId, story.events.last().eventId)
             }
@@ -97,7 +83,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     }
 
-    private fun updateStoryOnServer(savedStoryIds: ArrayList<Int>, action : () -> Unit){
+    private fun updateSavedStoryOnServer(savedStoryIds: ArrayList<Int>, action : () -> Unit){
 
             viewModel.saveSavedStoryIds(savedStoryIds as ArrayList<Int>)
             viewModel.userSavedStorySaveDataState.observe(viewLifecycleOwner, Observer {
@@ -121,10 +107,30 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun updateNotifyStoryOnServer(notifyStories: List<Payload>){
 
-
         viewModel.saveNotifyStories(notifyStories as ArrayList<Payload>)
 
+    }
 
+    private fun updateStateOfArticleOnServer(){
+        val notified = Payload(
+            storyId = story.storyId,
+            read = ArticleState.READ
+        )
+
+        var notifyStories =  viewModel.notifyStoriesLiveData.value?.toMutableList()
+
+        if (notifyStories == null) {
+            notifyStories = mutableListOf()
+        }
+
+        if(notifyStories.indexOf(notified) > -1){
+
+            notifyStories.set(notifyStories.indexOf(notified), notified)
+            notifyStories = notifyStories.toList().distinct().toMutableList()
+            println("notifyStories list is $notifyStories")
+            updateNotifyStoryOnServer(notifyStories = notifyStories )
+
+        }
     }
 
     private fun saveAsNotified() {
@@ -231,7 +237,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         if (savedStoryIds != null) {
             savedStoryIds.add(story.storyId)
             println("savedstory list is $savedStoryIds")
-            updateStoryOnServer(savedStoryIds = savedStoryIds as ArrayList<Int>) {
+            updateSavedStoryOnServer(savedStoryIds = savedStoryIds as ArrayList<Int>) {
                 viewModel.saveStory(savedStory)
             }
         }else{
@@ -264,7 +270,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         if (savedStoryIds != null) {
             savedStoryIds.remove(story.storyId)
             println("savedstory list is $savedStoryIds")
-            updateStoryOnServer(savedStoryIds = savedStoryIds as ArrayList<Int>) {
+            updateSavedStoryOnServer(savedStoryIds = savedStoryIds as ArrayList<Int>) {
                 viewModel.deleteSavedStory(savedStory)
             }
         }else{

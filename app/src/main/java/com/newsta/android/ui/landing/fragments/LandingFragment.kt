@@ -265,7 +265,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
 
 
-        viewModel.logoutDataState.observe(viewLifecycleOwner, Observer {
+        viewModel.logoutDataState.observe(requireActivity(), Observer {
             it.getContentIfNotHandled().let {
                 when (it) {
                     is DataState.Success -> {
