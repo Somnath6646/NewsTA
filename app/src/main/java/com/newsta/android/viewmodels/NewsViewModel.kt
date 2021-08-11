@@ -390,7 +390,9 @@ constructor(private val newsRepository: StoriesRepository,
                     is DataState.Success -> {
                         val list = it.data
                         if(list.isEmpty() && !_savedStoryIdLiveData.value.isNullOrEmpty()){
-                           getStoriesByIds(savedStoryIdLiveData.value?.toMutableList() as ArrayList<Int>, true){
+                            val list = ArrayList<Int>()
+                            savedStoryIdLiveData.value?.let { it1 -> list.addAll(it1) }
+                           getStoriesByIds(list, true){
                                Log.i("saved stories", " aya hai value set hone k liye")
                                _savedStoriesList.value = it
                            }

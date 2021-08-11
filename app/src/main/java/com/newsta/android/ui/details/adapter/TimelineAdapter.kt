@@ -34,8 +34,12 @@ class TimelineAdapter(private val onClick: (Event) -> Unit) : RecyclerView.Adapt
     }
 
     fun addAll(eventList: ArrayList<Event>) {
+
         events.clear()
         events.addAll(eventList)
+        events.sortBy {
+            it.createdAt
+        }
         size = events.size
         pos = 0
         notifyDataSetChanged()

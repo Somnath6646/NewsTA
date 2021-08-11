@@ -25,6 +25,7 @@ object DatabaseModule {
             StoriesDatabase::class.java,
             StoriesDatabase.DATABASE_NAME
         )
+            .fallbackToDestructiveMigration()
             .build()
     }
 
