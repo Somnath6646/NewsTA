@@ -214,15 +214,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         println("Hey recreated")
 
-        binding.back.setOnClickListener {
-
-            if (binding.searchLayout.visibility == View.VISIBLE) {
-                binding.navDrawer.visibility = View.VISIBLE
-                /*binding.appName.visibility = View.VISIBLE*/
-                binding.searchLayout.visibility = View.GONE
-                binding.back.visibility = View.GONE
-            }
-        }
 
         binding.notifyCardContainer.setOnClickListener {
            findNavController().navigate(LandingFragmentDirections.actionLandingFragmentToNotifyFragment())

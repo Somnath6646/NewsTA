@@ -165,21 +165,21 @@ class StoriesRepository(
             emit(DataState.Error("${ e.localizedMessage}"))
             isInCatch = true
         } finally {
-            if(isInCatch) {
-                val cachedStories = storiesDao.getAllStories()
-                if (cachedStories != null) {
-                    println("PRINTING FROM CATCH GET ALL NEWS ${cachedStories}")
-                    if (cachedStories.size <= 0) emit(DataState.Error("Cached stories is empty"))
-                    else {
-                        if (!isRefresh) {
-                            println("EMITTING FROM CATCH GET ALL NEWS")
-                            emit(DataState.Success(cachedStories))
-                        } else {
-                            emit(DataState.Error("Error in news response"))
-                        }
-                    }
-                }
-            }
+//            if(isInCatch) {
+//                val cachedStories = storiesDao.getAllStories()
+//                if (cachedStories != null) {
+//                    println("PRINTING FROM CATCH GET ALL NEWS ${cachedStories}")
+//                    if (cachedStories.size <= 0) emit(DataState.Error("Cached stories is empty"))
+//                    else {
+//                        if (!isRefresh) {
+//                            println("EMITTING FROM CATCH GET ALL NEWS")
+//                            emit(DataState.Success(cachedStories))
+//                        } else {
+//                            emit(DataState.Error("Error in news response"))
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 
@@ -197,7 +197,6 @@ class StoriesRepository(
                 storiesDao.insertStories(stories)
                 emit(DataState.Success(stories)).let {
                     val maxStory = storiesDao.getMaxStory()
-
                     emit(DataState.Extra(maxStory))
                 }
 

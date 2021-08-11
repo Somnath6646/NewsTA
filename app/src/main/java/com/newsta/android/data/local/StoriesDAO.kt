@@ -18,7 +18,7 @@ interface StoriesDAO {
     @Query("DELETE FROM ${Story.TABLE_NAME} WHERE updated_at <= :maxTime")
     suspend fun deleteAllStories(maxTime: Long)
 
-    @Query("SELECT MAX(story_id) AS storyId , MAX(updated_at) AS updatedAt FROM ${Story.TABLE_NAME}")
+    @Query("SELECT MAX(story_id) AS storyId , MAX(updated_at) AS updatedAt FROM ${Story.TABLE_NAME} WHERE updated_at < datetime('now')")
     suspend fun getMaxStory(): MaxStoryAndUpdateTime
 
     @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE story_id = (SELECT MIN(story_id) FROM ${Story.TABLE_NAME})")

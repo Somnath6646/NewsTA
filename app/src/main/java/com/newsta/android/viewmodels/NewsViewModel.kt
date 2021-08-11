@@ -156,6 +156,27 @@ constructor(private val newsRepository: StoriesRepository,
                 newsRepository.getAllStories(newsRequest = request, isRefresh = isRefresh)
                     .onEach {
                         _newsDataState.value = it
+                        when(it){
+                            is DataState.Success -> {
+                                val list = arrayListOf<Payload>()
+                                val origList = notifyStoriesLiveData.value
+                                println("notifystory onupdate $origList")
+                                if(origList != null){
+                                    val stories = it.data
+
+                                    origList.forEach {
+                                        if(stories.checkIfHasThisStoryId(it.storyId)){
+                                            list.add(Payload(storyId = it.storyId, read = ArticleState.UNREAD))
+                                        }else{
+                                            list.add(it)
+                                        }
+                                    }
+
+                                }
+                                println("notifystory afterupdate $list")
+                                saveNotifyStories(list)
+                            }
+                        }
                     }
                     .launchIn(viewModelScope)
         }

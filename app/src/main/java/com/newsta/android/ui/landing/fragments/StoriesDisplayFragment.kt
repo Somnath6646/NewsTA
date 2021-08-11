@@ -170,9 +170,6 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     println("FilteredStories  $filteredStories")
 
                     val stories = ArrayList<Story>(filteredStories)
-                    stories.sortByDescending {
-                            story ->  story.updatedAt
-                    }
                     adapter.addAll(stories)
                 }
                 is DataState.Error -> {
@@ -241,18 +238,21 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             when (it) {
                 is DataState.Success<List<Story>?> -> {
                     val updatedStories = it.data
-                    val allStories = stories
+                    val allStories = stories.toMutableList()
                     binding.refreshLayout.isRefreshing = false
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
                     if(updatedStories!=null){
                     updatedStories.forEach {
                         val indexOfUpdatedStory = allStories.toList().getIndexByStoryId(it.storyId)
-                        if(indexOfUpdatedStory > -1)
-                        allStories.set(indexOfUpdatedStory, it)
+                        if(indexOfUpdatedStory > -1){
+                            println("indexwala $indexOfUpdatedStory")
+                            allStories.set(indexOfUpdatedStory, it)
+                        println("indexwala ${allStories[indexOfUpdatedStory].events[0].title}")
+                        }
 
                     }
-                        println("allStories afterSet $allStories")
-                        stories = allStories
+                        if(allStories.isNotEmpty())
+                        stories = allStories as ArrayList<Story>
                         val filteredStories =
                             stories.filter { story: Story -> story.category == categoryState }
                         if (filteredStories.isNullOrEmpty()) {
@@ -264,9 +264,8 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                         println("FilteredStories  $filteredStories")
 
                         val stories = ArrayList<Story>(filteredStories)
-                        stories.sortByDescending {
-                                story ->  story.updatedAt
-                        }
+
+                        println("indexwala $stories")
                         adapter.addAll(stories)
                     }
                 }

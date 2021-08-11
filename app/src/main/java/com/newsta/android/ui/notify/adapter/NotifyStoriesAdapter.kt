@@ -51,7 +51,7 @@ class NotifyStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Ad
         tracker.let {
             if (it != null) {
                 val story = stories[position]
-                holder.bind(story, payloads[0] , it.isSelected(position.toLong() ), position)
+                holder.bind(story, payloads.get(payloads.indexOf(Payload(0,  story.storyId))) , it.isSelected(position.toLong() ), position)
             }
         }
     }
@@ -65,7 +65,7 @@ class NotifyStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Ad
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
 
-        onDataSetChangeListener.onDataSetChange(stories = convertStoryType(stories) )
+        onDataSetChangeListener.onDataSetChange(stories = convertStoryType(stories))
     }
 
     fun convertStoryType(stories: List<SavedStory>): ArrayList<Story>{

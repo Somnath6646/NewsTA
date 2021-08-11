@@ -42,12 +42,13 @@ class NewsAdapter(private val onClick: (Int, List<Story>) -> Unit) : RecyclerVie
     }
 
     fun addAll(storiesList: ArrayList<Story>) {
+        stories.clear()
         stories.addAll(storiesList)
+        stories.sortByDescending {
+                story ->  story.updatedAt
+        }
         stories = ArrayList(stories.distinct())
         println("LIST SIZE ${stories.size}")
-        stories.sortByDescending { story ->
-            story.updatedAt
-        }
         notifyDataSetChanged()
         onDataSetChangeListener.onDataSetChange(stories)
     }

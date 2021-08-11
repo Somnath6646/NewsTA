@@ -37,7 +37,6 @@ class ViewPagerAdapter(private val fragmentManager: FragmentManager, val lifecyc
 
     fun setCategories(list: List<Category>){
 
-
             categories.clear()
             categories.addAll(list)
             println("aya hai $categories")
