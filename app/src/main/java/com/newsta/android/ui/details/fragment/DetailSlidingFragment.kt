@@ -140,10 +140,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
     private fun showEventData(event: Event) {
 
-        viewModel.getSources(story.storyId, event.eventId)
-
         binding.titleEvent.text = event.title
-
         binding.summaryEvent.text = event.summary
 
         binding.updatedAtEvent.text = NewstaApp.setTime(event.createdAt)
@@ -158,7 +155,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getSources(story.storyId, event.eventId)
+
     }
 
     private fun setUpAdapters() {
