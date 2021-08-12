@@ -54,11 +54,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
                 super.onPageSelected(position)
                 story = stories[position]
                 Log.i("selectedstory", "$story")
-
+                viewModel.getSources(story.storyId, story.events.last().eventId)
                 setIconForNotified(viewModel.notifyStoriesLiveData.value)
                 updateStateOfArticleOnServer()
                 setIconForSaved()
-                viewModel.getSources(story.storyId, story.events.last().eventId)
+
             }
         })
     }
@@ -317,6 +317,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         stories = viewModel.selectedStoryList.value!!
         if(stories!=null)
         story = stories.get(position)
+        viewModel.getSources(story.storyId, story.events.last().eventId)
 
         setIconForNotified(viewModel.notifyStoriesLiveData.value)
         setIconForSaved()

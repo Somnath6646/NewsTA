@@ -155,6 +155,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
     override fun onResume() {
         super.onResume()
+        
 
     }
 
@@ -292,6 +293,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
                 }
                 is DataState.Loading -> {
                     Log.i("TAG", "onActivityCreated: load horha hai sources ")
+
                 }
                 is DataState.Error -> {
                     Log.i("TAG", "onActivityCreated: error h bhai sources me")
@@ -330,6 +332,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
         }
 
         println("VIEWMODEL: $viewModel")
+        
 
         initViews()
         observer()
