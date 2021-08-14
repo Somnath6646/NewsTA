@@ -86,7 +86,7 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
 
     fun bind(story: Story, position: Int, stories: List<Story>) {
 
-        val events = story.events.sortedByDescending { events -> events.updatedAt }
+        val events = story.events.sortedByDescending { events -> events.eventId }
 
         val event = events.last()
 

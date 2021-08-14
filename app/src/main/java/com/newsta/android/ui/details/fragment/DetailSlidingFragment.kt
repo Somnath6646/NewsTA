@@ -277,7 +277,7 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
         showEventData(timelineEvent)
         event = timelineEvent
         binding.scrollView.smoothScrollTo(0, 0)
-
+        viewModel.getSources(story.storyId, event.eventId)
     }
 
 
