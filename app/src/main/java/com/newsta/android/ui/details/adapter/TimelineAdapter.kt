@@ -1,10 +1,12 @@
 package com.newsta.android.ui.details.adapter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.newsta.android.BuildConfig
 import com.newsta.android.R
 import com.newsta.android.databinding.ItemTimelineEventsBinding
 import com.newsta.android.utils.models.Event
@@ -69,6 +71,10 @@ class TimelineViewHolder(private val binding: ItemTimelineEventsBinding, private
             val date =
                 "${calendar.get(Calendar.DAY_OF_MONTH)} ${getMonth(calendar.get(Calendar.MONTH))}, ${calendar.get(Calendar.YEAR)}"
             binding.dateEventsTimeline.text = date
+        }
+
+        if(BuildConfig.DEBUG){
+            binding.dateEventsTimeline.text = binding.dateEventsTimeline.text.toString()+"\t" + event.eventId.toString()
         }
         
         if(pos == 0)

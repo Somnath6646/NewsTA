@@ -1,10 +1,8 @@
 package com.newsta.android.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.newsta.android.remote.data.Payload
 import com.newsta.android.utils.models.*
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StoriesDAO {

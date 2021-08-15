@@ -86,12 +86,11 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
 
     fun bind(story: Story, position: Int, stories: List<Story>) {
 
-        val events = story.events.sortedByDescending { events -> events.eventId }
-
-        val event = events.last()
+        story.events = story.events.sortedBy { it.createdAt }
+        val event =story.events.last()
 
         binding.title.text = event.title
-        binding.timeline.text = if (events.size > 1) "View timeline" else ""
+        binding.timeline.text = if (story.events.size > 1) "View timeline" else ""
         binding.time.text = NewstaApp.setTime(story.updatedAt)
         if (BuildConfig.DEBUG) {
             binding.time.text =

@@ -101,11 +101,14 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
                     binding.refreshLayout.isRefreshing = false
                     viewModel.changeDatabaseState(isDatabaseEmpty = false)
-                    println("STORIES BEFORE ADDING NEW STORIES ---> $stories")
+
                     stories.addAll(0, ArrayList(it.data))
-                    println("STORIES AFTER ADDING NEW STORIES ---> $stories")
+
+
                     val filteredStories =
                         stories.filter { story: Story -> story.category == categoryState }
+
+
                     if (filteredStories.isNullOrEmpty()) {
                         println("FILTERED STORIES MIN GHUS GAYA")
                         NewstaApp.is_database_empty = true
@@ -116,6 +119,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     println("FilteredStories  $filteredStories")
 
                     val stories = ArrayList<Story>(filteredStories)
+
                     stories.sortByDescending {
                             story ->  story.updatedAt
                     }
