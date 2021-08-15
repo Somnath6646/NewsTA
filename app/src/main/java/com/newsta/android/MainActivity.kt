@@ -205,6 +205,7 @@ class MainActivity : AppCompatActivity(){
         lateinit var minStory: Story
         lateinit var maxStory: MaxStoryAndUpdateTime
         var isConnectedToNetwork = true
+        var categoryState = 0
 
     }
 

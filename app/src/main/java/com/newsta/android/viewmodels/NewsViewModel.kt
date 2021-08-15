@@ -8,6 +8,9 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.newsta.android.MainActivity
+import com.newsta.android.MainActivity.Companion.categoryState
+import com.newsta.android.MainActivity.Companion.extras
+import com.newsta.android.MainActivity.Companion.maxStory
 import com.newsta.android.NewstaApp
 import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
@@ -30,6 +33,9 @@ constructor(private val newsRepository: StoriesRepository,
 
     @Bindable
     val searchTerm = MutableLiveData<String>("")
+
+    @Bindable
+    var refreshState = MutableLiveData<Boolean>(false)
 
     var urlToRequest: String = "http://13.235.50.53/"
 
@@ -71,6 +77,9 @@ constructor(private val newsRepository: StoriesRepository,
 
     private val _notifyStoriesLiveData = MutableLiveData<List<Payload>?>(arrayListOf())
     val notifyStoriesLiveData: LiveData<List<Payload>?> = _notifyStoriesLiveData
+
+    private val _storiesLiveData = MutableLiveData<Map<Int, List<Story>>>()
+    val storiesLiveData: MutableLiveData<Map<Int, List<Story>>> = _storiesLiveData
 
     private val _sourcesDataState = MutableLiveData<DataState<List<NewsSource>?>>()
     val sourcesDataState: LiveData<DataState<List<NewsSource>?>> = _sourcesDataState
@@ -158,6 +167,15 @@ constructor(private val newsRepository: StoriesRepository,
                         _newsDataState.value = it
                         when(it){
                             is DataState.Success -> {
+
+                                debugToast("newsDataState:  success")
+                                refreshState.value = false
+                                changeDatabaseState(isDatabaseEmpty = false)
+
+                                stories.addAll(0, ArrayList(it.data))
+
+                                _storiesLiveData.value = getMapOfStories()
+
                                 val list = arrayListOf<Payload>()
                                 val origList = notifyStoriesLiveData.value
                                 println("notifystory onupdate $origList")
@@ -175,6 +193,34 @@ constructor(private val newsRepository: StoriesRepository,
                                 }
                                 println("notifystory afterupdate $list")
                                 saveNotifyStories(list)
+
+                            }
+                            is DataState.Error -> {
+                                Log.i("newsDataState", "errror ${it.exception}")
+
+                                debugToast("newsDataState:  errror ${it.exception}")
+                                  refreshState.value = false
+                            }
+                            is DataState.Loading -> {
+                                Log.i("newsDataState", " loding")
+                                debugToast("newsDataState:  loading.....")
+                                  refreshState.value = true
+                            }
+                            is DataState.Extra -> {
+                                try {
+                                    if (it.data != null) {
+                                        maxStory = it.data
+                                        extras = arrayListOf(it.data)
+                                    }
+                                } catch (e: java.lang.Exception) {
+                                    debugToast("Min Max error")
+//                        Toast.makeText(requireContext(), "Min Max error", Toast.LENGTH_SHORT).show()
+                                    e.printStackTrace()
+                                }
+                                Log.i(
+                                    "newsDataState",
+                                    " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt} "
+                                )
                             }
                         }
                     }
@@ -183,10 +229,74 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
+    private fun getMapOfStories(): Map<Int, List<Story>> {
+        val categoryStories = mutableMapOf<Int, List<Story>>()
+        categoryLiveData.value?.forEach { category ->
+            val catStories = stories.filter { story -> story.category == category.categoryId }
+            categoryStories.put(category.categoryId, catStories)
+        }
+        return categoryStories
+    }
+
     fun getNewsFromDatabase() {
         viewModelScope.launch {
             newsRepository.getNewsFromDatabase().onEach {
-                      _dbNewsDataState.value = it
+                when (it) {
+                    is DataState.Success<List<Story>?> -> {
+                        Log.i("DBnewsDataState", " success")
+                        debugToast("dBnewsDataState: success")
+                       refreshState.value = false
+                        changeDatabaseState(isDatabaseEmpty = false)
+                        stories = ArrayList(it.data)
+
+                        _storiesLiveData.value = getMapOfStories()
+
+                        /*val filteredStories =
+                            stories.filter { story: Story -> story.category == categoryState }
+                        if (filteredStories.isNullOrEmpty()) {
+                            NewstaApp.is_database_empty = true
+                            viewModel.changeDatabaseState(true)
+                            viewModel.getNewsOnInit()
+                            NewstaApp.setIsDatabaseEmpty(true)
+                        }
+                        println("FilteredStories  $filteredStories")
+
+                        val stories = ArrayList<Story>(filteredStories)
+                        adapter.addAll(stories)*/
+                    }
+                    is DataState.Error -> {
+                        Log.i("dBnewsDataState", " errror ${it.exception}")
+                        debugToast("dBnewsDataState:  errror ${it.exception}")
+
+                       refreshState.value = false
+                    }
+                    is DataState.Loading -> {
+                        Log.i("dBnewsDataState", " loding")
+                        debugToast("dBnewsDataState: loading")
+
+                       refreshState.value = true
+                    }
+                    is DataState.Extra -> {
+                        try {
+                            println("EXTRA DB DATA ---> ${it.data}")
+                            if (it.data != null) {
+                                maxStory = it.data
+                                extras = arrayListOf(it.data)
+                                Log.i(
+                                    "newsDataState",
+                                    " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt}"
+                                )
+                                if(!isRefreshedByDefault) {
+                                    isRefreshedByDefault = true
+                                    getAllNews(maxStory.storyId, maxStory.updatedAt)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            debugToast("Min max error")
+                            e.printStackTrace()
+                        }
+                    }
+                }
             }.launchIn(viewModelScope)
         }
     }
@@ -290,7 +400,30 @@ constructor(private val newsRepository: StoriesRepository,
 
                 when(it){
                     is DataState.Success -> {
-                        val list = arrayListOf<Payload>()
+
+                        val updatedStories = it.data
+                        val allStories = stories.toMutableList()
+                        refreshState.value = false
+                        changeDatabaseState(isDatabaseEmpty = false)
+                        if(updatedStories!=null) {
+                            updatedStories.forEach {
+                                val indexOfUpdatedStory =
+                                    allStories.toList().getIndexByStoryId(it.storyId)
+                                if (indexOfUpdatedStory > -1) {
+                                    println("indexwala $indexOfUpdatedStory")
+                                    allStories.set(indexOfUpdatedStory, it)
+                                    println("indexwala ${allStories[indexOfUpdatedStory].events[0].title}")
+                                }
+
+                            }
+                        }
+
+                        if(allStories.isNotEmpty())
+                            stories = allStories as ArrayList<Story>
+
+                        _storiesLiveData.value = getMapOfStories()
+
+                            val list = arrayListOf<Payload>()
                         val origList = notifyStoriesLiveData.value
                         println("notifystory onupdate $origList")
                         if(origList != null){
@@ -307,6 +440,32 @@ constructor(private val newsRepository: StoriesRepository,
                         }
                         println("notifystory afterupdate $list")
                         saveNotifyStories(list)
+                    }
+                    is DataState.Error -> {
+                        Log.i("newsDataState", " errror ${it.exception}")
+                    }
+                    is DataState.Loading -> {
+                        Log.i("newsUpdateDataState", " loding")
+                        debugToast("newsUpdateDataState: loading")
+                    }
+                    is DataState.Extra -> {
+                        try {
+                            println("EXTRA DB DATA ---> ${it.data}")
+                            if (it.data != null)
+                                maxStory = it.data
+                            extras = arrayListOf(it.data)
+                            Log.i(
+                                "newsDataState",
+                                " EXTRA MAX ${maxStory.storyId} ${maxStory.updatedAt}"
+                            )
+                            if (!isRefreshedByDefault) {
+                                isRefreshedByDefault = true
+                                getAllNews(maxStory.storyId, maxStory.updatedAt)
+                            }
+                        } catch (e: Exception) {
+                            debugToast("Min max error")
+                            e.printStackTrace()
+                        }
                     }
                 }
 
@@ -587,6 +746,8 @@ constructor(private val newsRepository: StoriesRepository,
 
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
+
+    fun List<Story>.getIndexByStoryId(storyId: Int): Int = this.indexOf(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
 
     companion object {
         var stories = ArrayList<Story>()

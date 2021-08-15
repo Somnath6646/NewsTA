@@ -1,19 +1,16 @@
 package com.newsta.android.ui.landing.fragments
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.newsta.android.MainActivity
+import com.newsta.android.MainActivity.Companion.categoryState
 import com.newsta.android.MainActivity.Companion.extras
 import com.newsta.android.MainActivity.Companion.maxStory
-import com.newsta.android.MainActivity.Companion.minStory
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentStoriesDisplayBinding
@@ -21,14 +18,13 @@ import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.ARG_OBJECT
 import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.utils.helpers.OnDataSetChangedListener
-import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.MaxStoryAndUpdateTime
 import com.newsta.android.utils.models.Story
+import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.viewmodels.NewsViewModel.Companion.isRefreshedByDefault
 import com.newsta.android.viewmodels.NewsViewModel.Companion.stories
-import java.lang.Exception
 
 class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), OnDataSetChangedListener {
 
@@ -92,7 +88,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             viewModel.getMaxAndMinStory()
         })*/
 
-        viewModel.newsDataState.observe(requireActivity(), Observer {
+        /*viewModel.newsDataState.observe(requireActivity(), Observer {
             when (it) {
                 is DataState.Success<List<Story>?> -> {
                     Log.i("newsDataState", " success")
@@ -153,9 +149,9 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     )
                 }
             }
-        })
+        })*/
 
-        viewModel.dbNewsDataState.observe(requireActivity(), Observer {
+        /*viewModel.dbNewsDataState.observe(requireActivity(), Observer {
             when (it) {
                 is DataState.Success<List<Story>?> -> {
                     Log.i("DBnewsDataState", " success")
@@ -209,7 +205,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                     }
                 }
             }
-        })
+        })*/
 
         /*viewModel.dbNewsLiveData.observe(requireActivity(), Observer {
             if(!it.isNullOrEmpty()) {
@@ -237,7 +233,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             }
         })*/
 
-        viewModel.newsUpdateState.observeForever( Observer {
+        /*viewModel.newsUpdateState.observeForever( Observer {
 
             when (it) {
                 is DataState.Success<List<Story>?> -> {
@@ -301,7 +297,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
                 }
 
             }
-        })
+        })*/
 
         viewModel.minMaxStoryState.observe(requireActivity(), Observer {
 
@@ -336,18 +332,35 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
         })
 
+        getCategoryStories()
+
     }
 
-    fun List<Story>.getIndexByStoryId(storyId: Int): Int = this.indexOf(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
+    fun getCategoryStories() {
 
+        viewModel.storiesLiveData.observe(requireActivity(), Observer { storiesMap ->
+            val filteredStories = storiesMap[categoryState]
+            val stories = ArrayList<Story>(filteredStories?.toMutableList())
+            stories.sortByDescending { story ->
+                story.updatedAt
+            }
+            adapter.addAll(stories)
+        })
+
+    }
 
     override fun onResume() {
         super.onResume()
         Log.i("1TAG", "onResume: aya hai ")
+        println("CATEGORY STATE RESUME: $categoryState")
+        getCategoryStories()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
 
         setUpAdapter()
 
@@ -364,16 +377,21 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             categoryState = state
             viewModel.debugToast("CATEGORY STATE: $categoryState")
             println("CATEGORY STATE: $categoryState")
-            println("STORIES: $stories")
 
-            val filteredStories = stories.filter { story: Story -> story.category == state }
+//            println("STORIES: $stories")
 
-            val stories = ArrayList<Story>(filteredStories)
-            stories.sortByDescending { story ->
-                story.updatedAt
+            val filteredStories = stories.filter { story -> story.category == categoryState }
+//            println("FILTERED STORIES: $filteredStories")
+
+            if (!filteredStories.isNullOrEmpty()) {
+                val stories = ArrayList<Story>(filteredStories.toMutableList())
+                stories.sortByDescending { story ->
+                    story.updatedAt
+                }
+                adapter.clear()
+                adapter.addAll(stories)
             }
-            adapter.clear()
-            adapter.addAll(stories)
+
             viewModel.getMaxAndMinStory()
 
         }
@@ -387,10 +405,6 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
     override fun onDataSetChange(stories: List<Story>) {
         viewModel.setSelectedStoryList(stories)
-    }
-
-    companion object {
-        var categoryState = -1
     }
 
 }

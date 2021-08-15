@@ -26,6 +26,7 @@ import com.facebook.login.LoginManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.BuildConfig
+import com.newsta.android.MainActivity.Companion.categoryState
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
@@ -57,9 +58,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     private fun setUpAdapter() {
 
-
-
-
         adapter = ViewPagerAdapter(
             childFragmentManager, lifecycle
         )
@@ -69,6 +67,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
+        /*binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                categoryState =
+
+            }
+        })*/
 
     }
 
@@ -254,9 +259,6 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             getUserCategories()
         })
 
-
-
-
         viewModel.logoutDataState.observe(requireActivity(), Observer {
             it.getContentIfNotHandled().let {
                 when (it) {
@@ -364,6 +366,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
 
                 category = tab!!.position
+                categoryState = userCategories[tab.position].categoryId
 
                 println("TAB POSITION: $category")
 
@@ -415,6 +418,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
                 category = tab!!.position
+                categoryState = userCategories[tab.position].categoryId
 
                 println("TAB POSITION: $category")
 
