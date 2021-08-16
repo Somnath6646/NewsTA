@@ -11,8 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.newsta.android.MainActivity.Companion._categoryLiveData
-import com.newsta.android.MainActivity.Companion.categoryMutableLiveData
+import com.newsta.android.MainActivity.Companion.categoryState
 import com.newsta.android.MainActivity.Companion.extras
 import com.newsta.android.MainActivity.Companion.maxStory
 import com.newsta.android.R
@@ -340,46 +339,42 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
     fun getCategoryStories() {
 
         viewModel.storiesLiveData.observe(requireActivity(), Observer { storiesMap ->
-            _categoryLiveData.observe(requireActivity(), Observer { categoryState ->
-
-                println("21466 Filter b4 categ state: $categoryState")
+              println("21466 Filter b4 categ state: $categoryState")
                 val filteredStories = storiesMap[categoryState]
                 if(!filteredStories.isNullOrEmpty()){
                     val stories = ArrayList<Story>(filteredStories?.toMutableList())
                     adapter.addAll(stories)
                 }
-
-            })
         })
 
     }
 
     override fun onResume() {
         super.onResume()
-        println("21466 ovvver onResume catstate ${categoryMutableLiveData.value}")
+        println("21466 ovvver onResume catstate ${categoryState}")
         getCategoryStories()
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        println("21466 ovvver onViewStateRestored ${categoryMutableLiveData.value}")
+        println("21466 ovvver onViewStateRestored ${categoryState}")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        println("21466 ovvver onDestroy ${categoryMutableLiveData.value}")
+        println("21466 ovvver onDestroy ${categoryState}")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        println("21466 ovvver onViewCreated ${categoryMutableLiveData.value}")
+        println("21466 ovvver onViewCreated ${categoryState}")
 
     }
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        println("21466 ovvver onActivityCreated ${_categoryLiveData.value}")
+        println("21466 ovvver onActivityCreated ${categoryState}")
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = requireActivity()
@@ -398,11 +393,11 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
 
             println("21466 : state $state")
-            val filteredStories = viewModel.storiesLiveData.value?.get(categoryMutableLiveData.value)
-            if(!filteredStories.isNullOrEmpty()){
-              val stories = ArrayList<Story>(filteredStories?.toMutableList())
-              adapter.addAll(stories)
-            }
+//            val filteredStories = viewModel.storiesLiveData.value?.get(categoryState)
+//            if(!filteredStories.isNullOrEmpty()){
+//              val stories = ArrayList<Story>(filteredStories?.toMutableList())
+//              adapter.addAll(stories)
+//            }
 
         }
 

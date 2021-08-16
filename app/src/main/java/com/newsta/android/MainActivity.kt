@@ -204,9 +204,7 @@ class MainActivity : AppCompatActivity(){
         lateinit var minStory: Story
         lateinit var maxStory: MaxStoryAndUpdateTime
         var isConnectedToNetwork = true
-        var categoryMutableLiveData: MutableLiveData<Int> = MutableLiveData(0)
-        var _categoryLiveData: LiveData<Int> = categoryMutableLiveData.distinctUntilChanged()
-        get() = categoryMutableLiveData.distinctUntilChanged()
+        var categoryState:Int = 0
 
     }
 

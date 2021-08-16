@@ -25,7 +25,7 @@ import com.facebook.login.LoginManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.BuildConfig
-import com.newsta.android.MainActivity.Companion.categoryMutableLiveData
+import com.newsta.android.MainActivity.Companion.categoryState
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
@@ -70,7 +70,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 println("21466 PAGER: $position")
-                categoryMutableLiveData.value = position
+                categoryState = position
 
             }
         })
@@ -366,7 +366,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
 
                 tabPosition = tab!!.position
-                categoryMutableLiveData.value = userCategories[tab.position].categoryId
+                categoryState = userCategories[tab.position].categoryId
 
                 println("21466 TAB: $tabPosition")
 
@@ -418,7 +418,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
                 tabPosition = tab!!.position
-                categoryMutableLiveData.value = userCategories[tab.position].categoryId
+                categoryState = userCategories[tab.position].categoryId
 
                 println("21466 TAB: $tabPosition")
 
