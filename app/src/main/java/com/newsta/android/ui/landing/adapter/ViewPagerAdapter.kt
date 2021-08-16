@@ -11,7 +11,7 @@ import com.newsta.android.utils.models.Category
 
 const val ARG_OBJECT = "object"
 
-class ViewPagerAdapter(fragmentActivity: FragmentActivity ) : FragmentStateAdapter(fragmentActivity) {
+class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     val categories : ArrayList<Category> = arrayListOf()
 

@@ -2,8 +2,10 @@ package com.newsta.android.ui.landing.fragments
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -34,14 +36,15 @@ import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.remote.data.ArticleState
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.landing.adapter.ViewPagerAdapter
-import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.Category
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.UserPreferences
+import com.newsta.android.viewmodels.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_landing.*
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 @AndroidEntryPoint
 class LandingFragment : BaseFragment<FragmentLandingBinding>() {
@@ -58,7 +61,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private fun setUpAdapter() {
 
         adapter = ViewPagerAdapter(
-            fragmentActivity = requireActivity()
+            childFragmentManager, lifecycle
         )
 
         println("PAGER ADAPTER ---> $adapter")
@@ -66,11 +69,11 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
-        binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+        binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 println("21466 PAGER: $position")
-                categoryState = position
+                categoryState = userCategories[position].categoryId
 
             }
         })
@@ -139,6 +142,16 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     true
                 }
 
+                R.id.share -> {
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+                    intent.putExtra(Intent.EXTRA_TEXT, "This link is of a news App where you get Short, Factual and Connected news stories, its called Newsta. Download Newsta App  https://play.google.com/store/apps/details?id=com.newsta.android")
+                    intent.type = "text/*"
+                    startActivity(Intent.createChooser(intent, "Share app"))
+                    true
+                }
+
                 else -> {
                     false
                 }
@@ -157,13 +170,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private fun getUserCategories() {
         viewModel.userCategoryLiveData.observe(requireActivity(), Observer {
 
-                val userCats = it
+            val userCats = it
             println("aya hai t $userCats")
             println("aya hai t $rawCategories")
             println("seq usercategoryLiveData")
-                createUserCategories(userCats)
-                Log.i("Categories", "RAW  $rawCategories")
-                Log.i("Categories", "USER  $userCats")
+            createUserCategories(userCats)
+            Log.i("Categories", "RAW  $rawCategories")
+            Log.i("Categories", "USER  $userCats")
             println(userCategories)
 
 
@@ -192,7 +205,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         } else {
             rawCategories
         }
-            println("aya hai"+"$isSame ${userCategories}")
+            println("aya hai" + "$isSame ${userCategories}")
 
             println("seq setCategores in adapter and setUpTablayout")
 
@@ -231,17 +244,17 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         setUpAdapter()
 
-        viewModel.notifyStoriesLiveData.observe(requireActivity(), Observer {payloads ->
+        viewModel.notifyStoriesLiveData.observe(requireActivity(), Observer { payloads ->
             var count = 0
-            if(payloads !=null){
+            if (payloads != null) {
                 payloads.forEach {
-                    if(it.read == ArticleState.UNREAD){
+                    if (it.read == ArticleState.UNREAD) {
                         count++
                     }
                 }
-                if(count <1){
+                if (count < 1) {
                     binding.notifyNumberTextContainer.visibility = View.INVISIBLE
-                }else{
+                } else {
                     binding.notifyNumberTextContainer.visibility = View.VISIBLE
                     binding.notifyNumberText.text = "$count"
                 }
@@ -251,7 +264,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         })
 
         viewModel.categoryLiveData.observe(requireActivity(), Observer {
-               //setUpTabLayout(categories)
+            //setUpTabLayout(categories)
 //                if(categories.isNullOrEmpty()) {
             println("seq categoryLiveData")
             rawCategories = it as ArrayList<Category>
@@ -312,9 +325,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         viewModel.debugToast.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
-                if (it != null){
+                if (it != null) {
 
-                    if(BuildConfig.DEBUG){
+                    if (BuildConfig.DEBUG) {
                         Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                     }
                 }

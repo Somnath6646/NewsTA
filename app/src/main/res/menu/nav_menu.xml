@@ -20,6 +20,10 @@
                 app:actionLayout="@layout/mode_switch" />
 
             <item
+                android:id="@+id/share"
+                android:title="Share" />
+
+            <item
                 android:id="@+id/log_out"
                 android:title="Log out" />
 
