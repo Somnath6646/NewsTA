@@ -100,7 +100,7 @@ class StoriesRepository(
             println("CACHED STORIES ---> $cachedStories")
             emit(DataState.Success(cachedStories))
             println("EMITTED CACHED STORIES")
-            val maxStory = storiesDao.getMaxStory()
+            val maxStory = storiesDao.getMaxStory(System.currentTimeMillis())
             emit(DataState.Extra(maxStory))
 
         } catch (e: Exception) {
@@ -153,7 +153,7 @@ class StoriesRepository(
             println("INSERTED LONG: $isInserted")
             println("INSERTED LONG: ${isInserted[0]}")
             if (isInserted[0] > 0) {
-                val maxStory = storiesDao.getMaxStory()
+                val maxStory = storiesDao.getMaxStory(System.currentTimeMillis())
                 emit(DataState.Extra(maxStory))
             }
             if (remoteNewsResponse.statusCode == 200)
@@ -196,7 +196,7 @@ class StoriesRepository(
                 val stories = updateResponse.data
                 storiesDao.insertStories(stories)
                 emit(DataState.Success(stories)).let {
-                    val maxStory = storiesDao.getMaxStory()
+                    val maxStory = storiesDao.getMaxStory(System.currentTimeMillis())
                     emit(DataState.Extra(maxStory))
                 }
 
@@ -212,16 +212,13 @@ class StoriesRepository(
         }
 
     suspend fun getMaxAndMinStory(): Flow<DataState<MaxStoryAndUpdateTime>> = flow {
-
         emit(DataState.Loading)
-
         try {
-            val maxStory = storiesDao.getMaxStory()
+            val maxStory = storiesDao.getMaxStory(System.currentTimeMillis())
             emit(DataState.Success(maxStory))
         } catch (e: Exception) {
             println("ERROR IN FETCHING EXTRAS")
         }
-
     }
 
     suspend fun getSources(sourceRequest: NewsSourceRequest): Flow<DataState<List<NewsSource>?>> =

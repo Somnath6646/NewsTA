@@ -20,8 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.hilt.work.HiltWorkerFactory
-import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.*
@@ -205,7 +204,9 @@ class MainActivity : AppCompatActivity(){
         lateinit var minStory: Story
         lateinit var maxStory: MaxStoryAndUpdateTime
         var isConnectedToNetwork = true
-        var categoryState = 0
+        var categoryMutableLiveData: MutableLiveData<Int> = MutableLiveData(0)
+        var _categoryLiveData: LiveData<Int> = categoryMutableLiveData.distinctUntilChanged()
+        get() = categoryMutableLiveData.distinctUntilChanged()
 
     }
 

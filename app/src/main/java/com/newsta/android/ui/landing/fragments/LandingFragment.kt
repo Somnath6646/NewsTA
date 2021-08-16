@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
@@ -26,7 +25,7 @@ import com.facebook.login.LoginManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.BuildConfig
-import com.newsta.android.MainActivity.Companion.categoryState
+import com.newsta.android.MainActivity.Companion.categoryMutableLiveData
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
@@ -52,14 +51,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private var rawCategories: ArrayList<Category> = ArrayList()
     private var userCategories: ArrayList<Category> = ArrayList()
     private lateinit var userPreferences: UserPreferences
-    private var category = 0
+    private var tabPosition = 0
     private lateinit var adapter: ViewPagerAdapter
     private var isAppJustOpened = true
 
     private fun setUpAdapter() {
 
         adapter = ViewPagerAdapter(
-            childFragmentManager, lifecycle
+            fragmentActivity = requireActivity()
         )
 
         println("PAGER ADAPTER ---> $adapter")
@@ -67,13 +66,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         binding.pager.adapter = adapter
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
-        /*binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+        binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                categoryState =
+                println("21466 PAGER: $position")
+                categoryMutableLiveData.value = position
 
             }
-        })*/
+        })
 
     }
 
@@ -343,7 +343,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                 tab.customView = when (position) {
                     0 -> {
-                        if (category == 0) {
+                        if (tabPosition == 0) {
                             addCustomView(
                                 userCategories[position].category.capitalize(Locale.ROOT), 16f,
                                 Color.WHITE
@@ -365,14 +365,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
 
-                category = tab!!.position
-                categoryState = userCategories[tab.position].categoryId
+                tabPosition = tab!!.position
+                categoryMutableLiveData.value = userCategories[tab.position].categoryId
 
-                println("TAB POSITION: $category")
+                println("21466 TAB: $tabPosition")
 
 
-                binding.tabLayout.setScrollPosition(category, 0f, true)
-                binding.pager.currentItem = category
+                binding.tabLayout.setScrollPosition(tabPosition, 0f, true)
+                binding.pager.currentItem = tabPosition
 
                 tab.view.children.forEach {
                     if (it is LinearLayout) {
@@ -417,13 +417,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
-                category = tab!!.position
-                categoryState = userCategories[tab.position].categoryId
+                tabPosition = tab!!.position
+                categoryMutableLiveData.value = userCategories[tab.position].categoryId
 
-                println("TAB POSITION: $category")
+                println("21466 TAB: $tabPosition")
 
-                binding.tabLayout.setScrollPosition(category, 0f, true)
-                binding.pager.currentItem = category
+                binding.tabLayout.setScrollPosition(tabPosition, 0f, true)
+                binding.pager.currentItem = tabPosition
 
                 tab.view.children.forEach {
                     if (it is LinearLayout) {
@@ -493,7 +493,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
     override fun onResume() {
         print("RESUMED")
-        val tab = binding.tabLayout.getTabAt(category)
+        val tab = binding.tabLayout.getTabAt(tabPosition)
         tab?.select()
         super.onResume()
     }

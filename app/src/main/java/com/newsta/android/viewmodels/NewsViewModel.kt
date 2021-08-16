@@ -8,7 +8,6 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.newsta.android.MainActivity
-import com.newsta.android.MainActivity.Companion.categoryState
 import com.newsta.android.MainActivity.Companion.extras
 import com.newsta.android.MainActivity.Companion.maxStory
 import com.newsta.android.NewstaApp
@@ -79,7 +78,7 @@ constructor(private val newsRepository: StoriesRepository,
     val notifyStoriesLiveData: LiveData<List<Payload>?> = _notifyStoriesLiveData
 
     private val _storiesLiveData = MutableLiveData<Map<Int, List<Story>>>()
-    val storiesLiveData: MutableLiveData<Map<Int, List<Story>>> = _storiesLiveData
+    val storiesLiveData: LiveData<Map<Int, List<Story>>> = _storiesLiveData.distinctUntilChanged()
 
     private val _sourcesDataState = MutableLiveData<DataState<List<NewsSource>?>>()
     val sourcesDataState: LiveData<DataState<List<NewsSource>?>> = _sourcesDataState
@@ -154,6 +153,7 @@ constructor(private val newsRepository: StoriesRepository,
         println("GET ALL NEWS MEIN AAYA")
 
         viewModelScope.launch {
+
             val maxDateTime  = getMaxDate(maxDateTime)
                 val request = NewsRequest(
                     NewstaApp.access_token!!,
@@ -162,6 +162,7 @@ constructor(private val newsRepository: StoriesRepository,
                     maxDateTime
                 )
                 debugToast("storyId : ${storyId} \n maxDateTime: ${maxDateTime} ")
+
                 newsRepository.getAllStories(newsRequest = request, isRefresh = isRefresh)
                     .onEach {
                         _newsDataState.value = it
@@ -232,7 +233,10 @@ constructor(private val newsRepository: StoriesRepository,
     private fun getMapOfStories(): Map<Int, List<Story>> {
         val categoryStories = mutableMapOf<Int, List<Story>>()
         categoryLiveData.value?.forEach { category ->
-            val catStories = stories.filter { story -> story.category == category.categoryId }
+            var catStories = stories.filter { story -> story.category == category.categoryId }
+            catStories = catStories.sortedByDescending {
+                it.updatedAt
+            }
             categoryStories.put(category.categoryId, catStories)
         }
         return categoryStories
@@ -413,6 +417,8 @@ constructor(private val newsRepository: StoriesRepository,
                                     println("indexwala $indexOfUpdatedStory")
                                     allStories.set(indexOfUpdatedStory, it)
                                     println("indexwala ${allStories[indexOfUpdatedStory].events[0].title}")
+                                }else{
+                                    allStories.add(0, it)
                                 }
 
                             }
@@ -442,13 +448,16 @@ constructor(private val newsRepository: StoriesRepository,
                         saveNotifyStories(list)
                     }
                     is DataState.Error -> {
+                        refreshState.value = false
                         Log.i("newsDataState", " errror ${it.exception}")
                     }
                     is DataState.Loading -> {
+                        refreshState.value = true
                         Log.i("newsUpdateDataState", " loding")
                         debugToast("newsUpdateDataState: loading")
                     }
                     is DataState.Extra -> {
+                        refreshState.value = false
                         try {
                             println("EXTRA DB DATA ---> ${it.data}")
                             if (it.data != null)
@@ -686,6 +695,7 @@ constructor(private val newsRepository: StoriesRepository,
     val userNotifyStorySaveDataState: LiveData<DataState<List<Payload>?>> = _userNotifyStorySaveDataState
 
     fun saveNotifyStories(notifyStories: ArrayList<Payload>) {
+        if(notifyStoriesLiveData.value?.let { notifyStories.containsAll(it) } == false){
         if(MainActivity.isConnectedToNetwork) {
             viewModelScope.launch {
                 newsRepository.saveNotifyStoriesInServer(notifyStories).onEach {
@@ -706,7 +716,7 @@ constructor(private val newsRepository: StoriesRepository,
             }
         } else {
             toast("Please connect to network to save changes.")
-        }
+        }}
     }
 
     fun setUserPreferencesState(userPreferences: UserPreferences) {
@@ -734,7 +744,9 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun getMaxDate(maxDateTime: Long): String {
+    private fun getMaxDate(_maxDateTime: Long): String {
+        var maxDateTime =  _maxDateTime
+
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val dateIst = sdf.format(maxDateTime)
         sdf.timeZone = TimeZone.getTimeZone("UTC")

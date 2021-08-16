@@ -14,7 +14,6 @@ import com.newsta.android.utils.models.Story
 import com.newsta.android.BuildConfig
 import com.squareup.picasso.Picasso
 
-private var category = 0
 
 class NewsAdapter(private val onClick: (Int, List<Story>) -> Unit) : RecyclerView.Adapter<NewsViewHolder>() {
 
@@ -44,9 +43,6 @@ class NewsAdapter(private val onClick: (Int, List<Story>) -> Unit) : RecyclerVie
     fun addAll(storiesList: ArrayList<Story>) {
         stories.clear()
         stories.addAll(storiesList)
-        stories.sortByDescending {
-                story ->  story.updatedAt
-        }
         stories = ArrayList(stories.distinct())
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
