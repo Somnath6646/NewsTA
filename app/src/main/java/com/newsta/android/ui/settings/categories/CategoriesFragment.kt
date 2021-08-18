@@ -160,6 +160,7 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
                         Snackbar.make(binding.root, "Categories preferences saved.", Snackbar.LENGTH_SHORT).show()
                     else
                         Snackbar.make(binding.root, "You need to save at least one category.", Snackbar.LENGTH_SHORT).show()
+                    hideSaveButton()
                     println("CATEGORIES ---> $categories")
                 }
                 is DataState.Error -> {
@@ -252,6 +253,11 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
     private fun showSaveButton() {
         hasChanged = true
         binding.btnSave.visibility = View.VISIBLE
+    }
+
+    private fun hideSaveButton() {
+        hasChanged = false
+        binding.btnSave.visibility = View.GONE
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_categories
