@@ -60,7 +60,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
     private fun setUpAdapter() {
 
         adapter = ViewPagerAdapter(
-            fragmentActivity = requireActivity()
+            childFragmentManager, lifecycle
         )
 
         println("PAGER ADAPTER ---> $adapter")
