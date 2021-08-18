@@ -205,7 +205,6 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
     private fun setUpCategoriesAdapter() {
 
         println("Adapter\nCATEGORIES ---> $categories\nUSER CATEGORIES ---$userCategories")
-
         categoriesAdapter = CategoriesAdapter({ viewHolder -> startDragging(viewHolder) },
             { category, isRemoved -> onCategoryChange(category, isRemoved) },
             { from, to -> onCategoryPositionChange(from, to) })
