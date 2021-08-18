@@ -78,7 +78,7 @@ constructor(private val newsRepository: StoriesRepository,
     val notifyStoriesLiveData: LiveData<List<Payload>?> = _notifyStoriesLiveData
 
     private val _storiesLiveData = MutableLiveData<Map<Int, List<Story>>>()
-    val storiesLiveData: LiveData<Map<Int, List<Story>>> = _storiesLiveData.distinctUntilChanged()
+    val storiesLiveData: LiveData<Map<Int, List<Story>>> = _storiesLiveData
 
     private val _sourcesDataState = MutableLiveData<DataState<List<NewsSource>?>>()
     val sourcesDataState: LiveData<DataState<List<NewsSource>?>> = _sourcesDataState
@@ -418,7 +418,7 @@ constructor(private val newsRepository: StoriesRepository,
                                     allStories.set(indexOfUpdatedStory, it)
                                     println("indexwala ${allStories[indexOfUpdatedStory].events[0].title}")
                                 }else{
-                                    allStories.add(0, it)
+                                    allStories.add( it)
                                 }
 
                             }

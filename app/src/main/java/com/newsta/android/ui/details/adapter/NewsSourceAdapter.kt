@@ -36,8 +36,12 @@ class NewsSourceAdapter(private val onClick: (NewsSource) -> Unit) : RecyclerVie
         holder.bind(sources[position])
     }
 
-    fun addAll(sourcesResponse: ArrayList<NewsSource>): Boolean {
+    fun addAll(_sourcesResponse: ArrayList<NewsSource>): Boolean {
+        var sourcesResponse = _sourcesResponse
         sourcesResponse.distinct()
+        sourcesResponse.sortBy {
+            it.createdAt
+        }
         sources.clear()
         sources.addAll(sourcesResponse)
         notifyDataSetChanged()

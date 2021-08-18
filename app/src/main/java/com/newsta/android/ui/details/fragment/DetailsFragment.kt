@@ -345,9 +345,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         }
         val intent = Intent(Intent.ACTION_SEND)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.type = "image/jpeg"
-        intent.putExtra(Intent.EXTRA_STREAM, imageUri)
 
+        intent.putExtra(Intent.EXTRA_STREAM, imageUri)
+        intent.putExtra(Intent.EXTRA_TEXT, "Get more such content by downloading Newsta App https://play.google.com/store/apps/details?id=com.newsta.android")
+        intent.type = "image/jpeg"
         startActivity(Intent.createChooser(intent, "Share the whole pic of news"))
     }
 

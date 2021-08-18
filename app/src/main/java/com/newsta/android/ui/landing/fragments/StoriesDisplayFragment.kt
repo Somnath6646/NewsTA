@@ -374,7 +374,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        println("21466 ovvver onActivityCreated ${categoryState}")
+        println(" 21466 ovvver onActivityCreated ${categoryState}")
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = requireActivity()
@@ -393,11 +393,6 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
 
             println("21466 : state $state")
-//            val filteredStories = viewModel.storiesLiveData.value?.get(categoryState)
-//            if(!filteredStories.isNullOrEmpty()){
-//              val stories = ArrayList<Story>(filteredStories?.toMutableList())
-//              adapter.addAll(stories)
-//            }
 
         }
 
