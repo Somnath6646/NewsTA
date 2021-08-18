@@ -2,6 +2,7 @@ package com.newsta.android.ui.settings.categories
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentCategoriesBinding
 import com.newsta.android.ui.base.BaseFragment
@@ -26,6 +28,7 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
     private lateinit var categories: ArrayList<Category>
     private var userCategories: ArrayList<UserCategory> = arrayListOf()
     private lateinit var userCategoryIds: List<Int>
+    private var hasChanged = false
     private val itemTouchHelper by lazy {
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(
             UP or
@@ -153,6 +156,10 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
                     Log.i("TAG", "onActivityCreated: UserCategoryDatState Success ON SAVE ---> ${it.data}")
                     val userPref = it.data
                     viewModel.setUserCategoryLiveData(userPref as ArrayList<Int>)
+                    if(userPref.size > 0)
+                        Snackbar.make(binding.root, "Categories preferences saved.", Snackbar.LENGTH_SHORT).show()
+                    else
+                        Snackbar.make(binding.root, "You need to save at least one category.", Snackbar.LENGTH_SHORT).show()
                     println("CATEGORIES ---> $categories")
                 }
                 is DataState.Error -> {
@@ -188,7 +195,7 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
 
         binding.back.setOnClickListener { findNavController().popBackStack() }
 
-        binding.save.setOnClickListener {
+        binding.btnSave.setOnClickListener {
             println("SAVING PREF")
             saveUserCategories()
         }
@@ -215,6 +222,7 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
         userCategoriesToUserPreferences()
         println("USER CATEGORY AFTER REMOVAL ---> $userCategories")
         println("USER CATEGORY PREF AFTER REMOVAL ---> ${userCategoryIds}")
+        showSaveButton()
     }
 
     private fun onCategoryPositionChange(from: Int, to:Int) {
@@ -224,6 +232,7 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
         userCategoriesToUserPreferences()
         println("USER CATEGORY AFTER REORDER ---> $userCategories")
         println("USER CATEGORY PREF AFTER REMOVAL ---> ${userCategoryIds}")
+        showSaveButton()
     }
 
     private fun userCategoriesToUserPreferences() {
@@ -238,6 +247,12 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
 
     private fun startDragging(viewHolder: RecyclerView.ViewHolder) {
         itemTouchHelper.startDrag(viewHolder)
+        showSaveButton()
+    }
+
+    private fun showSaveButton() {
+        hasChanged = true
+        binding.btnSave.visibility = View.VISIBLE
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_categories

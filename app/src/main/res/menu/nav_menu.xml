@@ -20,6 +20,14 @@
                 app:actionLayout="@layout/mode_switch" />
 
             <item
+                android:id="@+id/privacy_policy"
+                android:title="Privacy Policy" />
+
+            <item
+                android:id="@+id/contact"
+                android:title="Contact" />
+
+            <item
                 android:id="@+id/log_out"
                 android:title="Log out" />
 

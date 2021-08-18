@@ -43,9 +43,9 @@
 
     <style name="Ctabuttontextstyle">
         <item name="fontFamily">@font/bold</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">14dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textAlignment">center</item>
     </style>

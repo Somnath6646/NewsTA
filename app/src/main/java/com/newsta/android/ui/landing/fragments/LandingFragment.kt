@@ -2,8 +2,10 @@ package com.newsta.android.ui.landing.fragments
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -70,13 +72,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 println("21466 PAGER: $position")
-                categoryState = position
+                categoryState = userCategories[position].categoryId
 
             }
         })
 
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     private fun setUpNavigationDrawer() {
 
         binding.navDrawer.setOnClickListener {
@@ -136,6 +139,24 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 R.id.settings -> {
                     findNavController().navigate(R.id.action_landingFragment_to_settingsFragment)
                     closeNavigationDrawer()
+                    true
+                }
+
+                R.id.privacy_policy -> {
+                    val url = "http://www.newsta.in/privacy"
+                    val webpage: Uri = Uri.parse(url)
+                    val intent = Intent(Intent.ACTION_VIEW, webpage)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.contact -> {
+                    val addresses = arrayOf("contact@newsta.in")
+                    val intent = Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("mailto:") // only email apps should handle this
+                        putExtra(Intent.EXTRA_EMAIL, addresses)
+                    }
+                    startActivity(intent)
                     true
                 }
 

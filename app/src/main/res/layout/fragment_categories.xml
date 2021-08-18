@@ -80,16 +80,6 @@
             app:layout_constraintEnd_toStartOf="@id/end_guideline"
             app:layout_constraintTop_toBottomOf="@id/top_guideline" />
 
-        <ImageView
-            android:id="@+id/save"
-            style="@style/Rippleeffect"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_downlaod"
-            app:layout_constraintBottom_toTopOf="@id/nav_guideline"
-            app:layout_constraintEnd_toStartOf="@id/end_guideline"
-            app:layout_constraintTop_toBottomOf="@id/top_guideline" />
-
         <TextView
             android:id="@+id/category_info"
             android:layout_width="0dp"
@@ -110,8 +100,27 @@
             app:layout_constraintStart_toEndOf="@id/start_guideline"
             app:layout_constraintEnd_toStartOf="@id/end_guideline"
             app:layout_constraintTop_toBottomOf="@id/category_info"
+            app:layout_constraintBottom_toTopOf="@id/btn_save"
+            android:layout_marginVertical="14dp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btn_save"
+            style="@style/Ctabutton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="14dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone">
+            <TextView
+                style="@style/Ctabuttontextstyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Save"/>
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
