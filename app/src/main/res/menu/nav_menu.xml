@@ -25,7 +25,8 @@
 
             <item
                 android:id="@+id/contact"
-                android:title="Contact" />
+                android:title="Contact Us"
+                app:actionLayout="@layout/email_id_layout" />
 
             <item
                 android:id="@+id/log_out"

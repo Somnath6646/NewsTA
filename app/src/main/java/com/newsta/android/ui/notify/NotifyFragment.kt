@@ -6,10 +6,9 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
@@ -27,16 +26,13 @@ import com.newsta.android.remote.data.ArticleState
 import com.newsta.android.remote.data.Payload
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.notify.adapter.NotifyStoriesAdapter
-import com.newsta.android.ui.saved.adapter.SavedStoryAdapter
 import com.newsta.android.utils.MyItemKeyProvider
 import com.newsta.android.utils.NotifyStoryItemDetailsLookup
-import com.newsta.android.utils.SavedStoryItemDetailsLookup
 import com.newsta.android.utils.helpers.OnDataSetChangedListener
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
 import com.newsta.android.viewmodels.NewsViewModel
-import kotlinx.android.synthetic.main.fragment_categories.*
 
 
 class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedListener {
@@ -45,10 +41,18 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
     private var tracker: SelectionTracker<Long>? = null
 
     private lateinit var adapter: NotifyStoriesAdapter
-    private var notifyStories = ArrayList<SavedStory>()
+
 
     private fun setUpAdapter() {
-        adapter = NotifyStoriesAdapter({ position: Int-> openDetails(position) })
+        adapter = NotifyStoriesAdapter { storyId: Int ->
+            viewModel.notifyStoriesLiveData.value?.let {it1 ->
+
+                openDetails(
+
+                    it1.indexOf(Payload(0, storyId))
+                )
+            }
+        }
         adapter.setDataSetChangeListener(this)
         binding.recyclerView.adapter = adapter
         initTracker()
@@ -119,7 +123,7 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
         binding.deleteNumberText.text = selection.size().toString()
         binding.deleteCardContainer.setOnClickListener {
             val list = selection.map {
-                notifyStories.get(it.toInt())
+                viewModel.notifyStories.get(it.toInt())
             }
 
             showDeleteDialog(list)
@@ -132,7 +136,7 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
     private fun openDetails(position: Int) {
         val detailsPageData = DetailsPageData(position)
         val bundle = bundleOf("data" to detailsPageData)
-        updateStateOfArticleOnServer(position, notifyStories.get(position), ArticleState.READ)
+        Log.i("12246 notifyStoryList", "${viewModel.notifyStories.get(position).events.last().title}")
         findNavController().navigate(R.id.action_notifyFragment_to_detailsFragment, bundle)
     }
 
@@ -183,41 +187,46 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
             println("notifystory list is null")
         }
 
-        viewModel.saveNotifyStories(notifyStoryIds as ArrayList<Payload>)
+        viewModel.saveNotifyStories(notifyStoryIds as ArrayList<Payload>, "add stories updateNotifyStoryOnServer")
 
     }
 
     private fun updateStateOfArticleOnServer(position: Int, savedStory: SavedStory, state: Int){
         updateNotifyStoryOnServer(state, listOf(savedStory)) { notifyStoryIds, payloadList ->
-            notifyStoryIds.set(position, payloadList[0])
+            Log.i("12246 notifyStoryIds", "$notifyStoryIds")
+            notifyStoryIds.set(notifyStoryIds.indexOf(Payload(0, savedStory.storyId)), payloadList[0])
             notifyStoryIds
         }
     }
 
     private fun deleteFromServerandLocaldb(toDeleteList: List<SavedStory>, action: () -> Unit){
-        updateNotifyStoryOnServer(ArticleState.READ, toDeleteList, { notifyStoryIds, payloadList ->
+        updateNotifyStoryOnServer(ArticleState.READ, toDeleteList) { notifyStoryIds, payloadList ->
             notifyStoryIds.removeAll(payloadList)
             notifyStoryIds
-        })
+        }
     }
 
     private fun observer(){
-        viewModel.notifyStoriesLiveData.observe(viewLifecycleOwner, Observer {payloads ->
-            if(payloads != null) {
-                var payloads2 = payloads
-                val list = arrayListOf<Int>()
-                payloads2 = payloads2.sortedBy {
-                    it.storyId
-                }
-                payloads2.forEach {
+        viewModel.notifyStoriesLiveData.observe(requireActivity(), Observer {payloads ->
+           if(payloads != null) {
+
+                var list = arrayListOf<Int>()
+                payloads.forEach {
                     list.add(it.storyId)
                 }
+               println("12245 notify ${viewModel.notifyStories != list} notifystories ${viewModel.notifyStories} \n payloads ${payloads}")
+
+               if(!viewModel.notifyStories.equals(list)){
+                if(!list.isNullOrEmpty())
+                list = ArrayList(list.distinct())
+                println("12245 notify id list to fetch ${viewModel.notifyStories != payloads}"+ "$list")
+
                     viewModel.getStoriesByIds(list) {
 
-                        notifyStories = it
-                        adapter.addAll(notifyStories, ArrayList(payloads2))
+                        viewModel.notifyStories = it
+                        adapter.addAll(viewModel.notifyStories, ArrayList(payloads))
                     }
-
+}
 
             }
 

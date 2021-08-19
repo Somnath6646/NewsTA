@@ -1,6 +1,7 @@
 package com.newsta.android.ui.notify.adapter
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,15 +58,21 @@ class NotifyStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Ad
     }
 
     fun addAll(storiesResponse: ArrayList<SavedStory>, payloads: ArrayList<Payload>) {
+        if(!stories.equals(storiesResponse.distinct())){
         stories.clear()
         this.payloads.clear()
-        this.payloads.addAll(payloads)
-        stories.addAll(storiesResponse)
-        stories = stories.distinct().toMutableList() as ArrayList<SavedStory>
+        this.payloads.addAll(payloads.distinct())
+        stories.addAll(storiesResponse.distinct())
+        if(!stories.isNullOrEmpty())
+        stories = ArrayList(stories.distinctBy { it.storyId })
+        Log.i("12246 list size", "${stories.size}")
         println("LIST SIZE ${stories.size}")
         notifyDataSetChanged()
 
-        onDataSetChangeListener.onDataSetChange(stories = convertStoryType(stories))
+        onDataSetChangeListener.onDataSetChange(stories = convertStoryType(stories))}
+        else{
+            Log.i("12245 notify id list", "not added")
+        }
     }
 
     fun convertStoryType(stories: List<SavedStory>): ArrayList<Story>{
@@ -105,7 +112,9 @@ class NotifyStoriesViewHolder(private val binding: NewsItemBinding, private val 
             .load(event.imgUrl)
             .into(binding.image)
 
-        binding.root.setOnClickListener { onClick(position) }
+        binding.root.setOnClickListener {
+            Log.i("12246 indexOut", "$position")
+            onClick(story.storyId) }
 
         val checkLayout = binding.checkLayout
 

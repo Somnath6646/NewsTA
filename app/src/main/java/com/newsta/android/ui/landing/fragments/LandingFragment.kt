@@ -146,7 +146,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     val url = "http://www.newsta.in/privacy"
                     val webpage: Uri = Uri.parse(url)
                     val intent = Intent(Intent.ACTION_VIEW, webpage)
-                    startActivity(intent)
+                    startActivity(Intent.createChooser(intent, "Contact us - contact@newsta.in"))
                     true
                 }
 

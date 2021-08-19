@@ -108,32 +108,35 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     }
 
-    private fun updateNotifyStoryOnServer(notifyStories: List<Payload>){
+    private fun updateNotifyStoryOnServer(notifyStories: List<Payload>, from: String){
 
-        viewModel.saveNotifyStories(notifyStories as ArrayList<Payload>)
+        viewModel.saveNotifyStories(notifyStories as ArrayList<Payload>, from)
 
     }
 
     private fun updateStateOfArticleOnServer(){
-        val notified = Payload(
-            storyId = story.storyId,
-            read = ArticleState.READ
-        )
 
         var notifyStories =  viewModel.notifyStoriesLiveData.value?.toMutableList()
-
         if (notifyStories == null) {
             notifyStories = mutableListOf()
         }
 
-        if(notifyStories.indexOf(notified) > -1){
-            notifyStories.set(notifyStories.indexOf(notified), notified)
+
+        val notified = Payload(
+            storyId = story.storyId,
+            read = ArticleState.READ
+        )
+        val index = notifyStories.indexOf(notified)
+        if( index > -1){
+
+            if(notifyStories[index].read != notified.read){
+            notifyStories.set(index, notified)
             notifyStories = notifyStories.toList().distinct().toMutableList()
             println("12245 notify call after updateState is $notifyStories")
-            updateNotifyStoryOnServer(notifyStories = notifyStories )
-
+            updateNotifyStoryOnServer(notifyStories = notifyStories, "update state" )
+            }
         }else{
-            println("12245 notify call updateState not done ${notifyStories.indexOf(notified)}")
+            println("12245 notify call updateState not done ${index}")
         }
     }
 
@@ -154,7 +157,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             notifyStories.add(notified)
             notifyStories = notifyStories.toList().distinct().toMutableList()
             println("12245 notify call after saved is $notifyStories")
-            updateNotifyStoryOnServer(notifyStories = notifyStories )
+            updateNotifyStoryOnServer(notifyStories = notifyStories , "save")
         }else{
             println("notifyStories list is null")
         }
@@ -183,7 +186,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         if (notifyStories != null) {
             notifyStories.remove(notified)
             println("12245 notify call after removed is $notifyStories")
-            updateNotifyStoryOnServer(notifyStories = notifyStories )
+            updateNotifyStoryOnServer(notifyStories = notifyStories , "delete")
 
 
         }else{
@@ -314,6 +317,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        binding.lifecycleOwner = requireActivity()
         data = requireArguments().getParcelable<DetailsPageData>("data")!!
 
         position = data.position

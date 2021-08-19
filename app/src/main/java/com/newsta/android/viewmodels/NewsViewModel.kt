@@ -75,7 +75,9 @@ constructor(private val newsRepository: StoriesRepository,
     val savedStoryIdLiveData: LiveData<List<Int>?> = _savedStoryIdLiveData
 
     private val _notifyStoriesLiveData = MutableLiveData<List<Payload>?>(arrayListOf())
-    val notifyStoriesLiveData: LiveData<List<Payload>?> = _notifyStoriesLiveData
+    val notifyStoriesLiveData: LiveData<List<Payload>?> = _notifyStoriesLiveData.distinctUntilChanged()
+
+    var notifyStories = ArrayList<SavedStory>()
 
     private val _storiesLiveData = MutableLiveData<Map<Int, List<Story>>>()
     val storiesLiveData: LiveData<Map<Int, List<Story>>> = _storiesLiveData
@@ -193,7 +195,7 @@ constructor(private val newsRepository: StoriesRepository,
 
                                 }
                                 println("notifystory afterupdate $list")
-                                saveNotifyStories(list)
+                                saveNotifyStories(list, "new update")
 
                             }
                             is DataState.Error -> {
@@ -341,8 +343,8 @@ constructor(private val newsRepository: StoriesRepository,
         _savedStoryIdLiveData.value = savedStoryIds
     }
 
-    fun setNotifyStories(notifyStories: List<Payload>) {
-        _notifyStoriesLiveData.value = notifyStories
+    fun setNotifyStories(_notifyStories: List<Payload>) {
+        _notifyStoriesLiveData.value = _notifyStories.sortedBy { it.storyId }
     }
 
     fun getUserPreferences() {
@@ -356,6 +358,9 @@ constructor(private val newsRepository: StoriesRepository,
                         _savedStoryIdLiveData.value = userPreferences.saved
                         println("saved stories2 userpref ${_savedStoryIdLiveData.value}")
                         _notifyStoriesLiveData.value = userPreferences.notify
+                        if(userPreferences.notify !=null)
+                        _notifyStoriesLiveData.value = userPreferences.notify.sortedBy {it.storyId  }
+
                     }
                     is DataState.Error -> {
                         Log.i("TAG", "onActivityCreated: CategoryDatState Error")
@@ -445,7 +450,7 @@ constructor(private val newsRepository: StoriesRepository,
 
                         }
                         println("notifystory afterupdate $list")
-                        saveNotifyStories(list)
+                        saveNotifyStories(list, "existing update")
                     }
                     is DataState.Error -> {
                         refreshState.value = false
@@ -694,10 +699,12 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
 
-    fun saveNotifyStories(notifyStories: ArrayList<Payload>) {
+    fun saveNotifyStories(notifyStories: ArrayList<Payload>, from: String) {
         var intialNotifyStories = notifyStoriesLiveData.value
 
         if(intialNotifyStories.isNullOrEmpty()) intialNotifyStories = arrayListOf()
+
+        println("12245 notify api req from $from"+ "$notifyStories")
 
         if(intialNotifyStories != (notifyStories)){
         if(MainActivity.isConnectedToNetwork) {

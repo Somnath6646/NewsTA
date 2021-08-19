@@ -67,18 +67,6 @@
                     app:layout_constraintStart_toEndOf="@id/start_guideline"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/back"
-                    style="@style/Rippleeffect"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/back"
-                    android:visibility="gone"
-
-                    app:layout_constraintBottom_toTopOf="@id/nav_guideline"
-                    app:layout_constraintStart_toEndOf="@id/start_guideline"
-                    app:layout_constraintTop_toBottomOf="@id/top_guideline" />
-
 
                 <ImageView
                     android:id="@+id/nav_drawer"
@@ -131,6 +119,7 @@
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="0dp"
+                        app:cardBackgroundColor="@android:color/transparent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"

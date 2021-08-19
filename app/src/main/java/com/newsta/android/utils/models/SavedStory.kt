@@ -6,6 +6,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.newsta.android.remote.data.Payload
 import com.newsta.android.utils.models.SavedStory.Companion.TABLE_NAME
 import kotlinx.android.parcel.Parcelize
 
@@ -27,5 +28,23 @@ data class SavedStory(
 ) : Parcelable {
     companion object {
         const val TABLE_NAME = "newsta_saved_stories"
+    }
+
+    override fun equals(other: Any?): Boolean {
+       return when(other){
+            is SavedStory -> {
+                this.storyId == (other).storyId
+            }
+           is Int -> {
+               this.storyId == other
+           }
+           is Payload -> {
+               this.storyId == (other).storyId
+           }
+           else -> {
+               this.storyId == (other as SavedStory).storyId
+           }
+        }
+
     }
 }
