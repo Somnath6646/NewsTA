@@ -496,6 +496,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun getSources(storyId: Int, eventId: Int) {
         urlToRequest  = "http://13.235.50.53/sources"
+        Log.i("12245 sources call", "done")
         viewModelScope.launch {
             val request = NewsSourceRequest(NewstaApp.access_token!!, NewstaApp.ISSUER_NEWSTA, storyId, eventId)
             newsRepository.getSources(request).onEach {
@@ -636,6 +637,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun toast(message: String) {
         _toast.value = Indicator(message)
+        Log.i("TOAST", message)
     }
 
     private val _debugToast = MutableLiveData<Indicator<String>>()
@@ -691,11 +693,13 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    private val _userNotifyStorySaveDataState = MutableLiveData<DataState<List<Payload>?>>()
-    val userNotifyStorySaveDataState: LiveData<DataState<List<Payload>?>> = _userNotifyStorySaveDataState
 
     fun saveNotifyStories(notifyStories: ArrayList<Payload>) {
-        if(notifyStoriesLiveData.value?.let { notifyStories.containsAll(it) } == false){
+        var intialNotifyStories = notifyStoriesLiveData.value
+
+        if(intialNotifyStories.isNullOrEmpty()) intialNotifyStories = arrayListOf()
+
+        if(intialNotifyStories != (notifyStories)){
         if(MainActivity.isConnectedToNetwork) {
             viewModelScope.launch {
                 newsRepository.saveNotifyStoriesInServer(notifyStories).onEach {
@@ -716,7 +720,9 @@ constructor(private val newsRepository: StoriesRepository,
             }
         } else {
             toast("Please connect to network to save changes.")
-        }}
+        }}else{
+            Log.i("12245 NotifyStories","Not any change orig: $intialNotifyStories and newList $notifyStories")
+        }
     }
 
     fun setUserPreferencesState(userPreferences: UserPreferences) {

@@ -66,7 +66,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     private fun initViews() {
 
 
-        setIconForSaved()
 
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
 
@@ -74,9 +73,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         binding.btnDownload.setOnClickListener { saveStory() }
 
-        binding.btnNotify.setOnClickListener { saveAsNotified() }
+        binding.btnNotify.setOnClickListener {
+            println("12245 notify call saved"+"saved as notifies")
+            saveAsNotified() }
 
-        binding.btnNotifyFilled.setOnClickListener { removeFromNotified() }
+        binding.btnNotifyFilled.setOnClickListener {
+            println("12245 notify call "+ "removed from notifies")
+            removeFromNotified() }
 
         binding.btnDownloaded.setOnClickListener { deleteSavedStory() }
 
@@ -124,12 +127,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         }
 
         if(notifyStories.indexOf(notified) > -1){
-
             notifyStories.set(notifyStories.indexOf(notified), notified)
             notifyStories = notifyStories.toList().distinct().toMutableList()
-            println("notifyStories list is $notifyStories")
+            println("12245 notify call after updateState is $notifyStories")
             updateNotifyStoryOnServer(notifyStories = notifyStories )
 
+        }else{
+            println("12245 notify call updateState not done ${notifyStories.indexOf(notified)}")
         }
     }
 
@@ -149,7 +153,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         if (notifyStories != null) {
             notifyStories.add(notified)
             notifyStories = notifyStories.toList().distinct().toMutableList()
-            println("notifyStories list is $notifyStories")
+            println("12245 notify call after saved is $notifyStories")
             updateNotifyStoryOnServer(notifyStories = notifyStories )
         }else{
             println("notifyStories list is null")
@@ -178,7 +182,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         if (notifyStories != null) {
             notifyStories.remove(notified)
-            println("notifyStories list is $notifyStories")
+            println("12245 notify call after removed is $notifyStories")
             updateNotifyStoryOnServer(notifyStories = notifyStories )
 
 
@@ -207,11 +211,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     fun setIconForSaved(){
         val it = viewModel.savedStoryIdLiveData.value
-        println("saved stories2 $it")
+
         if(it != null) {
             if (it.contains(story.storyId)){
+                Log.i("12245 saved detail", "true ${story.storyId}")
                 binding.btnDownload.visibility = View.INVISIBLE
             }else{
+                Log.i("12245 saved detail", "false ${story.storyId}")
                 binding.btnDownload.visibility = View.VISIBLE
             }
         }
@@ -291,15 +297,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success<SavedStory> -> {
-                    binding.btnDownload.visibility = View.INVISIBLE
+                    setIconForSaved()
                     println("NEWS SAVE SUCCESSFUL")
                 }
                 is DataState.Error -> {
-                    binding.btnDownload.visibility = View.VISIBLE
                     println("NEWS SAVE ERROR")
                 }
                 is DataState.Loading -> {
-                    binding.btnDownload.visibility = View.VISIBLE
                     println("NEWS SAVING")
                 }
             }
@@ -320,6 +324,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         viewModel.getSources(story.storyId, story.events.last().eventId)
 
         setIconForNotified(viewModel.notifyStoriesLiveData.value)
+        updateStateOfArticleOnServer()
         setIconForSaved()
 
         binding.lifecycleOwner = requireActivity()

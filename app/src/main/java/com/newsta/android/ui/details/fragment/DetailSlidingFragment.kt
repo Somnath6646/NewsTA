@@ -288,15 +288,16 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
                 is DataState.Success -> {
                     sourcesResponse = (it.data) as ArrayList
                     if (!sourcesResponse.isNullOrEmpty()) {
+                        Log.i("12245 Sources", "onActivityCreated: agaya sources $sourcesResponse")
                         setSourcesIconsAdapter()
                     }
                 }
                 is DataState.Loading -> {
-                    Log.i("TAG", "onActivityCreated: load horha hai sources ")
+                    Log.i("12245 Sources", "onActivityCreated: load horha hai sources ")
 
                 }
                 is DataState.Error -> {
-                    Log.i("TAG", "onActivityCreated: error h bhai sources me")
+                    Log.i("12245 Sources", "onActivityCreated: error h bhai sources me")
                 }
             }
         })
