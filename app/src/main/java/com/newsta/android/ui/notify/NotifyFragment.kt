@@ -216,7 +216,7 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
                 }
                println("12245 notify ${viewModel.notifyStories != list} notifystories ${viewModel.notifyStories} \n payloads ${payloads}")
 
-               if(!viewModel.notifyStories.equals(list)){
+
                 if(!list.isNullOrEmpty())
                 list = ArrayList(list.distinct())
                 println("12245 notify id list to fetch ${viewModel.notifyStories != payloads}"+ "$list")
@@ -226,7 +226,7 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
                         viewModel.notifyStories = it
                         adapter.addAll(viewModel.notifyStories, ArrayList(payloads))
                     }
-}
+
 
             }
 

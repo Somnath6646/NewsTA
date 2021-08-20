@@ -75,7 +75,7 @@ constructor(private val newsRepository: StoriesRepository,
     val savedStoryIdLiveData: LiveData<List<Int>?> = _savedStoryIdLiveData
 
     private val _notifyStoriesLiveData = MutableLiveData<List<Payload>?>(arrayListOf())
-    val notifyStoriesLiveData: LiveData<List<Payload>?> = _notifyStoriesLiveData.distinctUntilChanged()
+    val notifyStoriesLiveData: LiveData<List<Payload>?> = _notifyStoriesLiveData
 
     var notifyStories = ArrayList<SavedStory>()
 
@@ -344,6 +344,7 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
     fun setNotifyStories(_notifyStories: List<Payload>) {
+        println("12245 notify api req from setNotify")
         _notifyStoriesLiveData.value = _notifyStories.sortedBy { it.storyId }
     }
 
@@ -706,7 +707,7 @@ constructor(private val newsRepository: StoriesRepository,
 
         println("12245 notify api req from $from"+ "$notifyStories")
 
-        if(intialNotifyStories != (notifyStories)){
+        if(true){
         if(MainActivity.isConnectedToNetwork) {
             viewModelScope.launch {
                 newsRepository.saveNotifyStoriesInServer(notifyStories).onEach {
