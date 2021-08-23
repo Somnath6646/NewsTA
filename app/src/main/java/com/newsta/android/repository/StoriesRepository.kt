@@ -374,6 +374,7 @@ class StoriesRepository(
             var isInCatch = false
             try {
                 val response = newsService.getCategories(categoryRequest)
+                println("STATUS: ${response.body()?.statusCode} ${response.isSuccessful}")
                 if (response.isSuccessful) {
                     println("CATEGORIES REPO: ${response.body()?.data}")
                     emit(DataState.Success(response.body()?.data))
@@ -404,13 +405,15 @@ class StoriesRepository(
                 } else {
                     val categories = storiesDao.getAllCategories()
                     emit(DataState.Success(categories))
+                    println("ELSE MEIN AA GAYA")
                     val gson = Gson()
                     val type = object : TypeToken<ErrorResponse>() {}.type
                     var errorResponse: ErrorResponse? =
                         gson.fromJson(response.errorBody()!!.charStream(), type)
                     if (errorResponse != null) {
-                        if(response.code() == 401) {
+                        if(NewstaApp.UNAUTHORIZED_STATUS_CODES.contains(response.code())) {
                             emit(DataState.Error(errorResponse.detail, response.code()))
+                            println("ERROR CODE: ${response.code()}")
                         } else {
                             println("ERROR RESPONSE $errorResponse")
                             emit(DataState.Error(errorResponse.detail))
@@ -418,6 +421,7 @@ class StoriesRepository(
                     }
                 }
             } catch (e: Exception) {
+                println("CATCH MIEN AA GAYA")
                 e.printStackTrace()
                 isInCatch = true
             } finally {

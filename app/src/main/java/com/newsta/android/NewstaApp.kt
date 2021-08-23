@@ -41,7 +41,7 @@ class NewstaApp : Application(), Configuration.Provider {
 
         val SOURCE_ICON_COLORS = arrayOf("#BD4C17", "#6C0E42", "#000087", "#3F714C")
 
-        val UNAUTHORIZED_STATUS_CODE = 401
+        val UNAUTHORIZED_STATUS_CODES = arrayOf(401, 451)
 
         var access_token: String? = null
 

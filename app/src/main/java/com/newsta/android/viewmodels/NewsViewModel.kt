@@ -2,11 +2,14 @@ package com.newsta.android.viewmodels
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import androidx.navigation.fragment.findNavController
+import com.facebook.login.LoginManager
 import com.newsta.android.MainActivity
 import com.newsta.android.MainActivity.Companion.extras
 import com.newsta.android.MainActivity.Companion.maxStory
@@ -15,6 +18,7 @@ import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
 import com.newsta.android.responses.LogoutResponse
 import com.newsta.android.responses.SearchStory
+import com.newsta.android.ui.landing.fragments.LandingFragmentDirections
 import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.models.*
 import com.newsta.android.utils.prefrences.UserPrefrences
@@ -94,7 +98,15 @@ constructor(private val newsRepository: StoriesRepository,
     private val _searchDataState = MutableLiveData<DataState<List<SearchStory>?>>()
     val searchDataState: LiveData<DataState<List<SearchStory>?>> = _searchDataState
 
+    private val _unauthorizedLiveData = MutableLiveData<Indicator<Boolean>>()
+    val unauthorizedLiveData: LiveData<Indicator<Boolean>> = _unauthorizedLiveData
 
+    private fun checkIfUnauthorized(data: DataState.Error) {
+        if (NewstaApp.UNAUTHORIZED_STATUS_CODES.contains(data.statusCode)) {
+            _unauthorizedLiveData.value = Indicator(true)
+        } else
+            toast(data.exception)
+    }
 
     fun logOut() {
         viewModelScope.launch {
@@ -544,6 +556,7 @@ constructor(private val newsRepository: StoriesRepository,
                     }
                     is DataState.Error -> {
                         Log.i("TAG", "onActivityCreated: CategoryDatState Error")
+                        checkIfUnauthorized(it)
                     }
                     is DataState.Loading -> {
                         Log.i("TAG", "onActivityCreated: CategoryDatState logading")

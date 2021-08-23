@@ -342,20 +342,22 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
             }
         })
 
+        viewModel.unauthorizedLiveData.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled().let {  isUnauthorized ->
+                if(isUnauthorized != null) {
+                    if (isUnauthorized) {
+                        viewModel.clearAllData()
+                    val action =
+                        LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
+                    findNavController().navigate(action)
+                    LoginManager.getInstance().logOut()
+                }
+                }
+            }
+        })
+
         setUpNavigationDrawer()
 
-    }
-
-    private fun checkIfUnauthorized(data: DataState.Error) {
-        if (data.statusCode == NewstaApp.UNAUTHORIZED_STATUS_CODE) {
-            viewModel.toast("We've encountered an issue at our end please log in again to continue. We're sorry for the inconvenience caused.")
-            viewModel.clearAllData()
-            val action =
-                LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
-            findNavController().navigate(action)
-            LoginManager.getInstance().logOut();
-        } else
-            Toast.makeText(requireContext(), data.exception, Toast.LENGTH_SHORT).show()
     }
 
     private fun setUpTabLayout() {
