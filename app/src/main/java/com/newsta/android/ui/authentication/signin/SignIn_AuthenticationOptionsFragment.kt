@@ -100,14 +100,14 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSigninOptionsB
             it.getContentIfNotHandled().let {
                 when(it){
                     is DataState.Success -> {
-                        Log.i("TAG", "Sucess")
+                        Log.i("SIGN INNNN", "HOOOOOO GYA")
                         it.data?.data?.let { it1 -> viewModel.getUserPreferences(accessToken = it1) }
                     }
                     is DataState.Loading -> {
-                        Log.i("TAG", "Loading")
+                        Log.i("SIGN INNNN", "LOD HO RHA H")
                     }
                     is DataState.Error -> {
-                        Log.i("TAG", "error")
+                        Log.i("SIGN INNNN", "NAHI HUA")
                         LoginManager.getInstance().logOut()
 
                         val dialog = Dialog(requireContext())

@@ -142,6 +142,23 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     true
                 }
 
+                R.id.rate_us -> {
+                    val url = "market://details?id=${context?.packageName}"
+                    val webpage: Uri = Uri.parse(url)
+                    val intent = Intent(Intent.ACTION_VIEW, webpage)
+                    startActivity(Intent.createChooser(intent, "Rate us on Google Play Store"))
+                    true
+                }
+
+                R.id.share_app -> {
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.putExtra(Intent.EXTRA_TEXT, "Download the Newsta app to get Latest, Short, Factual and Connected news stories.\nhttps://play.google.com/store/apps/details?id=com.newsta.android")
+                    intent.type = "text/*"
+                    startActivity(Intent.createChooser(intent, "Share our app"))
+                    true
+                }
+
                 R.id.privacy_policy -> {
                     val url = "http://www.newsta.in/privacy"
                     val webpage: Uri = Uri.parse(url)

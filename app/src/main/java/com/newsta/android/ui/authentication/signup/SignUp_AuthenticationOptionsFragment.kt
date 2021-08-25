@@ -2,18 +2,23 @@ package com.newsta.android.ui.authentication.signup
 
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.util.Base64
+import android.util.Base64.DEFAULT
+import android.util.Base64.encodeToString
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
-import androidx.core.view.ViewCompat
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -22,11 +27,13 @@ import com.facebook.login.LoginResult
 import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentSignupOptionsBinding
-import com.newsta.android.ui.authentication.adapter.TutorialAdapter
-import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.utils.models.DataState
+import com.newsta.android.viewmodels.AuthenticationViewModel
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.util.*
+import java.util.Base64.getEncoder
 
 
 class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsBinding>() {
@@ -40,6 +47,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        printKeyHash()
 
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
@@ -82,7 +90,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
             it.getContentIfNotHandled().let {
                 when(it){
                     is DataState.Success -> {
-                        Log.i("TAG", "Sucess")
+                        Log.i("SIGN INNNN", "HOOOOOO GYA")
                         it.data?.data?.let { it1 -> viewModel.getUserPreferences(accessToken = it1) }
                     }
                     is DataState.Loading -> {
@@ -121,6 +129,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
 
 
         loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onSuccess(loginResult: LoginResult?) {
                 if (loginResult != null) {
                     Log.i("Facebook Signin", loginResult.accessToken.token)
@@ -163,6 +172,24 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
     }
 
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun printKeyHash() {
+        // Add code to print out the key hash
+        try {
+            val info: PackageInfo = context?.packageManager!!.getPackageInfo(
+                "com.newsta.android",
+                PackageManager.GET_SIGNATURES
+            )
+            for (signature in info.signatures) {
+                val md: MessageDigest = MessageDigest.getInstance("SHA")
+                md.update(signature.toByteArray())
+                Log.d("KeyHash:", java.util.Base64.getEncoder().encodeToString(md.digest()))
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            Log.e("KeyHash:", e.toString())
+        } catch (e: NoSuchAlgorithmException) {
+            Log.e("KeyHash:", e.toString())
+        }
+    }
 
 }
