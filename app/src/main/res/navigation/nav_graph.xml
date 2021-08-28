@@ -170,6 +170,21 @@
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_landingFragment_to_privacyFragment"
+            app:destination="@id/privacyFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_landingFragment_to_feedBackFragment"
+            app:destination="@id/feedBackFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
+
     </fragment>
     <fragment
         android:id="@+id/signIn_AuthenticationOptionsFragment"
@@ -250,8 +265,6 @@
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popUpTo="@id/settingsFragment"
-            app:popUpToInclusive="true"
             app:popExitAnim="@anim/out_to_right"/>
     </fragment>
     <fragment
@@ -282,4 +295,12 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/privacyFragment"
+        android:name="com.newsta.android.ui.privacy.PrivacyFragment"
+        android:label="PrivacyFragment" />
+    <fragment
+        android:id="@+id/feedBackFragment"
+        android:name="com.newsta.android.ui.feedback.FeedBackFragment"
+        android:label="FeedBackFragment" />
 </navigation>
