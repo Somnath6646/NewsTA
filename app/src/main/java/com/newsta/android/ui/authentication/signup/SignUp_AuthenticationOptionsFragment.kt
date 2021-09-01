@@ -47,8 +47,6 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        printKeyHash()
-
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
 //        ViewCompat.setTransitionName(binding.imageView, "logoTransition")
@@ -172,7 +170,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    /*@RequiresApi(Build.VERSION_CODES.O)
     private fun printKeyHash() {
         // Add code to print out the key hash
         try {
@@ -190,6 +188,6 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
         } catch (e: NoSuchAlgorithmException) {
             Log.e("KeyHash:", e.toString())
         }
-    }
+    }*/
 
 }
