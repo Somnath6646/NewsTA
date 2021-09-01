@@ -160,20 +160,26 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 }
 
                 R.id.privacy_policy -> {
-                    val url = "http://www.newsta.in/privacy"
+                    /*val url = "http://www.newsta.in/privacy"
                     val webpage: Uri = Uri.parse(url)
                     val intent = Intent(Intent.ACTION_VIEW, webpage)
                     startActivity(Intent.createChooser(intent, "Contact us - contact@newsta.in"))
+                    true*/
+                    findNavController().navigate(R.id.action_landingFragment_to_privacyFragment)
+                    closeNavigationDrawer()
                     true
                 }
 
                 R.id.contact -> {
-                    val addresses = arrayOf("contact@newsta.in")
+                    /*val addresses = arrayOf("contact@newsta.in")
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("mailto:") // only email apps should handle this
                         putExtra(Intent.EXTRA_EMAIL, addresses)
                     }
                     startActivity(intent)
+                    true*/
+                    findNavController().navigate(R.id.action_landingFragment_to_feedBackFragment)
+                    closeNavigationDrawer()
                     true
                 }
 
