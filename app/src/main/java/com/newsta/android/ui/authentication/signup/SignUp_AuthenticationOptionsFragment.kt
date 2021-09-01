@@ -127,7 +127,6 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
 
 
         loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
-            @RequiresApi(Build.VERSION_CODES.O)
             override fun onSuccess(loginResult: LoginResult?) {
                 if (loginResult != null) {
                     Log.i("Facebook Signin", loginResult.accessToken.token)
@@ -169,9 +168,8 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
         callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
-
-    /*@RequiresApi(Build.VERSION_CODES.O)
-    private fun printKeyHash() {
+//    @RequiresApi(Build.VERSION_CODES.O)
+    /*private fun printKeyHash() {
         // Add code to print out the key hash
         try {
             val info: PackageInfo = context?.packageManager!!.getPackageInfo(

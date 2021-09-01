@@ -4,6 +4,8 @@
     package="com.newsta.android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:name=".NewstaApp"
         android:usesCleartextTraffic="true"

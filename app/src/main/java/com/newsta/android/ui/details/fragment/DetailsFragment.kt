@@ -1,8 +1,10 @@
 package com.newsta.android.ui.details.fragment
 
+import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -12,6 +14,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.drawToBitmap
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -41,6 +44,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private lateinit var adapter: DetailSliderAdapter
 
+    private val WRITE_EXT_STORAGE_REQ_CODE = 0
+
     private fun setPagerAdapter(){
         stories  = viewModel.selectedStoryList.value!!
         adapter = DetailSliderAdapter(fragmentActivity = requireActivity(),itemCount =  stories.size, stories = stories as ArrayList<Story>)
@@ -69,7 +74,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
 
-        binding.btnShare.setOnClickListener { shareImage() }
+        binding.btnShare.setOnClickListener { share() }
 
         binding.btnDownload.setOnClickListener { saveStory() }
 
@@ -346,12 +351,31 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     }
 
+    private fun share() {
+
+    when {
+        ContextCompat.checkSelfPermission(
+            requireActivity(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED -> {
+            shareImage()
+        }
+        else -> {
+            // You can directly ask for the permission.
+            requestPermissions(
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_EXT_STORAGE_REQ_CODE)
+        }
+    }
+
+    }
+
     private fun shareImage() {
        val layout =  binding.pager.getChildAt(0).findViewById<ConstraintLayout>(R.id.constraint_layout)
 
         val imageUri = layout.drawToBitmap().let { bitmap: Bitmap ->
             saveBitmap(requireActivity(), bitmap)
         }
+
         val intent = Intent(Intent.ACTION_SEND)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
@@ -388,5 +412,27 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     }
 
     override fun getFragmentView(): Int = R.layout.fragment_details
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            WRITE_EXT_STORAGE_REQ_CODE -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() &&
+                            grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    shareImage()
+                } else {
+                    Snackbar.make(binding.root, "You need to allow us to create image of news to share.", Snackbar.LENGTH_SHORT).show()
+                }
+                return
+            }
+
+            // Add other 'when' lines to check for other
+            // permissions this app might request.
+            else -> {
+                // Ignore all other requests.
+            }
+        }
+    }
 
 }
