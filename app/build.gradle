@@ -25,8 +25,8 @@ android {
         applicationId "com.newsta.android"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 7
-        versionName "1.0.4"
+        versionCode 8
+        versionName "1.0.8"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -164,9 +164,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     val webpage: Uri = Uri.parse(url)
                     val intent = Intent(Intent.ACTION_VIEW, webpage)
                     startActivity(Intent.createChooser(intent, "Contact us - contact@newsta.in"))
-                    true*/
+                    true
                     findNavController().navigate(R.id.action_landingFragment_to_privacyFragment)
-                    closeNavigationDrawer()
+                    closeNavigationDrawer()*/
+                    val url = "http://www.newsta.in/privacy"
+                    val webpage: Uri = Uri.parse(url)
+                    val intent = Intent(Intent.ACTION_VIEW, webpage)
+                    startActivity(Intent.createChooser(intent, "Rate us on Google Play Store"))
                     true
                 }
 
@@ -177,9 +181,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                         putExtra(Intent.EXTRA_EMAIL, addresses)
                     }
                     startActivity(intent)
-                    true*/
+                    true
                     findNavController().navigate(R.id.action_landingFragment_to_feedBackFragment)
-                    closeNavigationDrawer()
+                    closeNavigationDrawer()*/
+                    val url = "http://www.newsta.in/feedback"
+                    val webpage: Uri = Uri.parse(url)
+                    val intent = Intent(Intent.ACTION_VIEW, webpage)
+                    startActivity(Intent.createChooser(intent, "Rate us on Google Play Store"))
                     true
                 }
 
