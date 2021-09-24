@@ -3,6 +3,7 @@ package com.newsta.android.remote.services
 import com.newsta.android.remote.data.*
 import com.newsta.android.responses.SigninResponse
 import com.newsta.android.responses.SignupResponse
+import com.newsta.android.responses.SkipAuthResponse
 import com.newsta.android.responses.UserPreferencesResponse
 import retrofit2.Response
 import retrofit2.http.*
@@ -14,7 +15,6 @@ interface AuthenticationService {
     suspend fun signup(
         @Body signupRequest: SignupRequest
     ): Response<SignupResponse>
-
 
     @Headers("Accept: application/json")
     @POST("signup/si")
@@ -33,6 +33,12 @@ interface AuthenticationService {
     suspend fun signin(
             @Body signinRequest: SignInRequest_Social
     ): Response<SigninResponse>
+
+    @Headers("Accept: application/json")
+    @POST("/skipauth")
+    suspend fun skipAuth(
+            @Body skipAuthRequest: SkipAuthRequest
+    ): Response<SkipAuthResponse>
 
     @Headers("Accept: application/json")
     @POST("user_preferences")

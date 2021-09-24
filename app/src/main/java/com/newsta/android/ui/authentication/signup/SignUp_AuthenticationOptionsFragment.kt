@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.transition.TransitionInflater
 import android.util.Base64
 import android.util.Base64.DEFAULT
@@ -57,11 +58,15 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
             findNavController().navigate(action)
         }
 
+        binding.btnSkipAuth.setOnClickListener {
 
+            val androidId = Settings.Secure.getString(context?.contentResolver, Settings.Secure.ANDROID_ID)
+            println("ANDROID ID ---> $androidId")
+
+            viewModel.skipAuth(androidId)
+        }
 
           callbackManager = CallbackManager.Factory.create();
-
-
 
         val EMAIL = "email"
         val loginButton = binding.loginButton
@@ -85,6 +90,45 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
 
 
         viewModel.signupResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it.getContentIfNotHandled().let {
+                when(it){
+                    is DataState.Success -> {
+                        Log.i("SIGN INNNN", "HOOOOOO GYA")
+                        it.data?.data?.let { it1 -> viewModel.getUserPreferences(accessToken = it1) }
+                    }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "Loading")
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "eror")
+                        LoginManager.getInstance().logOut();
+
+                        val dialog = Dialog(requireContext())
+                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
+                        dialog.setContentView(dialogBinding.root)
+
+                        println("Abhi hai $dialogBinding")
+
+                        dialogBinding.message.text = "${it.exception}"
+                        dialogBinding.buttonText.text = "Sign In"
+                        dialogBinding.button.setOnClickListener { v ->
+                            dialog.dismiss()
+                            val action = SignUp_AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToSignInAuthenticationOptionsFragment()
+                            findNavController().navigate(action)
+                        }
+
+                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+                        dialog.show()
+                    }
+                    else -> {}
+                }
+            }
+        })
+
+
+        viewModel.skipAuthResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it.getContentIfNotHandled().let {
                 when(it){
                     is DataState.Success -> {

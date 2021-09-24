@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -21,6 +22,7 @@ import com.newsta.android.R
 import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentSigninOptionsBinding
 import com.newsta.android.ui.authentication.adapter.TutorialAdapter
+import com.newsta.android.ui.authentication.signup.SignUp_AuthenticationOptionsFragmentDirections
 import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.utils.models.DataState
@@ -66,6 +68,14 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSigninOptionsB
             }
 
         })
+
+        binding.btnSkipAuth.setOnClickListener {
+
+            val androidId = Settings.Secure.getString(context?.contentResolver, Settings.Secure.ANDROID_ID)
+            println("ANDROID ID ---> $androidId")
+
+            viewModel.skipAuth(androidId)
+        }
 
         val loginButton = binding.loginButton
         loginButton.setReadPermissions(Arrays.asList(EMAIL))
@@ -132,6 +142,45 @@ class SignIn_AuthenticationOptionsFragment : BaseFragment<FragmentSigninOptionsB
                 }
             }
         })
+
+        viewModel.skipAuthResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it.getContentIfNotHandled().let {
+                when(it){
+                    is DataState.Success -> {
+                        Log.i("SIGN INNNN", "HOOOOOO GYA")
+                        it.data?.data?.let { it1 -> viewModel.getUserPreferences(accessToken = it1) }
+                    }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "Loading")
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "eror")
+                        LoginManager.getInstance().logOut();
+
+                        val dialog = Dialog(requireContext())
+                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false)
+                        dialog.setContentView(dialogBinding.root)
+
+                        println("Abhi hai $dialogBinding")
+
+                        dialogBinding.message.text = "${it.exception}"
+                        dialogBinding.buttonText.text = "Sign In"
+                        dialogBinding.button.setOnClickListener { v ->
+                            dialog.dismiss()
+                            val action = SignUp_AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToSignInAuthenticationOptionsFragment()
+                            findNavController().navigate(action)
+                        }
+
+                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+                        dialog.show()
+                    }
+                    else -> {}
+                }
+            }
+        })
+
 
     }
 

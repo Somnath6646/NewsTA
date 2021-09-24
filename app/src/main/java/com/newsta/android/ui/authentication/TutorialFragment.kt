@@ -18,6 +18,10 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
     private lateinit var adapter: TutorialAdapter
     var count = 0
 
+    private fun navigate() {
+        findNavController().navigate(R.id.action_tutorialFragment_to_signupSigninOptionsFragment)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -29,11 +33,16 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
         binding.nextBtn.setOnClickListener {
             if (count == adapter.listSize - 1) {
                 println("COUNT ---> $count SIZE ---> ${adapter.listSize}")
-                findNavController().navigate(R.id.action_tutorialFragment_to_signupSigninOptionsFragment)
+                navigate()
             } else {
                 count++
                 binding.pager.setCurrentItem(count, true)
             }
+        }
+
+        binding.skipBtn.setOnClickListener {
+            count = adapter.listSize - 1;
+            navigate()
         }
 
         binding.pager.setPageTransformer { page, position ->

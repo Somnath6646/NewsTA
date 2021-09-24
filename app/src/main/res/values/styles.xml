@@ -157,4 +157,14 @@
 
     <string name="hint_password">Password</string>
 
+    <style name="SkipBtnStyle">
+        <item name="fontFamily">@font/semibold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
 </resources>

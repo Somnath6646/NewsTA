@@ -40,7 +40,7 @@ object RetrofitModule {
         }.build()
 
         return Retrofit.Builder()
-            .baseUrl("http://daakiya.co.in/")
+            .baseUrl("http://125.99.240.190/")
             .client( client
             )
 

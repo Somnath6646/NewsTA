@@ -43,6 +43,12 @@ class AuthRepository (
         api.signin(signinRequestSI)
     }
 
+    suspend fun skipAuth(
+        skipAuthRequest: SkipAuthRequest
+    ) = safeApiCall {
+        api.skipAuth(skipAuthRequest)
+    }
+
     suspend fun getUserPreferences(@Body userPreferencesRequest: UserPreferencesRequest): Flow<DataState<UserPreferences?>> =
         flow {
 

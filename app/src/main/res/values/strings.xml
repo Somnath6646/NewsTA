@@ -33,5 +33,11 @@
     <string name="shortLabel">Search</string>
     <string name="type_here_to_search">Type here to search</string>
     <string name="notify_stories">Notify Stories</string>
+    <string name="skip">Skip</string>
+    <string name="continue_without_log_in">Continue without Log In</string>
+    <string name="log_in">Log In</string>
+    <string name="continue_without_sign_up">Continue without Sign Up</string>
+    <string name="continue_as_guest">Continue as guest</string>
+    <string name="skip_for_now"><![CDATA[Skip for now >]]></string>
 
 </resources>

@@ -10,6 +10,7 @@ import com.newsta.android.remote.data.*
 import com.newsta.android.repository.AuthRepository
 import com.newsta.android.responses.SigninResponse
 import com.newsta.android.responses.SignupResponse
+import com.newsta.android.responses.SkipAuthResponse
 import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.prefrences.UserPrefrences
@@ -25,9 +26,12 @@ constructor(private val authRepository: AuthRepository,
             @Assisted private val savedStateHandle: SavedStateHandle): ViewModel(), Observable {
 
     private val _signupResponse: MutableLiveData<Indicator<DataState<SignupResponse?>>> = MutableLiveData()
-
     val signupResponse: LiveData <Indicator<DataState<SignupResponse?>>>
         get() = _signupResponse
+
+    private val _skipAuthResponse: MutableLiveData<Indicator<DataState<SkipAuthResponse?>>> = MutableLiveData()
+    val skipAuthResponse: LiveData <Indicator<DataState<SkipAuthResponse?>>>
+        get() = _skipAuthResponse
 
     val userPrefrences: UserPrefrences
         get() = prefrences
@@ -102,6 +106,16 @@ constructor(private val authRepository: AuthRepository,
 
             authRepository.signup(SignUpRequest_Social(iss = iss, access_token = accessToken)).onEach {
                 _signupResponse.value = Indicator(it)
+            }.launchIn(viewModelScope)
+
+        }
+    }
+
+    fun skipAuth(deviceID: String){
+
+        viewModelScope.launch{
+            authRepository.skipAuth(SkipAuthRequest(deviceID)).onEach {
+                _skipAuthResponse.value = Indicator(it)
             }.launchIn(viewModelScope)
 
         }

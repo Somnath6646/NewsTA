@@ -10,6 +10,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity(){
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
-    @SuppressLint("LongLogTag")
+    @SuppressLint("LongLogTag", "HardwareIds")
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
