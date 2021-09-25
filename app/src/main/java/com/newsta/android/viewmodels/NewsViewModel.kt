@@ -130,6 +130,8 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
+
+
     fun getSearchResults() {
         if(!searchTerm.value.isNullOrEmpty()) {
             viewModelScope.launch {
@@ -160,7 +162,7 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
 
-    fun getAllNews(storyId: Int = 0, maxDateTime: Long, isRefresh: Boolean = false) {
+    fun getAllNews(storyId: Int = 0, _maxDateTime: Long, isRefresh: Boolean = false) {
 
         urlToRequest  = "http://13.235.50.53/new"
 
@@ -168,7 +170,8 @@ constructor(private val newsRepository: StoriesRepository,
 
         viewModelScope.launch {
 
-            val maxDateTime  = getMaxDate(maxDateTime)
+            val maxDateTime  = getMaxDate(_maxDateTime)
+
                 val request = NewsRequest(
                     NewstaApp.access_token!!,
                     NewstaApp.ISSUER_NEWSTA,

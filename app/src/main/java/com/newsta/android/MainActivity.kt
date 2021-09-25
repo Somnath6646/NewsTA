@@ -25,6 +25,10 @@ import androidx.lifecycle.*
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.work.*
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.newsta.android.databinding.ActivityMainBinding
 import com.newsta.android.viewmodels.AuthenticationViewModel
 import com.newsta.android.utils.NetworkObserver
@@ -41,6 +45,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(){
 
+    private val MY_REQUEST_CODE: Int = 122
     val viewModel : AuthenticationViewModel by viewModels()
     val newsViewModel : NewsViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
@@ -117,7 +122,40 @@ class MainActivity : AppCompatActivity(){
 
         observeUserNetworkConnection()
 
+
+        
+        updateApp()
+
     }
+    
+    private fun updateApp(){
+        val appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+
+// Returns an intent object that you use to check for an update.
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+
+// Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                // This example applies an immediate update. To apply a flexible update
+                // instead, pass in AppUpdateType.FLEXIBLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
+                appUpdateManager.startUpdateFlowForResult(
+                    // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                    appUpdateInfo,
+                    // Or pass 'AppUpdateType.FLEXIBLE' to newBuilder() for
+                    // flexible updates.
+                    AppUpdateType.IMMEDIATE,
+                    // The current activity making the update request.
+                    this,
+
+                    // Include a request code to later monitor this update request.
+                    MY_REQUEST_CODE)
+            }
+        }
+    }
+    
 
     private fun newsTasks() {
         searchWithNewsta()
@@ -193,6 +231,17 @@ class MainActivity : AppCompatActivity(){
                     }
                 }
             })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == MY_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                Log.e("MY_APP", "Update flow failed! Result code: $resultCode")
+                Toast.makeText(this, "Update failed 😭", Toast.LENGTH_SHORT).show()
+                updateApp()
+            }
+        }
     }
 
     override fun attachBaseContext(newBase: Context?) {
