@@ -83,7 +83,8 @@ class NotifyStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Ad
                     storyId = story.storyId,
                     events = story.events,
                     category = story.category,
-                    updatedAt = story.updatedAt
+                    updatedAt = story.updatedAt,
+                    viewCount = story.viewCount
                 )
             )
         }

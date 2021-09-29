@@ -70,8 +70,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun initViews() {
 
-
-
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
 
         binding.btnShare.setOnClickListener { share() }
@@ -174,10 +172,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun removeFromNotified() {
 
-        println("SAVING STORY")
-
-
-
         val notified = Payload(
             storyId = story.storyId,
             read = ArticleState.READ
@@ -239,7 +233,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             storyId = story.storyId,
             category = story.category,
             updatedAt = story.updatedAt,
-            events = story.events
+            events = story.events,
+            viewCount = story.viewCount
         )
 
         var savedStoryIds =  viewModel.savedStoryIdLiveData.value?.toMutableList()
@@ -272,7 +267,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             storyId = story.storyId,
             category = story.category,
             updatedAt = story.updatedAt,
-            events = story.events
+            events = story.events,
+            viewCount = story.viewCount
         )
 
         var savedStoryIds =  viewModel.savedStoryIdLiveData.value?.toMutableList()

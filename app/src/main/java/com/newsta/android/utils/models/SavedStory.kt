@@ -24,7 +24,9 @@ data class SavedStory(
     @ColumnInfo(name = "story_id")
     @PrimaryKey(autoGenerate = false)
     @SerializedName("story_id")
-    val storyId: Int
+    val storyId: Int,
+    @SerializedName("view_count")
+    val viewCount: Int = 0
 ) : Parcelable {
     companion object {
         const val TABLE_NAME = "newsta_saved_stories"

@@ -24,7 +24,10 @@ data class Story(
     @ColumnInfo(name = "story_id")
     @PrimaryKey(autoGenerate = false)
     @SerializedName("story_id")
-    val storyId: Int
+    val storyId: Int,
+    @ColumnInfo(name = "view_count")
+    @SerializedName("view_count")
+    val viewCount: Int
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {

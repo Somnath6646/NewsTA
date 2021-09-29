@@ -78,7 +78,8 @@ class SavedStoryAdapter(private val onClick: (Int) -> Unit, private val onLongCl
                 storyId = story.storyId,
                     events = story.events,
                     category = story.category,
-                    updatedAt = story.updatedAt
+                    updatedAt = story.updatedAt,
+                    viewCount = 0
             ))
         }
         return newStories

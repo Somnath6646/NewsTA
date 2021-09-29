@@ -2,14 +2,11 @@ package com.newsta.android.viewmodels
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.widget.Toast
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import androidx.navigation.fragment.findNavController
-import com.facebook.login.LoginManager
 import com.newsta.android.MainActivity
 import com.newsta.android.MainActivity.Companion.extras
 import com.newsta.android.MainActivity.Companion.maxStory
@@ -18,7 +15,6 @@ import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
 import com.newsta.android.responses.LogoutResponse
 import com.newsta.android.responses.SearchStory
-import com.newsta.android.ui.landing.fragments.LandingFragmentDirections
 import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.models.*
 import com.newsta.android.utils.prefrences.UserPrefrences
@@ -162,7 +158,7 @@ constructor(private val newsRepository: StoriesRepository,
     }
 
 
-    fun getAllNews(storyId: Int = 0, _maxDateTime: Long, isRefresh: Boolean = false) {
+    fun getNewStories(storyId: Int = 0, _maxDateTime: Long, isRefresh: Boolean = false) {
 
         urlToRequest  = "http://13.235.50.53/new"
 
@@ -190,9 +186,8 @@ constructor(private val newsRepository: StoriesRepository,
                                 refreshState.value = false
                                 changeDatabaseState(isDatabaseEmpty = false)
 
-                                stories.addAll(0, ArrayList(it.data))
 
-                                _storiesLiveData.value = getMapOfStories()
+                                _storiesLiveData.value = getMapOfStories(oldStories = stories, newStories = ArrayList(it.data))
 
                                 val list = arrayListOf<Payload>()
                                 val origList = notifyStoriesLiveData.value
@@ -247,14 +242,23 @@ constructor(private val newsRepository: StoriesRepository,
 
     }
 
-    private fun getMapOfStories(): Map<Int, List<Story>> {
+    private fun getMapOfStories(oldStories: ArrayList<Story>, newStories: ArrayList<Story>): Map<Int, List<Story>> {
         val categoryStories = mutableMapOf<Int, List<Story>>()
         categoryLiveData.value?.forEach { category ->
-            var catStories = stories.filter { story -> story.category == category.categoryId }
-            catStories = catStories.sortedByDescending {
+
+            var _oldStories = oldStories.filter { story -> story.category == category.categoryId }
+            _oldStories = _oldStories.sortedByDescending {
                 it.updatedAt
             }
+
+            var _newStories = newStories.filter { story -> story.category == category.categoryId }
+            _newStories = _newStories.sortedByDescending {
+                it.viewCount
+            }
+
+            val catStories = _newStories + _oldStories
             categoryStories.put(category.categoryId, catStories)
+
         }
         return categoryStories
     }
@@ -270,7 +274,7 @@ constructor(private val newsRepository: StoriesRepository,
                         changeDatabaseState(isDatabaseEmpty = false)
                         stories = ArrayList(it.data)
 
-                        _storiesLiveData.value = getMapOfStories()
+                        _storiesLiveData.value = getMapOfStories(oldStories = stories, newStories = arrayListOf())
 
                         /*val filteredStories =
                             stories.filter { story: Story -> story.category == categoryState }
@@ -309,7 +313,7 @@ constructor(private val newsRepository: StoriesRepository,
                                 )
                                 if(!isRefreshedByDefault) {
                                     isRefreshedByDefault = true
-                                    getAllNews(maxStory.storyId, maxStory.updatedAt)
+                                    getNewStories(maxStory.storyId, maxStory.updatedAt)
                                 }
                             }
                         } catch (e: Exception) {
@@ -407,14 +411,14 @@ constructor(private val newsRepository: StoriesRepository,
         println("IS DB EMPTY FIRST TIME ------>        ${NewstaApp.is_database_empty}")
         val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
         Log.i("MYTAG", "getNewsOnInit: Aaya biroo")
-        getAllNews(0, days3)
+        getNewStories(0, days3)
     }
 
     private val _newsUpdateState = MutableLiveData<DataState<List<Story>>>()
     val newsUpdateState: LiveData<DataState<List<Story>>>
         get() = _newsUpdateState
 
-    inline fun List<Story>.checkIfHasThisStoryId(storyId: Int): Boolean = this.contains(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
+    inline fun List<Story>.checkIfHasThisStoryId(storyId: Int): Boolean = this.contains(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf(), viewCount = 0))
 
 
     fun updateNews(storyId: Int, maxDateTime: Long) {
@@ -428,6 +432,7 @@ constructor(private val newsRepository: StoriesRepository,
 
                         val updatedStories = it.data
                         val allStories = stories.toMutableList()
+
                         refreshState.value = false
                         changeDatabaseState(isDatabaseEmpty = false)
                         if(updatedStories!=null) {
@@ -435,21 +440,19 @@ constructor(private val newsRepository: StoriesRepository,
                                 val indexOfUpdatedStory =
                                     allStories.toList().getIndexByStoryId(it.storyId)
                                 if (indexOfUpdatedStory > -1) {
-                                    println("indexwala $indexOfUpdatedStory")
-                                    allStories.set(indexOfUpdatedStory, it)
-                                    println("indexwala ${allStories[indexOfUpdatedStory].events[0].title}")
-                                }else{
-                                    allStories.add( it)
+                                    allStories.removeAt(indexOfUpdatedStory)
                                 }
 
                             }
                         }
 
+
                         if(allStories.isNotEmpty())
                             stories = allStories as ArrayList<Story>
 
-                        _storiesLiveData.value = getMapOfStories()
 
+
+                        _storiesLiveData.value = getMapOfStories(stories, ArrayList(updatedStories))
                             val list = arrayListOf<Payload>()
                         val origList = notifyStoriesLiveData.value
                         println("notifystory onupdate $origList")
@@ -490,7 +493,7 @@ constructor(private val newsRepository: StoriesRepository,
                             )
                             if (!isRefreshedByDefault) {
                                 isRefreshedByDefault = true
-                                getAllNews(maxStory.storyId, maxStory.updatedAt)
+                                getNewStories(maxStory.storyId, maxStory.updatedAt)
                             }
                         } catch (e: Exception) {
                             debugToast("Min max error")
@@ -789,7 +792,7 @@ constructor(private val newsRepository: StoriesRepository,
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 
-    fun List<Story>.getIndexByStoryId(storyId: Int): Int = this.indexOf(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf()))
+    fun List<Story>.getIndexByStoryId(storyId: Int): Int = this.indexOf(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf(), viewCount = 0))
 
     companion object {
         var stories = ArrayList<Story>()

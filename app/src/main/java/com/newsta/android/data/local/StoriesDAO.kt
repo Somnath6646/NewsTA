@@ -19,8 +19,6 @@ interface StoriesDAO {
     @Query("SELECT MAX(story_id) AS storyId , MAX(updated_at) AS updatedAt FROM ${Story.TABLE_NAME} WHERE updated_at < :maxTime")
     suspend fun getMaxStory(maxTime: Long): MaxStoryAndUpdateTime
 
-    @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE story_id = (SELECT MIN(story_id) FROM ${Story.TABLE_NAME})")
-    suspend fun getMinStory(): Story
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSavedStory(story: SavedStory): Long
@@ -29,13 +27,13 @@ interface StoriesDAO {
     suspend fun insertSavedStory(stories: List<SavedStory>): Array<Long>
 
 
-    @Query("SELECT story_id, updated_at, events, category FROM ${Story.TABLE_NAME} WHERE category = (SELECT :category FROM ${Story.TABLE_NAME})")
+    @Query("SELECT story_id, updated_at, events, category, view_count FROM ${Story.TABLE_NAME} WHERE category = (SELECT :category FROM ${Story.TABLE_NAME})")
     suspend fun getFilteredStories(category: Int): List<Story>
 
     @Query("SELECT * FROM ${SavedStory.TABLE_NAME}")
     suspend fun getSavedStories(): List<SavedStory>
 
-    @Query("SELECT story_id, updated_at, events, category FROM ${SavedStory.TABLE_NAME} WHERE story_id = (SELECT :storyId FROM ${SavedStory.TABLE_NAME})")
+    @Query("SELECT story_id, updated_at, events, category, viewCount FROM ${SavedStory.TABLE_NAME} WHERE story_id = (SELECT :storyId FROM ${SavedStory.TABLE_NAME})")
     suspend fun getSavedStory(storyId: Int): SavedStory
 
     @Delete
