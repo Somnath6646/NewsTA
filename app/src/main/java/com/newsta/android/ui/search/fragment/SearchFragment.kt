@@ -15,6 +15,7 @@ import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSearchBinding
 import com.newsta.android.responses.SearchStory
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.ui.details.DetailsActivity
 import com.newsta.android.ui.search.adapter.SearchAdapter
 import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.utils.models.DataState
@@ -153,8 +154,12 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         val stories = ArrayList<Story>()
         stories.add(story)
         viewModel.setSelectedStoryList(stories)
-        val action = SearchFragmentDirections.actionSearchFragmentToDetailsFragment(data)
-        findNavController().navigate(action)
+        /*val bundle = bundleOf("data" to data)
+        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)*/
+
+        viewModel.selectedDetailsPageData = data
+        val intent = Intent(activity, DetailsActivity::class.java)
+        activity?.startActivity(intent)
     }
 
 }

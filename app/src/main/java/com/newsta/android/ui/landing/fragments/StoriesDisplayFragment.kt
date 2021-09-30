@@ -1,5 +1,6 @@
 package com.newsta.android.ui.landing.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -15,6 +16,7 @@ import com.newsta.android.MainActivity.Companion.maxStory
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentStoriesDisplayBinding
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.ui.details.DetailsActivity
 import com.newsta.android.ui.landing.adapter.ARG_OBJECT
 import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.utils.helpers.OnDataSetChangedListener
@@ -43,8 +45,14 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
     private fun openDetails(position: Int) {
         val data = DetailsPageData(position)
-        val bundle = bundleOf("data" to data)
-        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)
+        /*val bundle = bundleOf("data" to data)
+        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)*/
+
+        viewModel.selectedDetailsPageData = data
+        val intent = Intent(activity, DetailsActivity::class.java)
+        activity?.startActivity(intent)
+
+
     }
 
     private fun initViews() {

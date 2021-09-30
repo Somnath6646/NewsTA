@@ -42,39 +42,35 @@
                 style="@style/DetailPageHeading"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginBottom="12dp"
-
                 android:text="Serum Institute to Delay Vaccine Shipments to Brazil, Morocco, Saudi over Surging Demand at Home"
-                app:layout_constraintBottom_toTopOf="@id/coverimg_event"
-                app:layout_constraintEnd_toEndOf="@id/right_guidline"
+                app:layout_constraintTop_toBottomOf="@id/coverimg_event"
                 app:layout_constraintEnd_toStartOf="@id/right_guidline"
-                app:layout_constraintStart_toEndOf="@id/left_guidline"
-                app:layout_constraintStart_toStartOf="@id/left_guidline"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/left_guidline" />
 
             <ImageView
                 android:id="@+id/coverimg_event"
                 android:layout_width="0dp"
-                android:layout_height="217dp"
+                android:layout_height="300dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/newsta_default"
-                app:layout_constraintBottom_toTopOf="@id/updated_at_event"
+                app:layout_constraintBottom_toTopOf="@id/title_event"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title_event" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/updated_at_event"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="14dp"
                 android:text="Updated today at 13:11:35"
                 android:textSize="12sp"
-                android:textStyle="italic"
+                android:fontFamily="@font/light"
                 app:layout_constraintBottom_toTopOf="@id/summary_event"
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
-                app:layout_constraintTop_toBottomOf="@id/coverimg_event" />
+                app:layout_constraintTop_toBottomOf="@id/title_event" />
 
             <TextView
                 android:id="@+id/summary_event"
@@ -93,7 +89,7 @@
                 android:id="@+id/timeline_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
+                android:layout_marginVertical="32dp"
                 app:layout_constraintEnd_toEndOf="@id/right_guidline"
                 app:layout_constraintStart_toStartOf="@id/left_guidline"
                 app:layout_constraintTop_toBottomOf="@id/summary_event"
@@ -103,10 +99,10 @@
                     android:id="@+id/text_timline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/regular"
+                    android:fontFamily="@font/medium"
                     android:text="Timeline"
                     android:textColor="@color/colorText"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -115,7 +111,7 @@
                     android:id="@+id/recycler_view_timeline_events"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginBottom="12dp"
                     android:fadingEdge="vertical"
                     app:layout_constraintEnd_toEndOf="parent"

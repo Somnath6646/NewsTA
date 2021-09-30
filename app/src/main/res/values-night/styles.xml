@@ -17,7 +17,7 @@
     </style>
 
     <style name="DescriptionText">
-        <item name="fontFamily">@font/semibold</item>
+        <item name="fontFamily">@font/bold</item>
         <item name="android:textSize">14sp</item>
         <item name="android:padding">12dp</item>
         <item name="android:textStyle">normal</item>

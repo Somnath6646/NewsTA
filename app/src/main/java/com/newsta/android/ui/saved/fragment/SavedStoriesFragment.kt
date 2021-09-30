@@ -3,6 +3,7 @@ package com.newsta.android.ui.saved.fragment
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -24,6 +25,7 @@ import com.newsta.android.R
 import com.newsta.android.databinding.FragmentSavedStoriesBinding
 import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.ui.details.DetailsActivity
 import com.newsta.android.viewmodels.NewsViewModel
 import com.newsta.android.ui.saved.adapter.SavedStoryAdapter
 import com.newsta.android.utils.SavedStoryItemDetailsLookup
@@ -126,10 +128,13 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
     }
 
     private fun openDetails(position: Int) {
-        val detailsPageData = DetailsPageData(position
-        )
-        val bundle = bundleOf("data" to detailsPageData)
-        findNavController().navigate(R.id.action_savedStoriesFragment_to_detailsFragment, bundle)
+        val data = DetailsPageData(position)
+        /*val bundle = bundleOf("data" to data)
+        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)*/
+
+        viewModel.selectedDetailsPageData = data
+        val intent = Intent(activity, DetailsActivity::class.java)
+        activity?.startActivity(intent)
     }
 
     private fun showDeleteDialog(savedStory: List<SavedStory>): Boolean {

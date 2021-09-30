@@ -20,6 +20,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
@@ -84,7 +85,24 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             println("12245 notify call "+ "removed from notifies")
             removeFromNotified() }
 
-        binding.btnDownloaded.setOnClickListener { deleteSavedStory() }
+//        binding.btnDownloaded.setOnClickListener { deleteSavedStory() }
+
+        binding.appBar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            var isShow = false
+            var scrollRange = -1
+            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.totalScrollRange
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    isShow = true
+//                    showOptions(R.id.action_bookmark)
+                } else if (isShow) {
+                    isShow = false
+//                    hideOptions(R.id.action_bookmark)
+                }
+            }
+        })
 
 
     }
@@ -319,7 +337,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         super.onActivityCreated(savedInstanceState)
 
         binding.lifecycleOwner = requireActivity()
-        data = requireArguments().getParcelable<DetailsPageData>("data")!!
+        data = viewModel.selectedDetailsPageData
+
+        println("DATA___> $data")
 
         position = data.position
 

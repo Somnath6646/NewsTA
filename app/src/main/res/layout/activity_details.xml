@@ -7,7 +7,7 @@
 
         <variable
             name="authviewModel"
-            type="com.newsta.android.viewmodels.AuthenticationViewModel" />
+            type="com.newsta.android.viewmodels.NewsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navGraph="@navigation/nav_graph" />
+            app:navGraph="@navigation/details_nav_graph" />
 
         <LinearLayout
             android:id="@+id/networkStatusLayout"

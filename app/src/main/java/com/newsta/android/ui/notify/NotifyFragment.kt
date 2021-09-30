@@ -3,6 +3,7 @@ package com.newsta.android.ui.notify
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -25,6 +26,7 @@ import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.remote.data.ArticleState
 import com.newsta.android.remote.data.Payload
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.ui.details.DetailsActivity
 import com.newsta.android.ui.notify.adapter.NotifyStoriesAdapter
 import com.newsta.android.utils.MyItemKeyProvider
 import com.newsta.android.utils.NotifyStoryItemDetailsLookup
@@ -134,10 +136,13 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
     }
 
     private fun openDetails(position: Int) {
-        val detailsPageData = DetailsPageData(position)
-        val bundle = bundleOf("data" to detailsPageData)
-        Log.i("12246 notifyStoryList", "${viewModel.notifyStories.get(position).events.last().title}")
-        findNavController().navigate(R.id.action_notifyFragment_to_detailsFragment, bundle)
+        val data = DetailsPageData(position)
+        /*val bundle = bundleOf("data" to data)
+        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)*/
+
+        viewModel.selectedDetailsPageData = data
+        val intent = Intent(activity, DetailsActivity::class.java)
+        activity?.startActivity(intent)
     }
 
     private fun showDeleteDialog(savedStory: List<SavedStory>): Boolean {

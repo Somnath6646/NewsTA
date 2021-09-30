@@ -188,6 +188,7 @@ constructor(private val newsRepository: StoriesRepository,
 
 
                                 _storiesLiveData.value = getMapOfStories(oldStories = stories, newStories = ArrayList(it.data))
+                                println("it.data ----> ${it.data}")
 
                                 val list = arrayListOf<Payload>()
                                 val origList = notifyStoriesLiveData.value
@@ -793,6 +794,9 @@ constructor(private val newsRepository: StoriesRepository,
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 
     fun List<Story>.getIndexByStoryId(storyId: Int): Int = this.indexOf(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf(), viewCount = 0))
+
+    var selectedDetailsPageData: DetailsPageData = DetailsPageData(0)
+
 
     companion object {
         var stories = ArrayList<Story>()

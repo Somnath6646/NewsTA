@@ -29,7 +29,7 @@
                 android:textSize="16sp"
                 android:textColor="@color/colorText"
                 android:text="Category"
-                android:fontFamily="@font/semibold"
+                android:fontFamily="@font/bold"
                 android:layout_gravity="center"
                 android:layout_margin="60dp"/>
 

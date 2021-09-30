@@ -126,13 +126,6 @@
         android:name="com.newsta.android.ui.landing.fragments.LandingFragment"
         android:label="LandingFragment" >
         <action
-            android:id="@+id/action_landingFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-        <action
             android:id="@+id/action_landingFragment_to_savedStoriesFragment"
             app:destination="@id/savedStoriesFragment"
             app:enterAnim="@anim/in_from_right"
@@ -215,38 +208,13 @@
             app:popExitAnim="@anim/out_to_right"/>
     </fragment>
     <fragment
-        android:id="@+id/detailsFragment"
-        android:name="com.newsta.android.ui.details.fragment.DetailsFragment"
-        android:label="DetailsFragment">
-
-        <argument
-            android:name="data"
-            app:argType="com.newsta.android.utils.models.DetailsPageData" />
-
-    </fragment>
-    <fragment
         android:id="@+id/savedStoriesFragment"
         android:name="com.newsta.android.ui.saved.fragment.SavedStoriesFragment"
-        android:label="SavedStoriesFragment" >
-        <action
-            android:id="@+id/action_savedStoriesFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-    </fragment>
+        android:label="SavedStoriesFragment" />
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.newsta.android.ui.search.fragment.SearchFragment"
         android:label="SearchFragment" >
-        <action
-            android:id="@+id/action_searchFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
         <deeplink
             app:action="android.intent.action.SEND"
             app:mimeType="text/plain"/>
@@ -274,15 +242,7 @@
     <fragment
         android:id="@+id/notifyFragment"
         android:name="com.newsta.android.ui.notify.NotifyFragment"
-        android:label="NotifyFragment" >
-        <action
-            android:id="@+id/action_notifyFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-    </fragment>
+        android:label="NotifyFragment" />
     <fragment
         android:id="@+id/tutorialFragment"
         android:name="com.newsta.android.ui.authentication.TutorialFragment"
