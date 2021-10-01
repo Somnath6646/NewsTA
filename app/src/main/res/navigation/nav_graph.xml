@@ -20,7 +20,7 @@
             app:popExitAnim="@anim/out_to_right"/>
         <action
             android:id="@+id/action_signupSigninOptionsFragment_to_landingFragment"
-            app:destination="@id/landingFragment"
+            app:destination="@id/navigation"
             app:enterAnim="@anim/fade_in"
             app:popEnterAnim="@anim/fade_in"
             app:popUpTo="@id/nav_graph"
@@ -48,7 +48,7 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_splashFragment_to_landingFragment"
-            app:destination="@id/landingFragment"
+            app:destination="@id/navigation"
             app:enterAnim="@anim/fade_in"
             app:popEnterAnim="@anim/fade_in"
             app:popUpTo="@id/nav_graph"
@@ -86,7 +86,7 @@
         android:label="Password_SignUpFragment" >
         <action
             android:id="@+id/action_password_SignUpFragment_to_landingFragment"
-            app:destination="@id/landingFragment"
+            app:destination="@id/navigation"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popUpTo="@id/nav_graph"
@@ -115,69 +115,11 @@
         android:label="Password_SignInFragment" >
         <action
             android:id="@+id/action_password_SignInFragment_to_landingFragment"
-            app:destination="@id/landingFragment"
+            app:destination="@id/navigation"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/landingFragment"
-        android:name="com.newsta.android.ui.landing.fragments.LandingFragment"
-        android:label="LandingFragment" >
-        <action
-            android:id="@+id/action_landingFragment_to_savedStoriesFragment"
-            app:destination="@id/savedStoriesFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right" />
-        <action
-            android:id="@+id/action_landingFragment_to_searchFragment"
-            app:destination="@id/searchFragment"
-            />
-        <action
-            android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment"
-            app:destination="@id/signupSigninOptionsFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/nav_graph"/>
-        <action
-            android:id="@+id/action_landingFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right" />
-        <action
-            android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment2"
-            app:destination="@id/signupSigninOptionsFragment" />
-        <action
-            android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment3"
-            app:destination="@id/signupSigninOptionsFragment" />
-        <action
-            android:id="@+id/action_landingFragment_to_notifyFragment"
-            app:destination="@id/notifyFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-        <action
-            android:id="@+id/action_landingFragment_to_privacyFragment"
-            app:destination="@id/privacyFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-        <action
-            android:id="@+id/action_landingFragment_to_feedBackFragment"
-            app:destination="@id/feedBackFragment"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-
     </fragment>
     <fragment
         android:id="@+id/signIn_AuthenticationOptionsFragment"
@@ -192,7 +134,7 @@
             app:popExitAnim="@anim/out_to_right"/>
         <action
             android:id="@+id/action_signIn_AuthenticationOptionsFragment_to_landingFragment"
-            app:destination="@id/landingFragment"
+            app:destination="@id/navigation"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
@@ -263,4 +205,68 @@
         android:id="@+id/feedBackFragment"
         android:name="com.newsta.android.ui.feedback.FeedBackFragment"
         android:label="FeedBackFragment" />
+    <include android:id = "@+id/navigation"
+        app:graph="@navigation/main_nav_graph" />
+
+   <!-- <navigation android:id="@+id/navigation"
+        app:startDestination="@id/landingFragment">
+        <fragment
+            android:id="@+id/landingFragment"
+            android:name="com.newsta.android.ui.landing.fragments.LandingFragment"
+            android:label="LandingFragment">
+            <action
+                android:id="@+id/action_landingFragment_to_savedStoriesFragment"
+                app:destination="@id/savedStoriesFragment"
+                app:enterAnim="@anim/in_from_right"
+                app:exitAnim="@anim/out_to_left"
+                app:popEnterAnim="@anim/in_from_left"
+                app:popExitAnim="@anim/out_to_right" />
+            <action
+                android:id="@+id/action_landingFragment_to_searchFragment"
+                app:destination="@id/searchFragment" />
+            <action
+                android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment"
+                app:destination="@id/signupSigninOptionsFragment"
+                app:enterAnim="@anim/in_from_right"
+                app:exitAnim="@anim/out_to_left"
+                app:popUpTo="@id/nav_graph"
+                app:popUpToInclusive="true" />
+            <action
+                android:id="@+id/action_landingFragment_to_settingsFragment"
+                app:destination="@id/settingsFragment"
+                app:enterAnim="@anim/in_from_right"
+                app:exitAnim="@anim/out_to_left"
+                app:popEnterAnim="@anim/in_from_left"
+                app:popExitAnim="@anim/out_to_right" />
+            <action
+                android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment2"
+                app:destination="@id/signupSigninOptionsFragment" />
+            <action
+                android:id="@+id/action_landingFragment_to_signupSigninOptionsFragment3"
+                app:destination="@id/signupSigninOptionsFragment" />
+            <action
+                android:id="@+id/action_landingFragment_to_notifyFragment"
+                app:destination="@id/notifyFragment"
+                app:enterAnim="@anim/in_from_right"
+                app:exitAnim="@anim/out_to_left"
+                app:popEnterAnim="@anim/in_from_left"
+                app:popExitAnim="@anim/out_to_right" />
+            <action
+                android:id="@+id/action_landingFragment_to_privacyFragment"
+                app:destination="@id/privacyFragment"
+                app:enterAnim="@anim/in_from_right"
+                app:exitAnim="@anim/out_to_left"
+                app:popEnterAnim="@anim/in_from_left"
+                app:popExitAnim="@anim/out_to_right" />
+            <action
+                android:id="@+id/action_landingFragment_to_feedBackFragment"
+                app:destination="@id/feedBackFragment"
+                app:enterAnim="@anim/in_from_right"
+                app:exitAnim="@anim/out_to_left"
+                app:popEnterAnim="@anim/in_from_left"
+                app:popExitAnim="@anim/out_to_right" />
+
+        </fragment>
+    </navigation>-->
+
 </navigation>

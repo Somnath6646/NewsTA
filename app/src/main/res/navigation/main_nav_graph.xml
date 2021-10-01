@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/recommendedStoriesFragment">
+
+    <fragment
+        android:id="@+id/recommendedStoriesFragment"
+        android:name="com.newsta.android.ui.recommended.fragments.RecommendedStoriesFragment"
+        android:label="RecommendedStoriesFragment" />
+    <fragment
+        android:id="@+id/landingFragment"
+        android:name="com.newsta.android.ui.landing.fragments.LandingFragment"
+        android:label="LandingFragment" />
+    <fragment
+        android:id="@+id/notifyFragment"
+        android:name="com.newsta.android.ui.notify.NotifyFragment"
+        android:label="NotifyFragment" />
+    <fragment
+        android:id="@+id/savedStoriesFragment"
+        android:name="com.newsta.android.ui.saved.fragment.SavedStoriesFragment"
+        android:label="SavedStoriesFragment" />
+</navigation>

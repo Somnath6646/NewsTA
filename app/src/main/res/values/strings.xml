@@ -39,5 +39,9 @@
     <string name="continue_without_sign_up">Continue without Sign Up</string>
     <string name="continue_as_guest">Continue as guest</string>
     <string name="skip_for_now"><![CDATA[Skip for now >]]></string>
+    <string name="recommendedStories">Recommended</string>
+    <string name="explore">Explore</string>
+    <string name="notify">Notification</string>
+    <string name="savedstories">Bookmark</string>
 
 </resources>

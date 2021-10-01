@@ -137,5 +137,7 @@ dependencies {
     implementation  'io.ak1:bubbletabbar:1.0.8'
     implementation 'com.google.android.material:material:1.2.1'
 
+    implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.8'
+
 
 }

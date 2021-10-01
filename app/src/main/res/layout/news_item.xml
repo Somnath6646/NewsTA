@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="4dp"
         android:animateLayoutChanges="true"
-        android:layout_marginBottom="18dp"
+        android:layout_marginBottom="20dp"
         app:cardElevation="0dp"
         app:cardMaxElevation="0dp"
         android:elevation="0dp"
@@ -91,23 +91,41 @@
             android:textColor="@color/colorSubText"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+             />
 
-        <TextView
-            android:id="@+id/timeline"
+        <LinearLayout
+            android:id="@+id/timeline_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="14dp"
             android:layout_marginBottom="4dp"
-            android:fontFamily="@font/regular"
-            android:text="M sources"
-            android:textColor="@color/colorSubText"
-            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/title">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_timeline"
+                android:layout_gravity="center"
+                />
+            <TextView
+                android:id="@+id/timeline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/regular"
+                android:text="Timeline"
+                android:textColor="@color/colorSubText"
+                android:textSize="12sp"
+
+                />
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,16 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/home"
-        android:icon="@drawable/ic_downlaod"
-        android:title="Home"
-        android:checked="true"
-        android:color="@color/colorPrimary"/>
+        android:id="@+id/recommendedStoriesFragment"
+        android:title="@string/recommendedStories"
+        android:icon="@drawable/ic_recommended"/>
 
     <item
-        android:id="@+id/log"
-        android:icon="@drawable/ic_notification_unfilled"
-        android:title="Logger"
-        android:color="@color/colorPrimary"/>
+        android:id="@+id/landingFragment"
+        android:title="@string/explore"
+        android:icon="@drawable/ic_explore"/>
+
+    <item
+        android:id="@+id/notifyFragment"
+        android:title="@string/notify"
+        android:icon="@drawable/ic_notifications"/>
+
+    <item
+        android:id="@+id/savedStoriesFragment"
+        android:title="@string/savedstories"
+        android:icon="@drawable/ic_bookmark"/>
 
 </menu>

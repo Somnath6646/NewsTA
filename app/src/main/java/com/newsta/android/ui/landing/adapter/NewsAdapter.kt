@@ -2,6 +2,7 @@ package com.newsta.android.ui.landing.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -86,7 +87,11 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
         val event =story.events.last()
 
         binding.title.text = event.title
-        binding.timeline.text = if (story.events.size > 1) "View timeline" else ""
+        if (story.events.size > 1){
+            binding.timelineIndicator.visibility = View.VISIBLE
+        }else{
+            binding.timelineIndicator.visibility = View.INVISIBLE
+        }
         binding.time.text = NewstaApp.setTime(story.updatedAt)
         if (BuildConfig.DEBUG) {
             binding.time.text =

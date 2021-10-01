@@ -395,7 +395,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         TabLayoutMediator(binding.tabLayout, binding.pager,
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
-                tab.customView = when (position) {
+                /*tab.customView = when (position) {
                     0 -> {
                         if (tabPosition == 0) {
                             addCustomView(
@@ -412,7 +412,8 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                         else
                             return@TabConfigurationStrategy
                     }
-                }
+                }*/
+                tab.text =  userCategories[position].category.capitalize(Locale.ROOT)
             }).attach()
 
         binding.tabLayout.setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
