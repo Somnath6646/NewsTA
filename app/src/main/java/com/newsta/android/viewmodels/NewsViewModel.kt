@@ -11,6 +11,7 @@ import com.newsta.android.MainActivity
 import com.newsta.android.MainActivity.Companion.extras
 import com.newsta.android.MainActivity.Companion.maxStory
 import com.newsta.android.NewstaApp
+import com.newsta.android.interfaces.DetailsBottomNavInterface
 import com.newsta.android.remote.data.*
 import com.newsta.android.repository.StoriesRepository
 import com.newsta.android.responses.LogoutResponse
@@ -797,6 +798,9 @@ constructor(private val newsRepository: StoriesRepository,
 
     var selectedDetailsPageData: DetailsPageData = DetailsPageData(0)
 
+    fun setDetailsBottomNavInterface(detailsBottomNavInterface: DetailsBottomNavInterface) {
+        newsRepository.detailsBottomNavInterface = detailsBottomNavInterface
+    }
 
     companion object {
         var stories = ArrayList<Story>()

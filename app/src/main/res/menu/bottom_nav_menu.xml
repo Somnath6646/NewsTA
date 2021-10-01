@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_recommended"/>
 
     <item
-        android:id="@+id/landingFragment"
+        android:id="@+id/mainLandingFragment"
         android:title="@string/explore"
         android:icon="@drawable/ic_explore"/>
 

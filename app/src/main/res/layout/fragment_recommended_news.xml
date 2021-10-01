@@ -8,5 +8,11 @@
         android:layout_height="match_parent"
         android:background="@color/bg_color"
         tools:context=".ui.recommended.fragments.RecommendedStoriesFragment">
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Recommended" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

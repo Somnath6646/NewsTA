@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="main_nav_fragment" type="id" />
+    <item name="btn_downloaded" type="id" />
+    <item name="btn_share" type="id" />
+    <item name="btn_notify" type="id" />
+    <item name="btn_notify_filled" type="id" />
+    <item name="btn_download" type="id" />
+</resources>

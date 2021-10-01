@@ -45,7 +45,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
     }
 
     fun navigateToMainFragment() {
-        findNavController().navigate(R.id.action_splashFragment_to_landingFragment)
+        findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
     }
 
     fun navigateToAuthenticationOptionsFragment() {

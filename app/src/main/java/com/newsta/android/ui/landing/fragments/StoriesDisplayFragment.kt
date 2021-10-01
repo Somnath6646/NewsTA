@@ -45,12 +45,12 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
     private fun openDetails(position: Int) {
         val data = DetailsPageData(position)
-        /*val bundle = bundleOf("data" to data)
-        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)*/
+        val bundle = bundleOf("data" to data)
+        findNavController().navigate(R.id.action_mainLandingFragment_to_detailsFragment2, bundle)
 
-        viewModel.selectedDetailsPageData = data
+        /*viewModel.selectedDetailsPageData = data
         val intent = Intent(activity, DetailsActivity::class.java)
-        activity?.startActivity(intent)
+        activity?.startActivity(intent)*/
 
 
     }
@@ -112,8 +112,6 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
             }
 
         })
-
-
 
     }
 

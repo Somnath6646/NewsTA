@@ -132,13 +132,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 }
 
                 R.id.saved -> {
-                    findNavController().navigate(R.id.action_landingFragment_to_savedStoriesFragment)
+//                    findNavController().navigate(R.id.action_landingFragment_to_savedStoriesFragment)
                     closeNavigationDrawer()
                     true
                 }
 
                 R.id.settings -> {
-                    findNavController().navigate(R.id.action_landingFragment_to_settingsFragment)
+//                    findNavController().navigate(R.id.action_landingFragment_to_settingsFragment)
                     closeNavigationDrawer()
                     true
                 }
@@ -272,13 +272,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         println("Hey recreated")
 
 
-        binding.notifyCardContainer.setOnClickListener {
-           findNavController().navigate(LandingFragmentDirections.actionLandingFragmentToNotifyFragment())
-        }
+        /*binding.notifyCardContainer.setOnClickListener {
+//           findNavController().navigate(LandingFragmentDirections.actionLandingFragmentToNotifyFragment())
+        }*/
 
         binding.search.setOnClickListener {
-            val action = LandingFragmentDirections.actionLandingFragmentToSearchFragment()
-            findNavController().navigate(action)
+//            val action = LandingFragmentDirections.actionLandingFragmentToSearchFragment()
+//            findNavController().navigate(action)
         }
 
         setUpAdapter()
@@ -292,10 +292,10 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     }
                 }
                 if(count <1){
-                    binding.notifyNumberTextContainer.visibility = View.INVISIBLE
+//                    binding.notifyNumberTextContainer.visibility = View.INVISIBLE
                 }else{
-                    binding.notifyNumberTextContainer.visibility = View.VISIBLE
-                    binding.notifyNumberText.text = "$count"
+//                    binding.notifyNumberTextContainer.visibility = View.VISIBLE
+//                    binding.notifyNumberText.text = "$count"
                 }
 
 
@@ -318,9 +318,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                         Log.i("TAG", "Sucess logout ")
 
                         viewModel.clearAllData()
-                        val action =
+                        /*val action =
                             LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
-                        findNavController().navigate(action)
+                        findNavController().navigate(action)*/
                         LoginManager.getInstance().logOut();
                     }
                     is DataState.Loading -> {
@@ -378,9 +378,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 if(isUnauthorized != null) {
                     if (isUnauthorized) {
                         viewModel.clearAllData()
-                    val action =
+                    /*val action =
                         LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
-                    findNavController().navigate(action)
+                    findNavController().navigate(action)*/
                     LoginManager.getInstance().logOut()
                 }
                 }

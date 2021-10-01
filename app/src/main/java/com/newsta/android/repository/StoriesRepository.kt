@@ -1,10 +1,12 @@
 package com.newsta.android.repository
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.newsta.android.NewstaApp
 import com.newsta.android.data.local.StoriesDAO
+import com.newsta.android.interfaces.DetailsBottomNavInterface
 import com.newsta.android.remote.data.*
 import com.newsta.android.remote.services.NewsService
 import com.newsta.android.responses.LogoutResponse
@@ -616,5 +618,12 @@ class StoriesRepository(
         }
     }
 
+    var bottomNavState: MutableLiveData<Boolean> = MutableLiveData()
+
+    var detailsBottomNavInterface: DetailsBottomNavInterface = object : DetailsBottomNavInterface {
+        override fun isBottomNavEnabled(isEnabled: Boolean) {
+            bottomNavState.value = isEnabled
+        }
+    }
 
 }

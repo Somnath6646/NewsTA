@@ -26,7 +26,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <!--<androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -120,105 +120,7 @@
                     app:layout_constraintEnd_toEndOf="@id/right_guidline"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/app_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.appbar.CollapsingToolbarLayout
-                    android:id="@+id/toolbar_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fitsSystemWindows="true"
-                    app:contentScrim="?attr/colorPrimary"
-                    app:statusBarScrim="@color/colorPrimary"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
-
-                    <ImageView
-                        android:id="@+id/expandedImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:scaleType="fitXY"
-                        app:layout_collapseMode="parallax"
-                        android:fitsSystemWindows="true"
-                        android:src="@color/colorWhite"
-                        android:transitionName="article_image"
-                        app:layout_collapseParallaxMultiplier="0.7"
-                        xmlns:tools="http://schemas.android.com/tools"/>
-
-                    <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        android:background="@android:color/transparent"
-                        android:layout_width="match_parent"
-                        android:elevation="0dp"
-                        android:layout_height="?attr/actionBarSize"
-                        app:layout_collapseMode="pin">
-
-
-
-                        <ImageView
-                            android:id="@+id/btn_back"
-                            style="@style/Rippleeffect"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/back"
-                            app:layout_constraintBottom_toBottomOf="@+id/btn_share"
-                            app:layout_constraintStart_toStartOf="@id/left_guidline"
-                            app:tint="@color/bg_white" />
-
-                        <ImageView
-                            android:id="@+id/btn_notify"
-                            style="@style/Rippleeffect"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="8dp"
-                            android:src="@drawable/ic_notification_unfilled"
-                            android:visibility="visible"
-                            app:tint="@color/bg_white"
-                            app:layout_constraintBottom_toBottomOf="@+id/btn_share"
-                            app:layout_constraintEnd_toStartOf="@id/btn_download" />
-                        <ImageView
-                            android:id="@+id/btn_notify_filled"
-                            style="@style/Rippleeffect"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="8dp"
-                            android:src="@drawable/ic_notification_filled"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@+id/btn_share"
-                            app:layout_constraintEnd_toStartOf="@id/btn_download" />
-
-                        <ImageView
-                            android:id="@+id/btn_download"
-                            style="@style/Rippleeffect"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginHorizontal="8dp"
-                            android:src="@drawable/ic_downlaod"
-                            android:visibility="visible"
-                            app:layout_constraintBottom_toBottomOf="@+id/btn_share"
-                            app:layout_constraintEnd_toStartOf="@id/btn_share" />
-
-                        <ImageView
-                            android:id="@+id/btn_share"
-                            style="@style/Rippleeffect"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/share"
-                            app:tint="@color/bg_white"
-                            app:layout_constraintEnd_toEndOf="@id/right_guidline"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.appcompat.widget.Toolbar>
-
-                </com.google.android.material.appbar.CollapsingToolbarLayout>
-            </com.google.android.material.appbar.AppBarLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

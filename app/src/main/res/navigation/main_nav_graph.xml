@@ -7,11 +7,26 @@
     <fragment
         android:id="@+id/recommendedStoriesFragment"
         android:name="com.newsta.android.ui.recommended.fragments.RecommendedStoriesFragment"
-        android:label="RecommendedStoriesFragment" />
+        android:label="RecommendedStoriesFragment" >
+        <action
+            android:id="@+id/action_recommendedStoriesFragment_to_mainLandingFragment"
+            app:destination="@id/mainLandingFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/landingFragment"
+        android:id="@+id/mainLandingFragment"
         android:name="com.newsta.android.ui.landing.fragments.LandingFragment"
-        android:label="LandingFragment" />
+        android:label="LandingFragment" >
+        <action
+            android:id="@+id/action_mainLandingFragment_to_savedStoriesFragment"
+            app:destination="@id/savedStoriesFragment" />
+        <action
+            android:id="@+id/action_mainLandingFragment_to_detailsFragment2"
+            app:destination="@id/detailsFragment2"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_in"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/notifyFragment"
         android:name="com.newsta.android.ui.notify.NotifyFragment"
@@ -19,5 +34,13 @@
     <fragment
         android:id="@+id/savedStoriesFragment"
         android:name="com.newsta.android.ui.saved.fragment.SavedStoriesFragment"
-        android:label="SavedStoriesFragment" />
+        android:label="SavedStoriesFragment" >
+        <action
+            android:id="@+id/action_savedStoriesFragment_to_notifyFragment"
+            app:destination="@id/notifyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment2"
+        android:name="com.newsta.android.ui.details.fragment.DetailsFragment"
+        android:label="DetailsFragment" />
 </navigation>

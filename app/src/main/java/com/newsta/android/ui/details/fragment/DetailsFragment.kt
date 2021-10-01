@@ -85,24 +85,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             println("12245 notify call "+ "removed from notifies")
             removeFromNotified() }
 
-//        binding.btnDownloaded.setOnClickListener { deleteSavedStory() }
-
-        binding.appBar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            var isShow = false
-            var scrollRange = -1
-            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    isShow = true
-//                    showOptions(R.id.action_bookmark)
-                } else if (isShow) {
-                    isShow = false
-//                    hideOptions(R.id.action_bookmark)
-                }
-            }
-        })
+        binding.btnDownloaded.setOnClickListener { deleteSavedStory() }
 
 
     }
