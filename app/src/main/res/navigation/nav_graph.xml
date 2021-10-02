@@ -33,6 +33,9 @@
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_signupSigninOptionsFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -99,6 +102,9 @@
             app:popUpTo="@id/nav_graph"
 
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_password_SignUpFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/email_SignInFragment"
@@ -127,6 +133,9 @@
             app:exitAnim="@anim/out_to_left"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_password_SignInFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/signIn_AuthenticationOptionsFragment"
@@ -155,6 +164,9 @@
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_signIn_AuthenticationOptionsFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/savedStoriesFragment"

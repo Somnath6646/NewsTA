@@ -120,7 +120,7 @@ class Password_SignInFragment : BaseFragment<FragmentPasswordSignInBinding>() {
 
 
     fun navigateToMainFragment(){
-        val action = Password_SignInFragmentDirections.actionPasswordSignInFragmentToLandingFragment()
+        val action = Password_SignInFragmentDirections.actionPasswordSignInFragmentToMainFragment()
         findNavController().navigate(action)
     }
 

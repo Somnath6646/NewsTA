@@ -198,7 +198,7 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
     }
 
     fun navigateToMainFragment(){
-        val action = SignUp_AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToLandingFragment()
+        val action = SignUp_AuthenticationOptionsFragmentDirections.actionSignupSigninOptionsFragmentToMainFragment()
         findNavController().navigate(action)
     }
 

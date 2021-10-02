@@ -29,7 +29,7 @@ class Password_SignUpFragment : PasswordFragment<FragmentPasswordSignUpBinding>(
     override fun getPasswordInputEditLayout(): TextInputLayout = binding.textFieldPassword
 
     override fun navigateToMainFragment() {
-        val action = Password_SignUpFragmentDirections.actionPasswordSignUpFragmentToLandingFragment()
+        val action = Password_SignUpFragmentDirections.actionPasswordSignUpFragmentToMainFragment()
         findNavController().navigate(action)
     }
 

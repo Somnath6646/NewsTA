@@ -24,10 +24,12 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
+import com.newsta.android.interfaces.DetailsBottomNavInterface
 import com.newsta.android.remote.data.ArticleState
 import com.newsta.android.remote.data.Payload
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.ui.details.adapter.*
+import com.newsta.android.ui.main.fragments.MainFragment
 import com.newsta.android.viewmodels.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.collections.ArrayList
@@ -47,7 +49,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private val WRITE_EXT_STORAGE_REQ_CODE = 0
 
-    private fun setPagerAdapter(){
+    private fun setPagerAdapter() {
         stories  = viewModel.selectedStoryList.value!!
         adapter = DetailSliderAdapter(fragmentActivity = requireActivity(),itemCount =  stories.size, stories = stories as ArrayList<Story>)
 
@@ -293,10 +295,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         Snackbar.make(binding.root, "News story unsaved", Snackbar.LENGTH_SHORT).show()
     }
 
-
-
-
-
     private fun observer() {
 
         viewModel.saveNewsState.observe(viewLifecycleOwner, Observer {
@@ -318,6 +316,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        detailsBottomNavInterface.isBottomNavEnabled(false)
 
         binding.lifecycleOwner = requireActivity()
         data = viewModel.selectedDetailsPageData
@@ -346,6 +346,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         initViews()
         setPagerAdapter()
         observer()
+
 
 
     }
@@ -431,6 +432,14 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             else -> {
                 // Ignore all other requests.
             }
+        }
+    }
+
+    companion object {
+        private lateinit var detailsBottomNavInterface: DetailsBottomNavInterface
+
+        fun setDetailsBottomNavInterface(detailsBottomNavInterface2: DetailsBottomNavInterface) {
+            detailsBottomNavInterface = detailsBottomNavInterface2
         }
     }
 

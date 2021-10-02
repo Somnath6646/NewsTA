@@ -17,9 +17,10 @@ import com.newsta.android.R
 import com.newsta.android.databinding.FragmentMainBinding
 import com.newsta.android.interfaces.DetailsBottomNavInterface
 import com.newsta.android.ui.base.BaseFragment
+import com.newsta.android.ui.details.fragment.DetailsFragment
 import com.newsta.android.viewmodels.NewsViewModel
 
-class MainFragment : BaseFragment<FragmentMainBinding>() {
+class MainFragment : BaseFragment<FragmentMainBinding>(), DetailsBottomNavInterface {
 
     private lateinit var navController: NavController
     private val viewModel by viewModels<NewsViewModel>(ownerProducer = { requireParentFragment().requireParentFragment() })
@@ -38,6 +39,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
         navController = localNavHost.navController*/
         navController = activity?.findNavController(R.id.main_nav_fragment)!!
         setUpSmoothBottomMenu()
+        DetailsFragment.setDetailsBottomNavInterface(this)
 
 //        viewModel.setDetailsBottomNavInterface(DetailsBottomNavInterface)
 
@@ -59,4 +61,20 @@ class MainFragment : BaseFragment<FragmentMainBinding>() {
 
     override fun getFragmentView(): Int = R.layout.fragment_main
 
+    fun toEndTransition() {
+        binding.bottomNav.visibility = View.GONE
+    }
+
+    fun toStartTransition() {
+        binding.bottomNav.visibility = View.VISIBLE
+
+    }
+
+    override fun isBottomNavEnabled(isEnabled: Boolean) {
+        if(isEnabled) {
+            binding.bottomNav.visibility = View.VISIBLE
+        } else {
+            binding.bottomNav.visibility = View.GONE
+        }
+    }
 }

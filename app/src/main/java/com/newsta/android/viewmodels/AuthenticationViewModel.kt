@@ -45,7 +45,6 @@ constructor(private val authRepository: AuthRepository,
         get() = _signinResponse
 
     private val _navigate: MutableLiveData<Indicator<String>> = MutableLiveData()
-
     val navigate: LiveData<Indicator<String>>
         get() = _navigate
 
