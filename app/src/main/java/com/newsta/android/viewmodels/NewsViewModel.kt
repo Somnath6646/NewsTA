@@ -127,6 +127,46 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
+    private val _recommendedStoriesLiveData: MutableLiveData<List<RecommendedStory>> = MutableLiveData(
+        listOf<RecommendedStory>())
+    val recommendedStoriesLiveData: LiveData<List<RecommendedStory>>
+    get() = _recommendedStoriesLiveData
+
+    val presentRecommendedStoryIds: List<Int>?
+        get() = _recommendedStoriesLiveData.value?.map { recommendedStory ->
+        recommendedStory.storyId
+    }
+
+    fun getRecommendedStories(){
+        viewModelScope.launch {
+            var req =  RecommendedStoriesRequest(
+                NewstaApp.access_token!!,
+                NewstaApp.ISSUER_NEWSTA,
+                listOf()
+            )
+            if(presentRecommendedStoryIds != null){
+                req = RecommendedStoriesRequest(
+                    NewstaApp.access_token!!,
+                    NewstaApp.ISSUER_NEWSTA,
+                    presentRecommendedStoryIds!!
+                )
+            }
+
+            newsRepository.getAllRecommendedStories(req).onEach {
+                when (it) {
+                    is DataState.Success -> {
+                        _recommendedStoriesLiveData.value = it.data
+                    }
+                    is DataState.Loading -> {
+                        toast("Loading Recommended")
+                    }
+                    is DataState.Error -> {
+                        toast("Loading Recommended")
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
 
 
     fun getSearchResults() {
@@ -767,6 +807,7 @@ constructor(private val newsRepository: StoriesRepository,
     init {
         Log.i("TAG", "init viemodel ")
 //        getCategories()
+        getRecommendedStories()
         getCategoriesFromDatabase()
         getUserPreferences()
         getNewsOnInit()

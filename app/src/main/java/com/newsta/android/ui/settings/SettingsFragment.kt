@@ -113,7 +113,7 @@ class  SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
         binding.back.setOnClickListener { findNavController().popBackStack() }
 
-        binding.categoriesContainer.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_categoriesFragment) }
+        binding.categoriesContainer.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment2_to_categoriesFragment2) }
 
     }
 

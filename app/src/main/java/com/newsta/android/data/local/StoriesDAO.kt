@@ -16,6 +16,17 @@ interface StoriesDAO {
     @Query("DELETE FROM ${Story.TABLE_NAME} WHERE updated_at <= :maxTime")
     suspend fun deleteAllStories(maxTime: Long)
 
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRecommendedStories(stories: List<RecommendedStory>): Array<Long>
+
+    @Query("SELECT * FROM ${RecommendedStory.TABLE_NAME}")
+    suspend fun getAllRecommendedStories(): List<RecommendedStory>
+
+    @Query("DELETE FROM ${RecommendedStory.TABLE_NAME} WHERE updated_at <= :maxTime")
+    suspend fun deleteAllRecommendedStories(maxTime: Long)
+
+
     @Query("SELECT MAX(story_id) AS storyId , MAX(updated_at) AS updatedAt FROM ${Story.TABLE_NAME} WHERE updated_at < :maxTime")
     suspend fun getMaxStory(maxTime: Long): MaxStoryAndUpdateTime
 

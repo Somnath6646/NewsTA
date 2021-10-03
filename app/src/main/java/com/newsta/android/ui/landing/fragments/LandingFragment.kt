@@ -92,7 +92,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         binding.sideNavDrawer.inflateHeaderView(R.layout.side_nav_header)
 
-        val view = binding.sideNavDrawer.menu.getItem(0).subMenu.getItem(2).actionView
+        val view = binding.sideNavDrawer.menu.getItem(0).subMenu.getItem(1).actionView
         val modeSwitch = view.findViewById<SwitchCompat>(R.id.switchCompatMode)
 
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
@@ -131,14 +131,9 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     true
                 }
 
-                R.id.saved -> {
-//                    findNavController().navigate(R.id.action_landingFragment_to_savedStoriesFragment)
-                    closeNavigationDrawer()
-                    true
-                }
 
                 R.id.settings -> {
-//                    findNavController().navigate(R.id.action_landingFragment_to_settingsFragment)
+                   findNavController().navigate(R.id.action_mainLandingFragment_to_settingsFragment2)
                     closeNavigationDrawer()
                     true
                 }

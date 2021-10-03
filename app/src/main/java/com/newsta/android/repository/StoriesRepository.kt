@@ -140,6 +140,24 @@ class StoriesRepository(
         }
     }
 
+
+    suspend fun getAllRecommendedStories(
+        @Body recommendedStoriesRequest: RecommendedStoriesRequest
+    ): Flow<DataState<List<RecommendedStory>>> = flow{
+        emit(DataState.Loading)
+        try {
+            val recommendedStoriesResponse = newsService.getRecommendedStories(recommendedStoriesRequest)
+            val recommendedStoies = recommendedStoriesResponse.data
+            emit(DataState.Success(recommendedStoies))
+            val isInserted = storiesDao.insertRecommendedStories(recommendedStoies)
+
+        }catch (e: Exception){
+            val recommendedStories = storiesDao.getAllRecommendedStories()
+            emit(DataState.Success(recommendedStories))
+            emit(DataState.Error(e.localizedMessage))
+        }
+    }
+
     suspend fun getAllStories(
         @Body newsRequest: NewsRequest,
         isRefresh: Boolean = false

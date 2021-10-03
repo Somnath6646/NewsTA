@@ -129,12 +129,9 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
 
     private fun openDetails(position: Int) {
         val data = DetailsPageData(position)
-        /*val bundle = bundleOf("data" to data)
-        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)*/
-
+        val bundle = bundleOf("data" to data)
         viewModel.selectedDetailsPageData = data
-        val intent = Intent(activity, DetailsActivity::class.java)
-        activity?.startActivity(intent)
+        findNavController().navigate(R.id.action_savedStoriesFragment_to_detailsFragment2, bundle)
     }
 
     private fun showDeleteDialog(savedStory: List<SavedStory>): Boolean {

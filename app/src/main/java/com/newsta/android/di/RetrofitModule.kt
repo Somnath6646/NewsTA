@@ -19,6 +19,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ApplicationComponent::class)
 object RetrofitModule {
+
     @Singleton
     @Provides
     fun provideGsonBuilder(): Gson {
@@ -40,11 +41,10 @@ object RetrofitModule {
         }.build()
 
         return Retrofit.Builder()
-            .baseUrl("http://13.233.196.246/")
-            .client( client
-            )
-
+            .baseUrl("http://13.232.141.254/")
+            .client( client )
             .addConverterFactory(GsonConverterFactory.create(gson))
+
     }
 
     @Singleton

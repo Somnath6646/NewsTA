@@ -8,6 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_color"
+
+        android:fitsSystemWindows="true"
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,8 +35,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:paddingVertical="18dp"
+                android:paddingVertical="25dp"
                 android:background="@drawable/ic_details_gradient">
+
+
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/left_guidline"

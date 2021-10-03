@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,8 +14,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.drawToBitmap
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -314,8 +318,27 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().window.statusBarColor = Color.TRANSPARENT
+        detailsBottomNavInterface.isBottomNavEnabled(true)
+        val window: Window = requireActivity().getWindow()
+        val view: View = window.getDecorView()
+        WindowInsetsControllerCompat( window, view).isAppearanceLightStatusBars = true
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        requireActivity().getWindow().setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        requireActivity().window.statusBarColor = Color.BLACK
+
+        val window: Window = requireActivity().getWindow()
+        val view: View = window.getDecorView()
+        WindowInsetsControllerCompat( window, view).isAppearanceLightStatusBars = false
+
 
         detailsBottomNavInterface.isBottomNavEnabled(false)
 

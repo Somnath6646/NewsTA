@@ -14,6 +14,10 @@ interface NewsService {
     suspend fun getAllNews(@Body newsRequest: NewsRequest): NewsResponse
 
     @Headers("Accept: application/json")
+    @POST("recommendation")
+    suspend fun getRecommendedStories(@Body recommendedStoriesRequest: RecommendedStoriesRequest): RecommendedStoriesResponse
+
+    @Headers("Accept: application/json")
     @POST("stories/existing")
     suspend fun getExistingNews(@Body newsRequest: NewsRequest): NewsResponse
 

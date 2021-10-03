@@ -6,9 +6,6 @@
 
         <menu>
 
-            <item
-                android:id="@+id/saved"
-                android:title="Saved" />
 
             <item
                 android:id="@+id/settings"
