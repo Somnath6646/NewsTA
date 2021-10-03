@@ -80,16 +80,14 @@
 
                 <TextView
                     android:id="@+id/app_name"
+                    style="@style/TextActionBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/newsta"
-                    android:fontFamily="@font/medium"
-                    android:textSize="20sp"
-                    android:textColor="@color/colorText"
                     app:layout_constraintBottom_toTopOf="@id/nav_guideline"
                     app:layout_constraintEnd_toStartOf="@id/search"
                     app:layout_constraintStart_toEndOf="@id/nav_drawer"
-                    app:layout_constraintTop_toBottomOf="@id/top_guideline" />
+                    app:layout_constraintTop_toTopOf="@+id/top_guideline" />
 
                 <ImageView
                     android:id="@+id/search"
@@ -168,15 +166,16 @@
                     android:animateLayoutChanges="true"
                     app:layout_constraintBottom_toTopOf="@id/pager"
                     app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintLeft_toLeftOf="@id/start_guideline"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/nav_guideline"
                     app:tabGravity="center"
                     app:tabIndicator="@drawable/tab_indicator"
                     app:tabIndicatorColor="@color/colorPrimary"
                     app:tabIndicatorFullWidth="false"
-                    app:tabIndicatorHeight="5dp"
+                    app:tabIndicatorHeight="3dp"
                     app:tabMode="scrollable"
+                    app:tabPaddingStart="16dp"
                     app:tabPaddingEnd="16dp"
                     app:tabPaddingTop="1dp"
                     android:background="@android:color/transparent"
@@ -191,7 +190,6 @@
                     android:id="@+id/pager"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:paddingHorizontal="24dp"
                     android:saveEnabled="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

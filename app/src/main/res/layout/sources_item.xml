@@ -50,12 +50,12 @@
             style="@style/SourceAdapterText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:lineHeight="18sp"
+            android:layout_marginTop="16dp"
+            android:lineHeight="19sp"
             android:maxLines="4"
             android:text="Weeklong Lockdown in Dist Bordering Maharashtra, Two-day Clampdown in Shajapur as Cases Rise in MP"
             android:textColor="@color/colorSourceTitle"
-            android:textStyle="bold"
+            android:fontFamily="@font/medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/time" />
 
@@ -64,7 +64,7 @@
             android:id="@+id/source_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:fontFamily="@font/bold"
@@ -72,7 +72,6 @@
             android:textColor="@color/colorText"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/title"
             app:layout_constraintStart_toEndOf="@id/image_card"
             app:layout_constraintTop_toTopOf="parent" />
 

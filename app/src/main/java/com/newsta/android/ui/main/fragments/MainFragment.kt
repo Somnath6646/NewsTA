@@ -30,7 +30,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), DetailsBottomNavInterf
         popupMenu.inflate(R.menu.bottom_nav_menu)
         val menu = popupMenu.menu
 //        binding.bottomNav.setupWithNavController(menu, navController)
-        binding.bottomNav.setupWithNavController(menu, navController)
+        binding.bottomNav.setupWithNavController(navController)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

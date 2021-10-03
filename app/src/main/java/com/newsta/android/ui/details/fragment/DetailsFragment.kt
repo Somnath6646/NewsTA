@@ -225,9 +225,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             if (it.contains(story.storyId)){
                 Log.i("12245 saved detail", "true ${story.storyId}")
                 binding.btnDownload.visibility = View.INVISIBLE
+                binding.btnDownloaded.visibility = View.VISIBLE
             }else{
                 Log.i("12245 saved detail", "false ${story.storyId}")
                 binding.btnDownload.visibility = View.VISIBLE
+                binding.btnDownloaded.visibility = View.INVISIBLE
             }
         }
     }
@@ -263,6 +265,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         Snackbar.make(binding.root, "News story saved", Snackbar.LENGTH_SHORT).show()
         binding.btnDownload.visibility = View.INVISIBLE
+        binding.btnDownloaded.visibility = View.VISIBLE
 
     }
 
@@ -294,8 +297,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
             println("savedstory list is null")
         }
 
-
         binding.btnDownload.visibility = View.VISIBLE
+        binding.btnDownloaded.visibility = View.INVISIBLE
         Snackbar.make(binding.root, "News story unsaved", Snackbar.LENGTH_SHORT).show()
     }
 
@@ -322,6 +325,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         super.onDestroy()
         requireActivity().window.statusBarColor = Color.TRANSPARENT
         detailsBottomNavInterface.isBottomNavEnabled(true)
+
+        /*requireActivity().getWindow().setFlags(
+            WindowManager.LayoutParams.LAYOUT,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);*/
+
         val window: Window = requireActivity().getWindow()
         val view: View = window.getDecorView()
         WindowInsetsControllerCompat( window, view).isAppearanceLightStatusBars = true
@@ -330,9 +338,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        requireActivity().getWindow().setFlags(
+        /*requireActivity().getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);*/
+
         requireActivity().window.statusBarColor = Color.BLACK
 
         val window: Window = requireActivity().getWindow()

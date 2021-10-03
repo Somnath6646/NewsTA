@@ -17,15 +17,16 @@
             app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
             app:navGraph="@navigation/main_nav_graph" />
 
-        <me.ibrahimsn.lib.SmoothBottomBar
+        <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
+            app:itemRippleColor="@android:color/transparent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/bottom_nav_menu"
-            app:backgroundColor="@color/bg_white"
+            app:backgroundColor="@color/bg_color"
             app:indicatorColor="@color/colorPrimary"
             app:indicatorRadius="24dp"
             app:itemPadding="10dp"
@@ -35,6 +36,11 @@
             app:iconSize="20dp"
             app:iconTint="@color/colorText"
             app:iconTintActive="@color/white"
+            app:labelVisibilityMode="unlabeled"
+            android:backgroundTintMode="screen"
+            android:background="@color/bg_color"
+            app:backgroundTint="@color/bg_color"
+            app:itemBackground="@color/bg_color"
             app:duration="100" />
 
         <!--<com.google.android.material.bottomnavigation.BottomNavigationView

@@ -4,21 +4,21 @@
     <item
         android:id="@+id/recommendedStoriesFragment"
         android:title="@string/recommendedStories"
-        android:icon="@drawable/ic_recommended"/>
+        android:icon="@drawable/home_selector"/>
 
     <item
         android:id="@+id/mainLandingFragment"
         android:title="@string/explore"
-        android:icon="@drawable/ic_explore"/>
+        android:icon="@drawable/explore_selector"/>
 
     <item
         android:id="@+id/notifyFragment"
         android:title="@string/notify"
-        android:icon="@drawable/ic_notifications"/>
+        android:icon="@drawable/notify_selector"/>
 
     <item
         android:id="@+id/savedStoriesFragment"
         android:title="@string/savedstories"
-        android:icon="@drawable/ic_bookmark"/>
+        android:icon="@drawable/saved_selector"/>
 
 </menu>

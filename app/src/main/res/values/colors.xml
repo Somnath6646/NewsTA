@@ -6,7 +6,7 @@
     <color name="colorSubText">#8E8E8E</color>
     <color name="colorSourceTitle">#5a5a5a</color>
     <color name="colorSecondary">#f5f5f5</color>
-    <color name="bg_color">#F7F7FA</color>
+    <color name="bg_color">#fff</color>
     <color name="password_weak">#FF0000</color>
     <color name="password_moderate">#FFA726</color>
     <color name="password_strong">#88FF00</color>
@@ -16,6 +16,6 @@
     <color name="dividerColor">#D5D5D5</color>
     <color name="sourceIconBgColor">#fff</color>
     <color name="bg_white">#fff</color>
-    <color name = "tab_unselectedText_color">#ABAFB3</color>
+    <color name="tab_unselectedText_color">#ABAFB3</color>
 
 </resources>

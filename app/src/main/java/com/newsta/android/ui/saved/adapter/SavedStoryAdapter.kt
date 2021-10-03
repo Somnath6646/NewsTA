@@ -96,7 +96,11 @@ class SavedStoryViewHolder(private val binding: NewsItemBinding, private val onC
         val event = events.last()
 
         binding.title.text = event.title
-        binding.timeline.text = if(events.size > 1) "View timeline" else ""
+        if (story.events.size > 1){
+            binding.timelineIndicator.visibility = View.VISIBLE
+        }else{
+            binding.timelineIndicator.visibility = View.INVISIBLE
+        }
         binding.time.text = NewstaApp.setTime(story.updatedAt)
 
         Picasso.get()

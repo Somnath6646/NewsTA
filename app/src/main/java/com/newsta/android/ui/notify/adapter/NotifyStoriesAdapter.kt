@@ -102,7 +102,11 @@ class NotifyStoriesViewHolder(private val binding: NewsItemBinding, private val 
         val event = events.last()
 
         binding.title.text = event.title
-        binding.timeline.text = if(events.size > 1) "View timeline" else ""
+        if (story.events.size > 1){
+            binding.timelineIndicator.visibility = View.VISIBLE
+        }else{
+            binding.timelineIndicator.visibility = View.INVISIBLE
+        }
         binding.time.text = NewstaApp.setTime(story.updatedAt)
 
         if(payload.read == ArticleState.READ){

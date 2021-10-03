@@ -11,7 +11,9 @@
         </item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:navigationBarColor">@color/bg_color</item>
-<!--        <item name="navigationIconTint">@color/colorText</item>-->
+        <item name="navigationIconTint">@color/colorText</item>
+        <item name="android:enforceNavigationBarContrast">true</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
 
