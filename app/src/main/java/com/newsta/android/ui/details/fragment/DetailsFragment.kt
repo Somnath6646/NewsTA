@@ -320,7 +320,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         })
 
     }
-
+    var isPreviousStatusBarLight = true
     override fun onDestroy() {
         super.onDestroy()
         requireActivity().window.statusBarColor = Color.TRANSPARENT
@@ -332,7 +332,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         val window: Window = requireActivity().getWindow()
         val view: View = window.getDecorView()
-        WindowInsetsControllerCompat( window, view).isAppearanceLightStatusBars = true
+        WindowInsetsControllerCompat( window, view).isAppearanceLightStatusBars = isPreviousStatusBarLight
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -346,6 +346,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         val window: Window = requireActivity().getWindow()
         val view: View = window.getDecorView()
+        isPreviousStatusBarLight = WindowInsetsControllerCompat( window, view).isAppearanceLightStatusBars
         WindowInsetsControllerCompat( window, view).isAppearanceLightStatusBars = false
 
 

@@ -76,7 +76,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginHorizontal="8dp"
-                    android:src="@drawable/ic_save_solid"
+                    android:src="@drawable/ic_bookmark_solid"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="@+id/btn_share"
                     app:layout_constraintEnd_toStartOf="@id/btn_share" />
@@ -113,7 +113,7 @@
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/btn_share"
                     app:layout_constraintEnd_toStartOf="@id/btn_share"
-                    app:tint="@color/bg_color" />
+                     />
 
                 <ImageView
                     android:id="@+id/btn_share"

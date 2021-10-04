@@ -35,8 +35,10 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), DetailsBottomNavInterf
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         /*val localNavHost = childFragmentManager.findFragmentById(R.id.main_nav_fragment) as NavHostFragment
         navController = localNavHost.navController*/
+
         navController = activity?.findNavController(R.id.main_nav_fragment)!!
         setUpSmoothBottomMenu()
         DetailsFragment.setDetailsBottomNavInterface(this)
@@ -60,15 +62,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), DetailsBottomNavInterf
     }*/
 
     override fun getFragmentView(): Int = R.layout.fragment_main
-
-    fun toEndTransition() {
-        binding.bottomNav.visibility = View.GONE
-    }
-
-    fun toStartTransition() {
-        binding.bottomNav.visibility = View.VISIBLE
-
-    }
 
     override fun isBottomNavEnabled(isEnabled: Boolean) {
         if(isEnabled) {

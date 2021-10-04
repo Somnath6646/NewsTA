@@ -148,6 +148,7 @@ class StoriesRepository(
         try {
             val recommendedStoriesResponse = newsService.getRecommendedStories(recommendedStoriesRequest)
             val recommendedStoies = recommendedStoriesResponse.data
+            println("445566 ${recommendedStoies}")
             emit(DataState.Success(recommendedStoies))
             val isInserted = storiesDao.insertRecommendedStories(recommendedStoies)
 

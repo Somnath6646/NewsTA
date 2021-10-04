@@ -33,7 +33,7 @@
             app:textColor="@color/colorWhite"
             app:itemFontFamily="@font/regular"
             app:textSize="14sp"
-            app:iconSize="20dp"
+            app:iconSize="14dp"
             app:iconTint="@color/colorText"
             app:iconTintActive="@color/white"
             app:labelVisibilityMode="unlabeled"

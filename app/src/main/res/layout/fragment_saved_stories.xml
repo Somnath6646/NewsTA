@@ -59,11 +59,11 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/back"
+                    android:id="@+id/sidenav"
                     style="@style/Rippleeffect"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/back"
+                    android:src="@drawable/ic_nav_drawer"
                     app:layout_constraintBottom_toTopOf="@id/nav_guideline"
                     app:layout_constraintStart_toEndOf="@id/start_guideline"
                     app:layout_constraintTop_toBottomOf="@id/top_guideline" />
@@ -77,7 +77,7 @@
                     android:text="@string/saved_stories"
                     app:layout_constraintBottom_toTopOf="@id/nav_guideline"
                     app:layout_constraintEnd_toStartOf="@id/search"
-                    app:layout_constraintStart_toEndOf="@id/back"
+                    app:layout_constraintStart_toEndOf="@id/sidenav"
                     app:layout_constraintTop_toBottomOf="@id/top_guideline" />
 
                 <ImageView
@@ -160,6 +160,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/side_nav_drawer4"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            style="@style/BlackBoldTextNews"
+            android:background="@drawable/nav_drawer_bg"
+            app:itemIconTint="@color/colorText"
+            app:itemTextAppearance="@style/NavigationDrawerTextStyle"
+            app:itemTextColor="@color/colorText"
+            app:menu="@menu/nav_menu" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 

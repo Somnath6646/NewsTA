@@ -10,9 +10,6 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <!--app:refreshing="@{viewModel.refreshState}"-->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -21,13 +18,119 @@
             android:layout_height="match_parent"
         >
 
+            <androidx.drawerlayout.widget.DrawerLayout
+                android:id="@+id/drawer_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/top_guideline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.02"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintGuide_begin="7dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/start_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintGuide_percent="0.04"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/end_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintGuide_percent="0.96"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/nav_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toStartOf="@id/end_guideline"
+                    app:layout_constraintGuide_percent="0.07"
+                    app:layout_constraintStart_toEndOf="@id/start_guideline"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/header_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/nav_guideline"
+                app:layout_constraintEnd_toEndOf="@id/end_guideline"
+                app:layout_constraintStart_toStartOf="@id/start_guideline"
+                app:layout_constraintTop_toTopOf="@id/top_guideline">
+                <ImageView
+                    android:id="@+id/nav_drawer"
+                    style="@style/Rippleeffect"
+                    android:layout_width="28dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_nav_drawer"
+                    />
+                <TextView
+                    android:id="@+id/textActionBar"
+                    style="@style/TextActionBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/newsta"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    />
+                <ImageView
+                    android:id="@+id/search"
+                    style="@style/Rippleeffect"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_search"
+                    />
+            </LinearLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nav_guideline"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/side_nav_drawer2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                style="@style/BlackBoldTextNews"
+                android:background="@drawable/nav_drawer_bg"
+                app:itemIconTint="@color/colorText"
+                app:itemTextAppearance="@style/NavigationDrawerTextStyle"
+                app:itemTextColor="@color/colorText"
+                app:menu="@menu/nav_menu" />
+            </androidx.drawerlayout.widget.DrawerLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
 </layout>

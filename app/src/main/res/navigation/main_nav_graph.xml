@@ -15,6 +15,13 @@
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_recommendedStoriesFragment_to_settingsFragment2"
+            app:destination="@id/settingsFragment2"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/mainLandingFragment"
@@ -46,6 +53,13 @@
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_notifyFragment_to_settingsFragment2"
+            app:destination="@id/settingsFragment2"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
     </fragment>
     <fragment
         android:id="@+id/savedStoriesFragment"
@@ -54,6 +68,13 @@
         <action
             android:id="@+id/action_savedStoriesFragment_to_detailsFragment2"
             app:destination="@id/detailsFragment2"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
+        <action
+            android:id="@+id/action_savedStoriesFragment_to_settingsFragment2"
+            app:destination="@id/settingsFragment2"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"

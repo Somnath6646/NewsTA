@@ -20,10 +20,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.constraintlayout.motion.widget.MotionLayout
+                android:id="@+id/fragmentLanding"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/bg_color">
+                android:background="@color/bg_color"
+                app:layoutDescription="@xml/fragment_landing_scene"
+                >
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/top_guideline"
@@ -66,38 +69,39 @@
                     app:layout_constraintStart_toEndOf="@id/start_guideline"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
-                <ImageView
-                    android:id="@+id/nav_drawer"
-                    style="@style/Rippleeffect"
-                    android:layout_width="28dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_nav_drawer"
-                    app:layout_constraintBottom_toTopOf="@id/nav_guideline"
-                    app:layout_constraintStart_toEndOf="@id/start_guideline"
-                    app:layout_constraintTop_toBottomOf="@id/top_guideline" />
-
-
-                <TextView
-                    android:id="@+id/app_name"
-                    style="@style/TextActionBar"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/header_layout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/newsta"
-                    app:layout_constraintBottom_toTopOf="@id/nav_guideline"
-                    app:layout_constraintEnd_toStartOf="@id/search"
-                    app:layout_constraintStart_toEndOf="@id/nav_drawer"
-                    app:layout_constraintTop_toTopOf="@+id/top_guideline" />
-
-                <ImageView
-                    android:id="@+id/search"
-                    style="@style/Rippleeffect"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_search"
+                    android:orientation="horizontal"
                     app:layout_constraintBottom_toTopOf="@id/nav_guideline"
                     app:layout_constraintEnd_toStartOf="@id/end_guideline"
-                    app:layout_constraintTop_toBottomOf="@id/top_guideline" />
+                    app:layout_constraintStart_toStartOf="@id/start_guideline"
+                    app:layout_constraintTop_toTopOf="@+id/top_guideline">
+                    <ImageView
+                        android:id="@+id/nav_drawer"
+                        style="@style/Rippleeffect"
+                        android:layout_width="28dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_nav_drawer"
+                        />
+                    <TextView
+                        android:id="@+id/textActionBar"
+                        style="@style/TextActionBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/newsta"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        />
+                    <ImageView
+                        android:id="@+id/search"
+                        style="@style/Rippleeffect"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_search"
+                        />
+                </LinearLayout>
 
                 <!--<androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/notify_card_container"
@@ -161,8 +165,7 @@
                     android:id="@+id/tabLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="0dp"
                     android:animateLayoutChanges="true"
                     app:layout_constraintBottom_toTopOf="@id/pager"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -178,6 +181,7 @@
                     app:tabPaddingStart="16dp"
                     app:tabPaddingEnd="16dp"
                     app:tabPaddingTop="1dp"
+                    app:tabPaddingBottom="0dp"
                     android:background="@android:color/transparent"
                     app:tabRippleColor="@android:color/transparent"
                     app:tabSelectedTextColor="@color/colorPrimary"
@@ -196,7 +200,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.motion.widget.MotionLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

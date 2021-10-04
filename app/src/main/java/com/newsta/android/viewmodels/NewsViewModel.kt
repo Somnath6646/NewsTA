@@ -161,7 +161,7 @@ constructor(private val newsRepository: StoriesRepository,
                         toast("Loading Recommended")
                     }
                     is DataState.Error -> {
-                        toast("Loading Recommended")
+                        toast("Error in Recommended ${it.exception}")
                     }
                 }
             }.launchIn(viewModelScope)
