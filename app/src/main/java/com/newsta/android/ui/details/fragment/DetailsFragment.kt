@@ -69,6 +69,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
                 viewModel.getSources(story.storyId, story.events.last().eventId)
                 setIconForNotified(viewModel.notifyStoriesLiveData.value)
                 updateStateOfArticleOnServer()
+                viewModel.updateRecommendedStoryReadStatus(story.storyId, true)
                 setIconForSaved()
 
             }
@@ -366,6 +367,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
         setIconForNotified(viewModel.notifyStoriesLiveData.value)
         updateStateOfArticleOnServer()
+        viewModel.updateRecommendedStoryReadStatus(storyId = story.storyId, true)
         setIconForSaved()
 
         binding.lifecycleOwner = requireActivity()

@@ -1,5 +1,6 @@
 package com.newsta.android.data.local
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.newsta.android.remote.data.Payload
 import com.newsta.android.utils.models.*
@@ -16,15 +17,17 @@ interface StoriesDAO {
     @Query("DELETE FROM ${Story.TABLE_NAME} WHERE updated_at <= :maxTime")
     suspend fun deleteAllStories(maxTime: Long)
 
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRecommendedStories(stories: List<RecommendedStory>): Array<Long>
 
     @Query("SELECT * FROM ${RecommendedStory.TABLE_NAME}")
-    suspend fun getAllRecommendedStories(): List<RecommendedStory>
+    fun getAllRecommendedStories(): LiveData<List<RecommendedStory>>
 
     @Query("DELETE FROM ${RecommendedStory.TABLE_NAME} WHERE updated_at <= :maxTime")
     suspend fun deleteAllRecommendedStories(maxTime: Long)
+
+    @Query("UPDATE ${RecommendedStory.TABLE_NAME} SET read = :hasRead WHERE story_id = :storyId")
+    suspend fun updateRecommendedStoryReadStatus(storyId: Int, hasRead: Boolean )
 
 
     @Query("SELECT MAX(story_id) AS storyId , MAX(updated_at) AS updatedAt FROM ${Story.TABLE_NAME} WHERE updated_at < :maxTime")

@@ -22,25 +22,30 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        timer = object : CountDownTimer(2000, 1000) {
-            override fun onFinish() {
+        if(isAdded){
+            timer = object : CountDownTimer(1700, 1000) {
+                override fun onFinish() {
+                    if(isAdded){
+                        if (NewstaApp.access_token != null) {
+                            //navtomainfragment
+                            if(activity?.intent?.action != Intent.ACTION_SEND)
+                                navigateToMainFragment()
+                        } else {
+                            //navtoauthenticationoptionsfragment
+                            navigateToAuthenticationOptionsFragment()
+                        }
+                    }
 
-                if (NewstaApp.access_token != null) {
-                    //navtomainfragment
-                    if(activity?.intent?.action != Intent.ACTION_SEND)
-                    navigateToMainFragment()
-                } else {
-                    //navtoauthenticationoptionsfragment
-                    navigateToAuthenticationOptionsFragment()
-                }
 //                navigateToAuthenticationOptionsFragment()
-            }
+                }
 
-            override fun onTick(millisUntilFinished: Long) {
+                override fun onTick(millisUntilFinished: Long) {
 
-            }
+                }
 
-        }.start()
+            }.start()
+
+        }
 
     }
 

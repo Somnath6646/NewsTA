@@ -90,7 +90,7 @@
                         style="@style/TextActionBar"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="@string/newsta"
+                        android:text="Explore"
                         android:gravity="center"
                         android:layout_weight="1"
                         />

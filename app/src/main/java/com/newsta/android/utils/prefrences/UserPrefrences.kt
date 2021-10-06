@@ -58,11 +58,21 @@ class UserPrefrences(context: Context) {
             settings[HAS_CHANGED_PREFERENCES] = hasChangedPreferences
         }
     }
+    suspend fun setIsDarkMode(isDarkMode: Boolean) {
+
+        applicationContext.dataStore.edit { settings ->
+            settings[IS_DARK_MODE] = isDarkMode
+        }
+    }
 
 
     val isDatabaseEmpty: Flow<Boolean?> = applicationContext.dataStore.data
         .map { preferences ->
             preferences[IS_DATABASE_EMPTY]
+        }
+    val isDarkMode: Flow<Boolean?> = applicationContext.dataStore.data
+        .map { preferences ->
+            preferences[IS_DARK_MODE]
         }
 
     suspend fun isDatabaseEmpty(isDatabaseEmpty: Boolean) {
@@ -91,6 +101,8 @@ class UserPrefrences(context: Context) {
         val FONT_SCALE = floatPreferencesKey("font_scale")
         val APP_INSTALLED_JUST_NOW = booleanPreferencesKey("app_installed_now")
         val HAS_CHANGED_PREFERENCES = booleanPreferencesKey("has_changed_preferences")
+
+        val IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
     }
 
 }

@@ -1,8 +1,11 @@
 package com.newsta.android.ui.recommended.adapter
 
+import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.newsta.android.BuildConfig
@@ -44,8 +47,8 @@ class RecommendedStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerVi
         stories.addAll(storiesList)
         stories = ArrayList(stories.distinct())
         println("LIST SIZE ${stories.size}")
-        notifyDataSetChanged()
         onDataSetChangeListener.onDataSetChange(convertStoryType(storiesList))
+        notifyDataSetChanged()
     }
 
     fun clear() {
@@ -74,6 +77,8 @@ class RecommendedStoriesViewHolder(private val binding: NewsItemBinding, private
 
     fun bind(story: RecommendedStory, position: Int, stories: List<RecommendedStory>) {
 
+        Log.i("75446 story", "${story.events.last().title}")
+
         story.events = story.events.sortedBy { it.createdAt }
         val event =story.events.last()
 
@@ -83,10 +88,17 @@ class RecommendedStoriesViewHolder(private val binding: NewsItemBinding, private
         }else{
             binding.timelineIndicator.visibility = View.INVISIBLE
         }
+        val res = NewstaApp.res
+        if(res != null) {
+            if (stories[position].read) {
+                binding.title.setTextColor(Color.GRAY)
+            } else {
+                ResourcesCompat.getColor(res, R.color.colorText, null)
+            }
+        }
         binding.time.text = NewstaApp.setTime(story.updatedAt)
         if (BuildConfig.DEBUG) {
-            binding.time.text =
-                "${NewstaApp.setTime(story.updatedAt)} - ${story.storyId} - ${story.category}"
+            binding.time.text = "${NewstaApp.setTime(story.updatedAt)} - ${story.storyId} - ${story.category}"
         }
 
         if (!event.imgUrl.isNullOrEmpty()) {

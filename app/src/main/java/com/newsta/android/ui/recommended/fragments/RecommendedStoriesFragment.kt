@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newsta.android.MainActivity
+import com.newsta.android.NewstaApp
 import com.newsta.android.databinding.FragmentSavedStoriesBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.R
@@ -42,7 +43,7 @@ class RecommendedStoriesFragment: BaseFragment<FragmentRecommendedNewsBinding>()
 
     private fun setUpAdapter() {
 
-        adapter = RecommendedStoriesAdapter({ position: Int-> openDetails(position) })
+        adapter = RecommendedStoriesAdapter { position: Int -> openDetails(position) }
         adapter.setDataSetChangeListener(this)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -77,16 +78,21 @@ class RecommendedStoriesFragment: BaseFragment<FragmentRecommendedNewsBinding>()
         super.onActivityCreated(savedInstanceState)
         binding.viewModel = viewModel
         binding.lifecycleOwner = requireActivity()
-
-
-        viewModel.recommendedStoriesLiveData.observe(viewLifecycleOwner, Observer {
-            if(it != null){
-                adapter.addAll(ArrayList(it))
-            }
-        })
         setUpNavigationDrawer()
         setUpAdapter()
         initViews()
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled().let {
+                if (it != null)
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.recommendedStoriesLiveData.observe(viewLifecycleOwner, Observer {
+            if(it != null){
+                adapter.addAll(ArrayList(it.reversed()))
+            }
+        })
 
     }
 
@@ -105,13 +111,7 @@ class RecommendedStoriesFragment: BaseFragment<FragmentRecommendedNewsBinding>()
         val view = binding.sideNavDrawer2.menu.getItem(0).subMenu.getItem(1).actionView
         val modeSwitch = view.findViewById<SwitchCompat>(R.id.switchCompatMode)
 
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            modeSwitch.isChecked = true
-            println("Night mode hai")
-        } else {
-            println("Night mode nahi hai ---> ${AppCompatDelegate.MODE_NIGHT_YES} ---> ${AppCompatDelegate.getDefaultNightMode()}")
-            modeSwitch.isChecked = false
-        }
+        modeSwitch.isChecked = NewstaApp.isDarkMode
 
         binding.sideNavDrawer2.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -204,10 +204,14 @@ class RecommendedStoriesFragment: BaseFragment<FragmentRecommendedNewsBinding>()
         }
 
         modeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            if (isChecked){
+                if(!NewstaApp.isDarkMode)
+                    viewModel.setIsDarkMode(true)
+            }
+            else {
+                if(NewstaApp.isDarkMode)
+                    viewModel.setIsDarkMode(false)
+            }
         }
 
     }

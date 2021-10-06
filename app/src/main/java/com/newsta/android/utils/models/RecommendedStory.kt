@@ -25,7 +25,9 @@ data class RecommendedStory(
     val storyId: Int,
     @ColumnInfo(name = "view_count")
     @SerializedName("view_count")
-    val viewCount: Int
+    val viewCount: Int,
+    @ColumnInfo(name = "read")
+    val read: Boolean = false
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {

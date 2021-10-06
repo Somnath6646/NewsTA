@@ -25,6 +25,7 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentNotifyBinding
 import com.newsta.android.databinding.LogoutDialogBinding
@@ -267,13 +268,7 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
         val view = binding.sideNavDrawer3.menu.getItem(0).subMenu.getItem(1).actionView
         val modeSwitch = view.findViewById<SwitchCompat>(R.id.switchCompatMode)
 
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            modeSwitch.isChecked = true
-            println("Night mode hai")
-        } else {
-            println("Night mode nahi hai ---> ${AppCompatDelegate.MODE_NIGHT_YES} ---> ${AppCompatDelegate.getDefaultNightMode()}")
-            modeSwitch.isChecked = false
-        }
+        modeSwitch.isChecked = NewstaApp.isDarkMode
 
         binding.sideNavDrawer3.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -366,12 +361,15 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
         }
 
         modeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            if (isChecked){
+                if(!NewstaApp.isDarkMode)
+                    viewModel.setIsDarkMode(true)
+            }
+            else {
+                if(NewstaApp.isDarkMode)
+                    viewModel.setIsDarkMode(false)
+            }
         }
-
     }
 
     private fun closeNavigationDrawer() {

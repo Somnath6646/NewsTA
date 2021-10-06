@@ -1,6 +1,7 @@
 package com.newsta.android
 
 import android.app.Application
+import android.content.res.Resources
 import android.os.Build
 import android.text.format.DateUtils
 import android.util.Log
@@ -28,6 +29,8 @@ class NewstaApp : Application(), Configuration.Provider {
     @Inject lateinit var prefrences: UserPrefrences
 
     companion object {
+        var res: Resources? = null
+
 
         const val ISSUER_NEWSTA = "newsta"
 
@@ -51,6 +54,8 @@ class NewstaApp : Application(), Configuration.Provider {
         }
 
         var is_database_empty: Boolean = true
+
+        var isDarkMode: Boolean = false
 
         fun getIsDatabaseEmpty(): Boolean = is_database_empty
         fun setIsDatabaseEmpty(isDatabaseEmpty: Boolean) {
@@ -122,12 +127,16 @@ class NewstaApp : Application(), Configuration.Provider {
 
     }
 
+
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate() {
         super.onCreate()
         FacebookSdk.sdkInitialize(applicationContext);
         AppEventsLogger.activateApp(this);
         setWorks()
+        res = resources
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -138,7 +147,7 @@ class NewstaApp : Application(), Configuration.Provider {
             .build()
 
         val periodicDatabaseClearRequest =
-            PeriodicWorkRequestBuilder<DatabaseClearer>(3, TimeUnit.DAYS)
+            PeriodicWorkRequestBuilder<DatabaseClearer>(1, TimeUnit.DAYS)
                 .build()
 
         val workManager = WorkManager.getInstance(applicationContext)

@@ -98,9 +98,11 @@ class NewsViewHolder(private val binding: NewsItemBinding, private val onClick: 
         }
 
         if (!event.imgUrl.isNullOrEmpty()) {
+
             Picasso.get()
                 .load(event.imgUrl)
                 .into(binding.image)
+
         } else {
             binding.image.setImageResource(R.drawable.newsta_default)
         }

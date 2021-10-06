@@ -44,6 +44,12 @@ constructor(private val newsRepository: StoriesRepository,
     val selectedStoryList: LiveData<List<Story>>
     get() = _selectedStoryList
 
+    fun setIsDarkMode(isDarkMode: Boolean){
+        viewModelScope.launch {
+            preferences.setIsDarkMode(isDarkMode)
+        }
+    }
+
     fun setSelectedStoryList(stories: List<Story>){
         _selectedStoryList.value = stories
     }
@@ -130,44 +136,51 @@ constructor(private val newsRepository: StoriesRepository,
     private val _recommendedStoriesLiveData: MutableLiveData<List<RecommendedStory>> = MutableLiveData(
         listOf<RecommendedStory>())
     val recommendedStoriesLiveData: LiveData<List<RecommendedStory>>
-    get() = _recommendedStoriesLiveData
+    get() = newsRepository.recommendedStories
 
     val presentRecommendedStoryIds: List<Int>?
-        get() = _recommendedStoriesLiveData.value?.map { recommendedStory ->
+        get() = recommendedStoriesLiveData.value?.map { recommendedStory ->
         recommendedStory.storyId
     }
 
     fun getRecommendedStories(){
         viewModelScope.launch {
-            var req =  RecommendedStoriesRequest(
-                NewstaApp.access_token!!,
-                NewstaApp.ISSUER_NEWSTA,
-                listOf()
-            )
-            if(presentRecommendedStoryIds != null){
-                req = RecommendedStoriesRequest(
+            if(NewstaApp.access_token != null) {
+                var req = RecommendedStoriesRequest(
                     NewstaApp.access_token!!,
                     NewstaApp.ISSUER_NEWSTA,
-                    presentRecommendedStoryIds!!
+                    listOf()
                 )
-            }
-
-            newsRepository.getAllRecommendedStories(req).onEach {
-                when (it) {
-                    is DataState.Success -> {
-                        _recommendedStoriesLiveData.value = it.data
-                    }
-                    is DataState.Loading -> {
-                        toast("Loading Recommended")
-                    }
-                    is DataState.Error -> {
-                        toast("Error in Recommended ${it.exception}")
-                    }
+                if (presentRecommendedStoryIds != null) {
+                    req = RecommendedStoriesRequest(
+                        NewstaApp.access_token!!,
+                        NewstaApp.ISSUER_NEWSTA,
+                        presentRecommendedStoryIds!!
+                    )
                 }
-            }.launchIn(viewModelScope)
+
+                newsRepository.getAllRecommendedStories(req).onEach {
+                    when (it) {
+                        is DataState.Success -> {
+                            _recommendedStoriesLiveData.value = it.data
+                        }
+                        is DataState.Loading -> {
+                            toast("Loading Recommended")
+                        }
+                        is DataState.Error -> {
+                            toast("Error in Recommended ${it.exception}")
+                        }
+                    }
+                }.launchIn(viewModelScope)
+            }
         }
     }
 
+    fun updateRecommendedStoryReadStatus(storyId: Int, hasRead: Boolean ){
+        viewModelScope.launch {
+            newsRepository.updateRecommendedStoryReadStatus(storyId, hasRead)
+        }
+    }
 
     fun getSearchResults() {
         if(!searchTerm.value.isNullOrEmpty()) {
@@ -807,10 +820,11 @@ constructor(private val newsRepository: StoriesRepository,
     init {
         Log.i("TAG", "init viemodel ")
 //        getCategories()
-        getRecommendedStories()
+
         getCategoriesFromDatabase()
         getUserPreferences()
         getNewsOnInit()
+        getRecommendedStories()
     }
 
     fun setFontScale(fontScale: Float) {

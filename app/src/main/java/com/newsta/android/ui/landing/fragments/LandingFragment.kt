@@ -95,13 +95,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         val view = binding.sideNavDrawer.menu.getItem(0).subMenu.getItem(1).actionView
         val modeSwitch = view.findViewById<SwitchCompat>(R.id.switchCompatMode)
 
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            modeSwitch.isChecked = true
-            println("Night mode hai")
-        } else {
-            println("Night mode nahi hai ---> ${AppCompatDelegate.MODE_NIGHT_YES} ---> ${AppCompatDelegate.getDefaultNightMode()}")
-            modeSwitch.isChecked = false
-        }
+        modeSwitch.isChecked = NewstaApp.isDarkMode
 
         binding.sideNavDrawer.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -194,10 +188,14 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         }
 
         modeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            if (isChecked){
+                if(!NewstaApp.isDarkMode)
+                viewModel.setIsDarkMode(true)
+            }
+            else {
+                if(NewstaApp.isDarkMode)
+                viewModel.setIsDarkMode(false)
+            }
         }
 
     }

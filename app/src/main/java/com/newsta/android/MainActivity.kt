@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -83,6 +84,20 @@ class MainActivity : AppCompatActivity(){
                 Log.i("MainActivity IS DB EMPTY", "null")
             }
         })
+        viewModel.userPrefrences.isDarkMode.asLiveData().distinctUntilChanged().observe(this, Observer { isDarkMode ->
+            if (isDarkMode != null) {
+                NewstaApp.isDarkMode = isDarkMode
+                if(isDarkMode){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }else{
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+        })
+
+
 
         viewModel.userPrefrences.fontScale.asLiveData().observe(this, Observer { fontScale ->
 

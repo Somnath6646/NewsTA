@@ -1,6 +1,7 @@
 package com.newsta.android.repository
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -92,6 +93,8 @@ class StoriesRepository(
             }
         }
 
+   val recommendedStories = storiesDao.getAllRecommendedStories()
+
     suspend fun getNewsFromDatabase(): Flow<DataState<List<Story>>> = flow {
 
         emit(DataState.Loading)
@@ -148,15 +151,24 @@ class StoriesRepository(
         try {
             val recommendedStoriesResponse = newsService.getRecommendedStories(recommendedStoriesRequest)
             val recommendedStoies = recommendedStoriesResponse.data
-            println("445566 ${recommendedStoies}")
-            emit(DataState.Success(recommendedStoies))
+            println("445566 ${recommendedStoies.size}")
             val isInserted = storiesDao.insertRecommendedStories(recommendedStoies)
+            /*val recommendedStories = storiesDao.getAllRecommendedStories().value
+            emit(DataState.Success(recommendedStories))*/
 
         }catch (e: Exception){
-            val recommendedStories = storiesDao.getAllRecommendedStories()
+            /*val recommendedStories = storiesDao.getAllRecommendedStories().value
             emit(DataState.Success(recommendedStories))
-            emit(DataState.Error(e.localizedMessage))
+            emit(DataState.Error(e.localizedMessage))*/
         }
+    }
+
+    suspend fun updateRecommendedStoryReadStatus(storyId: Int, hasRead: Boolean ){
+        storiesDao.updateRecommendedStoryReadStatus(storyId, hasRead)
+    }
+
+    suspend fun deleteAllRecommendedStories(maxTime: Long){
+        storiesDao.deleteAllRecommendedStories(maxTime)
     }
 
     suspend fun getAllStories(
