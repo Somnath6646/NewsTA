@@ -70,7 +70,8 @@ class SignUp_AuthenticationOptionsFragment : BaseFragment<FragmentSignupOptionsB
 
         val EMAIL = "email"
         val loginButton = binding.loginButton
-        loginButton.setReadPermissions(Arrays.asList(EMAIL))
+
+        loginButton.setReadPermissions(Arrays.asList("email", "public_profile", "user_friends"))
         loginButton.setFragment(this);
 
 

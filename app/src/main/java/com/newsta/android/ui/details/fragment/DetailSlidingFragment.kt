@@ -52,10 +52,11 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
     override fun getFragmentView(): Int = R.layout.fragment_detail_sliding
 
     private fun initViews() {
-
-        event = story.events.singleOrNull {
+        println("7855 details sliding frag storyId: ${data.story.storyId} eventId ${data.eventId}")
+        event = data.story.events.single() {
+            println("7855 details sliding frag eventId : ${it.eventId}")
             it.eventId == data.eventId
-        }!!
+        }
 
         println("Story ---> ${story.storyId} \nEvents size ---> ${story.events.size} \nEvents ---> ${story.events}")
         println("Story: ${story.storyId} Event: ${event.eventId}")

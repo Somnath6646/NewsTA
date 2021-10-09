@@ -7,6 +7,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -150,7 +151,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     }
 
     private fun navigateToDetailFragment(story: Story, position: Int){
-        val data = DetailsPageData(position)
+        val data = DetailsPageData(position, selectedEventID)
+        println("7855 search frag eventId ${selectedEventID} storyId: ${story.storyId}")
         val stories = ArrayList<Story>()
         stories.add(story)
         viewModel.setSelectedStoryList(stories)
@@ -158,8 +160,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)*/
 
         viewModel.selectedDetailsPageData = data
-        val intent = Intent(activity, DetailsActivity::class.java)
-        activity?.startActivity(intent)
+        val bundle = bundleOf("data" to data)
+        findNavController().navigate(R.id.action_searchFragment2_to_detailsFragment2, bundle)
+        /*val intent = Intent(activity, DetailsActivity::class.java)
+        activity?.startActivity(intent)*/
     }
 
 }

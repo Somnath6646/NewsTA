@@ -30,7 +30,7 @@ class NewstaApp : Application(), Configuration.Provider {
 
     companion object {
         var res: Resources? = null
-
+        var recommendationApiCallCount = 0
 
         const val ISSUER_NEWSTA = "newsta"
 

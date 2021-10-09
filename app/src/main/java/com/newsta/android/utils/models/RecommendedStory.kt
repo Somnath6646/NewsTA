@@ -11,6 +11,9 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(tableName = TABLE_NAME)
 data class RecommendedStory(
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     @ColumnInfo(name = "category")
     @SerializedName("category")
     val category: Int,
@@ -20,7 +23,6 @@ data class RecommendedStory(
     @SerializedName("events")
     var events: List<Event>,
     @ColumnInfo(name = "story_id")
-    @PrimaryKey(autoGenerate = false)
     @SerializedName("story_id")
     val storyId: Int,
     @ColumnInfo(name = "view_count")

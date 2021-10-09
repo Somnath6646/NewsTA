@@ -55,7 +55,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun setPagerAdapter() {
         stories  = viewModel.selectedStoryList.value!!
-        adapter = DetailSliderAdapter(fragmentActivity = requireActivity(),itemCount =  stories.size, stories = stories as ArrayList<Story>)
+        println("7855 setpageradapter details frag storyId: ${story.storyId} eventId ${data.selectedEventId}")
+        adapter = DetailSliderAdapter(fragmentActivity = requireActivity(), selectedPosition = position, eventId = data.selectedEventId,itemCount =  stories.size, stories = stories as ArrayList<Story>)
 
         binding.pager.adapter = adapter
         binding.pager.setCurrentItem(position, false)

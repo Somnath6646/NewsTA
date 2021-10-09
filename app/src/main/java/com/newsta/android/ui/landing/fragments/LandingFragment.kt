@@ -3,6 +3,7 @@ package com.newsta.android.ui.landing.fragments
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -28,6 +29,7 @@ import com.facebook.login.LoginManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.newsta.android.BuildConfig
+import com.newsta.android.MainActivity
 import com.newsta.android.MainActivity.Companion.categoryState
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
@@ -94,8 +96,17 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
 
         val view = binding.sideNavDrawer.menu.getItem(0).subMenu.getItem(1).actionView
         val modeSwitch = view.findViewById<SwitchCompat>(R.id.switchCompatMode)
-
-        modeSwitch.isChecked = NewstaApp.isDarkMode
+        var isChecked = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        val res = NewstaApp.res
+        if(res != null) {
+            when (res.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    println("42333 mode night yes")
+                    isChecked = true
+                }
+            }
+        }
+        modeSwitch.isChecked = isChecked
 
         binding.sideNavDrawer.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -270,30 +281,13 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
         }*/
 
         binding.search.setOnClickListener {
-//            val action = LandingFragmentDirections.actionLandingFragmentToSearchFragment()
-//            findNavController().navigate(action)
+          val action = LandingFragmentDirections.actionMainLandingFragmentToSearchFragment2()
+           findNavController().navigate(action)
         }
 
         setUpAdapter()
 
-        viewModel.notifyStoriesLiveData.observe(requireActivity(), Observer {payloads ->
-            var count = 0
-            if(payloads !=null){
-                payloads.forEach {
-                    if(it.read == ArticleState.UNREAD){
-                        count++
-                    }
-                }
-                if(count <1){
-//                    binding.notifyNumberTextContainer.visibility = View.INVISIBLE
-                }else{
-//                    binding.notifyNumberTextContainer.visibility = View.VISIBLE
-//                    binding.notifyNumberText.text = "$count"
-                }
 
-
-            }
-        })
 
         viewModel.categoryLiveData.observe(requireActivity(), Observer {
                //setUpTabLayout(categories)
@@ -310,11 +304,19 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     is DataState.Success -> {
                         Log.i("TAG", "Sucess logout ")
 
+                        LoginManager.getInstance().logOut();
                         viewModel.clearAllData()
                         /*val action =
-                            LandingFragmentDirections.actionLandingFragmentToSignupSigninOptionsFragment()
+                            LandingFragmentDirections.actionMainLandingFragmentToNavGraph()
                         findNavController().navigate(action)*/
-                        LoginManager.getInstance().logOut();
+                        val context = requireActivity().applicationContext
+
+                        if(context!= null) {
+                            requireActivity().startActivity(Intent(context, MainActivity::class.java))
+                            requireActivity().finish()
+
+                        }
+
                     }
                     is DataState.Loading -> {
                         Log.i("TAG", "Loading logout ")

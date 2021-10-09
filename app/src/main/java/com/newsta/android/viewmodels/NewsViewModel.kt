@@ -19,6 +19,7 @@ import com.newsta.android.responses.SearchStory
 import com.newsta.android.utils.helpers.Indicator
 import com.newsta.android.utils.models.*
 import com.newsta.android.utils.prefrences.UserPrefrences
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -133,8 +134,6 @@ constructor(private val newsRepository: StoriesRepository,
         }
     }
 
-    private val _recommendedStoriesLiveData: MutableLiveData<List<RecommendedStory>> = MutableLiveData(
-        listOf<RecommendedStory>())
     val recommendedStoriesLiveData: LiveData<List<RecommendedStory>>
     get() = newsRepository.recommendedStories
 
@@ -162,7 +161,7 @@ constructor(private val newsRepository: StoriesRepository,
                 newsRepository.getAllRecommendedStories(req).onEach {
                     when (it) {
                         is DataState.Success -> {
-                            _recommendedStoriesLiveData.value = it.data
+                            toast("Success Recommended")
                         }
                         is DataState.Loading -> {
                             toast("Loading Recommended")
@@ -824,7 +823,6 @@ constructor(private val newsRepository: StoriesRepository,
         getCategoriesFromDatabase()
         getUserPreferences()
         getNewsOnInit()
-        getRecommendedStories()
     }
 
     fun setFontScale(fontScale: Float) {
@@ -851,7 +849,7 @@ constructor(private val newsRepository: StoriesRepository,
 
     fun List<Story>.getIndexByStoryId(storyId: Int): Int = this.indexOf(Story(category = 0, storyId = storyId,  updatedAt = 0, events = listOf(), viewCount = 0))
 
-    var selectedDetailsPageData: DetailsPageData = DetailsPageData(0)
+    var selectedDetailsPageData: DetailsPageData = DetailsPageData(0,0)
 
     fun setDetailsBottomNavInterface(detailsBottomNavInterface: DetailsBottomNavInterface) {
         newsRepository.detailsBottomNavInterface = detailsBottomNavInterface

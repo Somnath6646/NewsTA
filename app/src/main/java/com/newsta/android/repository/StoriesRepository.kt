@@ -93,7 +93,7 @@ class StoriesRepository(
             }
         }
 
-   val recommendedStories = storiesDao.getAllRecommendedStories()
+    val recommendedStories = storiesDao.getAllRecommendedStories()
 
     suspend fun getNewsFromDatabase(): Flow<DataState<List<Story>>> = flow {
 

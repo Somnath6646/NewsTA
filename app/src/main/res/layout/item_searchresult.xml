@@ -40,8 +40,8 @@
             android:lineHeight="20sp"
             android:text="Weeklong Lockdown in Dist Bordering Maharashtra, Two-day Clampdown in Shajapur as Cases Rise in MP"
             android:textColor="@color/colorText"
-            android:textStyle="bold"
             android:maxLines="4"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_card"
             app:layout_constraintTop_toTopOf="parent" />

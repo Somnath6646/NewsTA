@@ -2,8 +2,8 @@
 <resources>
     <color name="colorPrimary">#4285F4</color>
     <color name="colorWhite">#ffffff</color>
-    <color name="colorText">#ffffff</color>
-    <color name="bg_color">#121212</color>
+    <color name="colorText">#F3F3F3</color>
+    <color name="bg_color">#071727</color>
     <color name="colorSourceTitle">#AEAEAE</color>
     <color name="colorSecondary">#272727</color>
     <color name="summary">#EAEAEA</color>

@@ -5,5 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class DetailsPageData (
-    val position: Int
+    val position: Int,
+    val selectedEventId: Int
 ) : Parcelable

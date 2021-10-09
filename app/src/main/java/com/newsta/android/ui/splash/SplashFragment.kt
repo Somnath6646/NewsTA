@@ -3,8 +3,10 @@ package com.newsta.android.ui.splash
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
@@ -23,15 +25,16 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
         super.onActivityCreated(savedInstanceState)
 
         if(isAdded){
-            timer = object : CountDownTimer(1700, 1000) {
+            timer = object : CountDownTimer(2200, 1000) {
                 override fun onFinish() {
                     if(isAdded){
                         if (NewstaApp.access_token != null) {
                             //navtomainfragment
                             if(activity?.intent?.action != Intent.ACTION_SEND)
                                 navigateToMainFragment()
+                            else
+                                searchWithNewsta()
                         } else {
-                            //navtoauthenticationoptionsfragment
                             navigateToAuthenticationOptionsFragment()
                         }
                     }
@@ -47,6 +50,27 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
         }
 
+    }
+
+    private fun searchWithNewsta() {
+        if(activity != null) {
+            val intent = activity?.intent
+            if (intent?.action == Intent.ACTION_SEND) {
+                println("14456 SHARE IF MEIN AAYA HAI")
+                println("14456 SHARE INTENT: $intent")
+                if (intent.type?.startsWith("text/") == true) {
+                    println("14456 SHARE INTENT: $intent")
+                    intent?.getStringExtra(Intent.EXTRA_TEXT)?.let { data ->
+                        println("14456 INTENT SHARE TEXT: $data")
+                        val dataToSearch = bundleOf("dataToSearch" to data)
+                        findNavController().navigate(
+                            R.id.action_splashFragment_to_searchFragment,
+                            dataToSearch
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun navigateToMainFragment() {

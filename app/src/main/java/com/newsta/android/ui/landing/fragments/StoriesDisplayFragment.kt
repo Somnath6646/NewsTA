@@ -34,7 +34,7 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
     private fun setUpAdapter() {
 
-        adapter = NewsAdapter { position: Int, stories: List<Story> -> openDetails(position)
+        adapter = NewsAdapter { position: Int, stories: List<Story> -> openDetails(position, stories)
         this.onDataSetChange(stories)}
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
@@ -43,8 +43,8 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
 
     }
 
-    private fun openDetails(position: Int) {
-        val data = DetailsPageData(position)
+    private fun openDetails(position: Int, stories: List<Story>) {
+        val data = DetailsPageData(position, stories[position].events.last().eventId)
         val bundle = bundleOf("data" to data)
         viewModel.selectedDetailsPageData = data
         findNavController().navigate(R.id.action_mainLandingFragment_to_detailsFragment2, bundle)

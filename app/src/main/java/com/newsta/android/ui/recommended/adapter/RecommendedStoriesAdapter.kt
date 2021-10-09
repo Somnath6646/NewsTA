@@ -1,10 +1,12 @@
 package com.newsta.android.ui.recommended.adapter
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -90,11 +92,21 @@ class RecommendedStoriesViewHolder(private val binding: NewsItemBinding, private
         }
         val res = NewstaApp.res
         if(res != null) {
-            if (stories[position].read) {
-                binding.title.setTextColor(Color.GRAY)
-            } else {
-                ResourcesCompat.getColor(res, R.color.colorText, null)
+
+            if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES){
+                if (story.read) {
+                    binding.title.setTextColor(Color.GRAY)
+                } else {
+                    binding.title.setTextColor(Color.WHITE)
+                }
+            }else{
+                if (story.read) {
+                    binding.title.setTextColor(Color.GRAY)
+                }else {
+                    binding.title.setTextColor(Color.BLACK)
+                }
             }
+
         }
         binding.time.text = NewstaApp.setTime(story.updatedAt)
         if (BuildConfig.DEBUG) {

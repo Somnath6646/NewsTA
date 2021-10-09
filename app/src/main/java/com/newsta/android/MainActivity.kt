@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(){
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             }else{
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         })
 
@@ -190,21 +190,7 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun searchWithNewsta() {
-        if (intent?.action == Intent.ACTION_SEND) {
-            println("SHARE IF MEIN AAYA HAI")
-            println("SHARE INTENT: $intent")
-            if (intent.type?.startsWith("text/") == true) {
-                println("SHARE INTENT: $intent")
-                intent?.getStringExtra(Intent.EXTRA_TEXT)?.let { data ->
-                    println("INTENT SHARE TEXT: $data")
-                    val dataToSearch = bundleOf("dataToSearch" to data)
-                    val navHostFragment =
-                        supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-                    val navController = navHostFragment.navController
-                    navController.navigate(R.id.action_splashFragment_to_searchFragment, dataToSearch)
-                }
-            }
-        }
+
     }
 
     private fun observeUserNetworkConnection() {

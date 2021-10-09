@@ -25,8 +25,11 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.login.LoginManager
+import com.newsta.android.MainActivity
 import com.newsta.android.NewstaApp
 import com.newsta.android.R
+import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentNotifyBinding
 import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.remote.data.ArticleState
@@ -37,6 +40,7 @@ import com.newsta.android.ui.notify.adapter.NotifyStoriesAdapter
 import com.newsta.android.utils.MyItemKeyProvider
 import com.newsta.android.utils.NotifyStoryItemDetailsLookup
 import com.newsta.android.utils.helpers.OnDataSetChangedListener
+import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.SavedStory
 import com.newsta.android.utils.models.Story
@@ -49,7 +53,6 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
     private var tracker: SelectionTracker<Long>? = null
 
     private lateinit var adapter: NotifyStoriesAdapter
-
 
     private fun setUpAdapter() {
         adapter = NotifyStoriesAdapter { storyId: Int ->
@@ -142,10 +145,15 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
     }
 
     private fun openDetails(position: Int) {
-        val data = DetailsPageData(position)
+        val data = viewModel.selectedStoryList.value?.get(position)?.events?.last()?.let { DetailsPageData(position, it.eventId) }
         val bundle = bundleOf("data" to data)
-        viewModel.selectedDetailsPageData = data
-        findNavController().navigate(R.id.action_notifyFragment_to_detailsFragment2, bundle)
+        if (data != null) {
+            viewModel.selectedDetailsPageData = data
+            findNavController().navigate(R.id.action_notifyFragment_to_detailsFragment2, bundle)
+        }else{
+            viewModel.debugToast("selected story list is null")
+        }
+
     }
 
     private fun showDeleteDialog(savedStory: List<SavedStory>): Boolean {
@@ -239,6 +247,59 @@ class NotifyFragment : BaseFragment<FragmentNotifyBinding>(), OnDataSetChangedLi
             }
 
         })
+
+        viewModel.logoutDataState.observe(requireActivity(), Observer {
+            it.getContentIfNotHandled().let {
+                when (it) {
+                    is DataState.Success -> {
+                        Log.i("TAG", "Sucess logout ")
+
+                        LoginManager.getInstance().logOut();
+                        viewModel.clearAllData()
+                        /*val action =
+                            LandingFragmentDirections.actionMainLandingFragmentToNavGraph()
+                        findNavController().navigate(action)*/
+                        val context = requireActivity().applicationContext
+
+                        if(context!= null) {
+                            requireActivity().startActivity(Intent(context, MainActivity::class.java))
+                            requireActivity().finish()
+
+                        }
+
+                    }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "Loading logout ")
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "Error logout ")
+                        val dialog = Dialog(requireContext())
+                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(
+                            LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false
+                        )
+                        dialog.setContentView(dialogBinding.root)
+
+                        println("Abhi hai $dialogBinding")
+
+                        dialogBinding.message.text = "${it.exception}"
+                        dialogBinding.buttonText.text = "Try Again"
+                        dialogBinding.button.setOnClickListener { v ->
+                            dialog.dismiss()
+                            findNavController().popBackStack()
+                        }
+
+                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+                        dialog.show()
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+        })
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

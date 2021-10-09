@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -18,17 +19,20 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.login.LoginManager
 import com.newsta.android.MainActivity
 import com.newsta.android.NewstaApp
 import com.newsta.android.databinding.FragmentSavedStoriesBinding
 import com.newsta.android.ui.base.BaseFragment
 import com.newsta.android.R
+import com.newsta.android.databinding.AuthDialogBinding
 import com.newsta.android.databinding.FragmentRecommendedNewsBinding
 import com.newsta.android.databinding.LogoutDialogBinding
 import com.newsta.android.ui.landing.adapter.NewsAdapter
 import com.newsta.android.ui.recommended.adapter.RecommendedStoriesAdapter
 import com.newsta.android.ui.saved.adapter.SavedStoryAdapter
 import com.newsta.android.utils.helpers.OnDataSetChangedListener
+import com.newsta.android.utils.models.DataState
 import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.RecommendedStory
 import com.newsta.android.utils.models.Story
@@ -51,13 +55,14 @@ class RecommendedStoriesFragment: BaseFragment<FragmentRecommendedNewsBinding>()
     }
 
     private fun openDetails(position: Int) {
-        val data = DetailsPageData(position)
+        val data = viewModel.selectedStoryList.value?.get(position)?.events?.last()?.let { DetailsPageData(position, it.eventId) }
         val bundle = bundleOf("data" to data)
-        viewModel.selectedDetailsPageData = data
-        findNavController().navigate(R.id.action_recommendedStoriesFragment_to_detailsFragment2, bundle)
-
-
-
+        if (data != null) {
+            viewModel.selectedDetailsPageData = data
+            findNavController().navigate(R.id.action_recommendedStoriesFragment_to_detailsFragment2, bundle)
+        }else{
+            viewModel.debugToast("selected story list is null")
+        }
     }
 
     private fun initViews() {
@@ -66,6 +71,9 @@ class RecommendedStoriesFragment: BaseFragment<FragmentRecommendedNewsBinding>()
                 viewModel.getRecommendedStories()
                 binding.refreshLayout.isRefreshing = false
             }
+        binding.search.setOnClickListener {
+            findNavController().navigate(R.id.action_recommendedStoriesFragment_to_searchFragment2)
+        }
         }
 
     override fun onDataSetChange(stories: List<Story>) {
@@ -88,11 +96,73 @@ class RecommendedStoriesFragment: BaseFragment<FragmentRecommendedNewsBinding>()
             }
         })
 
-        viewModel.recommendedStoriesLiveData.observe(viewLifecycleOwner, Observer {
+
+
+        viewModel.recommendedStoriesLiveData.observe(requireActivity(),  {
+
             if(it != null){
+                NewstaApp.recommendationApiCallCount++
+                println("77895 count: ${NewstaApp.recommendationApiCallCount}")
+                if(NewstaApp.recommendationApiCallCount == 1) {
+                    println("77895 api call")
+                    viewModel.getRecommendedStories()
+                }
                 adapter.addAll(ArrayList(it.reversed()))
             }
         })
+
+        viewModel.logoutDataState.observe(requireActivity(), Observer {
+            it.getContentIfNotHandled().let {
+                when (it) {
+                    is DataState.Success -> {
+                        Log.i("TAG", "Sucess logout ")
+
+                        LoginManager.getInstance().logOut();
+                        viewModel.clearAllData()
+                        /*val action =
+                            LandingFragmentDirections.actionMainLandingFragmentToNavGraph()
+                        findNavController().navigate(action)*/
+                        val context = requireActivity().applicationContext
+
+                        if(context!= null) {
+                            requireActivity().startActivity(Intent(context, MainActivity::class.java))
+                            requireActivity().finish()
+
+                        }
+
+                    }
+                    is DataState.Loading -> {
+                        Log.i("TAG", "Loading logout ")
+                    }
+                    is DataState.Error -> {
+                        Log.i("TAG", "Error logout ")
+                        val dialog = Dialog(requireContext())
+                        val dialogBinding = DataBindingUtil.inflate<AuthDialogBinding>(
+                            LayoutInflater.from(requireContext()), R.layout.auth_dialog, null, false
+                        )
+                        dialog.setContentView(dialogBinding.root)
+
+                        println("Abhi hai $dialogBinding")
+
+                        dialogBinding.message.text = "${it.exception}"
+                        dialogBinding.buttonText.text = "Try Again"
+                        dialogBinding.button.setOnClickListener { v ->
+                            dialog.dismiss()
+                            findNavController().popBackStack()
+                        }
+
+                        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+                        dialog.show()
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+        })
+
 
     }
 

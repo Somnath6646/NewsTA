@@ -41,7 +41,7 @@ object RetrofitModule {
         }.build()
 
         return Retrofit.Builder()
-            .baseUrl("http://13.232.141.254/")
+            .baseUrl("http://13.234.180.47/")
             .client( client )
             .addConverterFactory(GsonConverterFactory.create(gson))
 
