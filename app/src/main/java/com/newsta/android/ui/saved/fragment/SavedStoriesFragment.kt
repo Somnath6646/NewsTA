@@ -141,11 +141,10 @@ class SavedStoriesFragment : BaseFragment<FragmentSavedStoriesBinding>(), OnData
         val bundle = bundleOf("data" to data)
         if (data != null) {
             viewModel.selectedDetailsPageData = data
-            findNavController().navigate(R.id.action_notifyFragment_to_detailsFragment2, bundle)
+            findNavController().navigate(R.id.action_savedStoriesFragment_to_detailsFragment2, bundle)
         }else{
             viewModel.debugToast("selected story list is null")
         }
-        findNavController().navigate(R.id.action_savedStoriesFragment_to_detailsFragment2, bundle)
     }
 
     private fun showDeleteDialog(savedStory: List<SavedStory>): Boolean {

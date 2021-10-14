@@ -53,10 +53,17 @@ class DetailSlidingFragment : BaseFragment<FragmentDetailSlidingBinding>() {
 
     private fun initViews() {
         println("7855 details sliding frag storyId: ${data.story.storyId} eventId ${data.eventId}")
-        event = data.story.events.single() {
+        val id  = data.story.events.singleOrNull(){
             println("7855 details sliding frag eventId : ${it.eventId}")
             it.eventId == data.eventId
         }
+
+        if(id != null){
+            event = id
+        }else {
+            event = data.story.events.last()
+        }
+
 
         println("Story ---> ${story.storyId} \nEvents size ---> ${story.events.size} \nEvents ---> ${story.events}")
         println("Story: ${story.storyId} Event: ${event.eventId}")
