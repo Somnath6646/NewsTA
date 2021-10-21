@@ -193,7 +193,18 @@
             android:name="dataToSearch"
             app:argType="string"
             android:defaultValue="" />
+        <action
+            android:id="@+id/action_searchFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right"/>
     </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.newsta.android.ui.details.fragment.DetailsFragment"
+        android:label="DetailsFragment" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.newsta.android.ui.settings.SettingsFragment"

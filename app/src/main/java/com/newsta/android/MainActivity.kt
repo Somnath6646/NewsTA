@@ -72,6 +72,15 @@ class MainActivity : AppCompatActivity(){
             Log.i("MainActivity", (accessToken == NewstaApp.getAccessToken()).toString())
         })
 
+
+        viewModel.userPrefrences.shownSwipeLeftDialog.asLiveData().observe(this, Observer { shownSwipeLeftDialog ->
+            if (shownSwipeLeftDialog != null) {
+                NewstaApp.shownSwipeLeftDialog = shownSwipeLeftDialog
+            }else {
+                NewstaApp.shownSwipeLeftDialog = false
+            }
+        })
+
         viewModel.userPrefrences.isDatabaseEmpty.asLiveData().observe(this, Observer { isDatabaseEmpty ->
             if (isDatabaseEmpty != null) {
                 NewstaApp.is_database_empty = isDatabaseEmpty

@@ -62,6 +62,8 @@ class NewstaApp : Application(), Configuration.Provider {
             this.is_database_empty = isDatabaseEmpty
         }
 
+        var shownSwipeLeftDialog = false
+
         var font_scale: Float? = DEFAULT_FONT_SCALE
 
         fun getFontScale(): Float? = font_scale

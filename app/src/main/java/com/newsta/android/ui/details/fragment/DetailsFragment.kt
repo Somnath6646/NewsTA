@@ -2,32 +2,47 @@ package com.newsta.android.ui.details.fragment
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.annotation.ColorRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.drawToBitmap
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieProperty
+import com.airbnb.lottie.SimpleColorFilter
+import com.airbnb.lottie.model.KeyPath
+import com.airbnb.lottie.value.LottieValueCallback
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
+import com.newsta.android.NewstaApp
 import com.newsta.android.R
 import com.newsta.android.databinding.FragmentDetailsBinding
+import com.newsta.android.databinding.LogoutDialogBinding
+import com.newsta.android.databinding.SwipeLeftDialogBinding
 import com.newsta.android.interfaces.DetailsBottomNavInterface
 import com.newsta.android.remote.data.ArticleState
 import com.newsta.android.remote.data.Payload
@@ -79,6 +94,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
     private fun initViews() {
 
+
+        if(!NewstaApp.shownSwipeLeftDialog){
+            showSwipeLeftDialog()
+            viewModel.shownSwipeLeftDialog(true)
+        }
+
+
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
 
         binding.btnShare.setOnClickListener { share() }
@@ -97,6 +119,45 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
 
 
     }
+
+    private fun showSwipeLeftDialog() {
+        val dialog = Dialog(requireContext())
+        val dialogBinding = DataBindingUtil.inflate<SwipeLeftDialogBinding>(
+            LayoutInflater.from(requireContext()), R.layout.swipe_left_dialog, null, false
+        )
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogBinding.animationView.changeLayersColor(R.color.colorText)
+        dialog.show()
+        object : CountDownTimer(3000, 1000) {
+            override fun onFinish() {
+                dialog.dismiss()
+            }
+
+            override fun onTick(millisUntilFinished: Long) {
+
+            }
+
+        }.start()
+
+    }
+
+    fun LottieAnimationView.changeLayersColor(
+        @ColorRes colorRes: Int
+    ) {
+        val color = ContextCompat.getColor(context, colorRes)
+        val filter = SimpleColorFilter(color)
+        val keyPath = KeyPath("**")
+        val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
+
+        addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback)
+    }
+
 
     private fun updateSavedStoryOnServer(savedStoryIds: ArrayList<Int>, action : () -> Unit){
 
@@ -326,8 +387,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     override fun onDestroy() {
         super.onDestroy()
         requireActivity().window.statusBarColor = Color.TRANSPARENT
-        detailsBottomNavInterface.isBottomNavEnabled(true)
-
+        if(detailsBottomNavInterface != null) {
+            detailsBottomNavInterface?.isBottomNavEnabled(true)
+        }
         /*requireActivity().getWindow().setFlags(
             WindowManager.LayoutParams.LAYOUT,
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);*/
@@ -351,9 +413,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
         isPreviousStatusBarLight = WindowInsetsControllerCompat( window, view).isAppearanceLightStatusBars
         WindowInsetsControllerCompat( window, view).isAppearanceLightStatusBars = false
 
-
-        detailsBottomNavInterface.isBottomNavEnabled(false)
-
+        if(detailsBottomNavInterface != null) {
+            detailsBottomNavInterface?.isBottomNavEnabled(false)
+        }
         binding.lifecycleOwner = requireActivity()
         data = viewModel.selectedDetailsPageData
 
@@ -472,7 +534,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>() {
     }
 
     companion object {
-        private lateinit var detailsBottomNavInterface: DetailsBottomNavInterface
+        private var detailsBottomNavInterface: DetailsBottomNavInterface? = null
 
         fun setDetailsBottomNavInterface(detailsBottomNavInterface2: DetailsBottomNavInterface) {
             detailsBottomNavInterface = detailsBottomNavInterface2

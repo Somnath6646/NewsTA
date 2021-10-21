@@ -218,8 +218,9 @@ constructor(private val newsRepository: StoriesRepository,
         println("GET ALL NEWS MEIN AAYA")
 
         viewModelScope.launch {
+            if(NewstaApp.access_token != null) {
 
-            val maxDateTime  = getMaxDate(_maxDateTime)
+                val maxDateTime = getMaxDate(_maxDateTime)
 
                 val request = NewsRequest(
                     NewstaApp.access_token!!,
@@ -232,7 +233,7 @@ constructor(private val newsRepository: StoriesRepository,
                 newsRepository.getAllStories(newsRequest = request, isRefresh = isRefresh)
                     .onEach {
                         _newsDataState.value = it
-                        when(it){
+                        when (it) {
                             is DataState.Success -> {
 
                                 debugToast("newsDataState:  success")
@@ -240,19 +241,27 @@ constructor(private val newsRepository: StoriesRepository,
                                 changeDatabaseState(isDatabaseEmpty = false)
 
 
-                                _storiesLiveData.value = getMapOfStories(oldStories = stories, newStories = ArrayList(it.data))
+                                _storiesLiveData.value = getMapOfStories(
+                                    oldStories = stories,
+                                    newStories = ArrayList(it.data)
+                                )
                                 println("it.data ----> ${it.data}")
 
                                 val list = arrayListOf<Payload>()
                                 val origList = notifyStoriesLiveData.value
                                 println("notifystory onupdate $origList")
-                                if(origList != null){
+                                if (origList != null) {
                                     val stories = it.data
 
                                     origList.forEach {
-                                        if(stories.checkIfHasThisStoryId(it.storyId)){
-                                            list.add(Payload(storyId = it.storyId, read = ArticleState.UNREAD))
-                                        }else{
+                                        if (stories.checkIfHasThisStoryId(it.storyId)) {
+                                            list.add(
+                                                Payload(
+                                                    storyId = it.storyId,
+                                                    read = ArticleState.UNREAD
+                                                )
+                                            )
+                                        } else {
                                             list.add(it)
                                         }
                                     }
@@ -266,12 +275,12 @@ constructor(private val newsRepository: StoriesRepository,
                                 Log.i("newsDataState", "errror ${it.exception}")
 
                                 debugToast("newsDataState:  errror ${it.exception}")
-                                  refreshState.value = false
+                                refreshState.value = false
                             }
                             is DataState.Loading -> {
                                 Log.i("newsDataState", " loding")
                                 debugToast("newsDataState:  loading.....")
-                                  refreshState.value = true
+                                refreshState.value = true
                             }
                             is DataState.Extra -> {
                                 try {
@@ -292,6 +301,7 @@ constructor(private val newsRepository: StoriesRepository,
                         }
                     }
                     .launchIn(viewModelScope)
+            }
         }
 
     }
@@ -598,6 +608,12 @@ constructor(private val newsRepository: StoriesRepository,
     fun changeDatabaseState(isDatabaseEmpty: Boolean) {
         viewModelScope.launch {
             preferences.isDatabaseEmpty(isDatabaseEmpty)
+        }
+    }
+
+    fun shownSwipeLeftDialog(shownSwipeLeftDialog: Boolean) {
+        viewModelScope.launch {
+            preferences.shownSwipeLeftDialog(shownSwipeLeftDialog)
         }
     }
 

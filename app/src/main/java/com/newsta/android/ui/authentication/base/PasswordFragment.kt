@@ -35,6 +35,7 @@ abstract class PasswordFragment <T: ViewDataBinding>: Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+
         binding = DataBindingUtil.inflate(
                 inflater,
                 getFragmentView(),
@@ -67,9 +68,7 @@ abstract class PasswordFragment <T: ViewDataBinding>: Fragment() {
                         }
                     }
                 }
-
             }
-
         })
 
         showPasswordStrength()
@@ -137,11 +136,9 @@ abstract class PasswordFragment <T: ViewDataBinding>: Fragment() {
                     strength++
                     hasDigit = true
                 } else {
-                    if (!hasUppercase && c.isUpperCase()) {
+                    if (!hasUppercase && c.isLetter()) {
                         strength++
                         hasUppercase = true
-                    } else if (!hasLowercase && c.isLowerCase()) {
-                        hasLowercase = true
                     }
                 }
             }
@@ -155,7 +152,7 @@ abstract class PasswordFragment <T: ViewDataBinding>: Fragment() {
     protected fun validatePassword(password: String?): Boolean {
         val strength = passwordStrength(password)
         if(!password.isNullOrEmpty()) {
-            if(password.length >= 8 && strength >= strengthStrong) {
+            if(password.length >= 8) {
                 return true
             }
         }

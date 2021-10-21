@@ -149,7 +149,7 @@ class CategoriesFragment : BaseFragment<FragmentCategoriesBinding>() {
 
     private fun saveUserCategories() {
 
-        viewModel.saveUserCategories(userCategoryIds as ArrayList<Int>)
+        viewModel.saveUserCategories(ArrayList(userCategoryIds))
         viewModel.userCategoriesSaveDataState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DataState.Success -> {

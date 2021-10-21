@@ -30,13 +30,14 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     private lateinit var adapter: SearchAdapter
     private var selectedEventID: Int = 0
     private var position: Int = 0
+    private var dataToSearch: String? = null
 
     override fun getFragmentView(): Int  = R.layout.fragment_search
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        val dataToSearch = arguments?.getString("dataToSearch")
+        binding.lifecycleOwner = requireActivity()
+        dataToSearch = arguments?.getString("dataToSearch")
         println("ARGUMENTS $arguments")
         println("DATA TO SEARCH: $dataToSearch")
         if(!dataToSearch.isNullOrEmpty()) {
@@ -63,7 +64,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         }
 
         binding.viewModel = viewModel
-        binding.lifecycleOwner = requireActivity()
 
         setUpAdapter()
 
@@ -82,7 +82,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
             binding.root.clearFocus()
         }
 
-        viewModel.searchDataState.observe(viewLifecycleOwner, Observer {
+        viewModel.searchDataState.observe(requireActivity(), Observer {
             when (it) {
                 is DataState.Success<List<SearchStory>?> -> {
                     println("Stories got suceessfully")
@@ -156,12 +156,14 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         val stories = ArrayList<Story>()
         stories.add(story)
         viewModel.setSelectedStoryList(stories)
-        /*val bundle = bundleOf("data" to data)
-        findNavController().navigate(R.id.action_landingFragment_to_detailsFragment, bundle)*/
 
         viewModel.selectedDetailsPageData = data
         val bundle = bundleOf("data" to data)
-        findNavController().navigate(R.id.action_searchFragment2_to_detailsFragment2, bundle)
+        if(dataToSearch!= null){
+            findNavController().navigate(R.id.action_searchFragment_to_detailsFragment)
+        }else {
+            findNavController().navigate(R.id.action_searchFragment2_to_detailsFragment2, bundle)
+        }
         /*val intent = Intent(activity, DetailsActivity::class.java)
         activity?.startActivity(intent)*/
     }

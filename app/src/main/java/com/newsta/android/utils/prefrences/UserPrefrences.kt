@@ -58,6 +58,18 @@ class UserPrefrences(context: Context) {
             settings[HAS_CHANGED_PREFERENCES] = hasChangedPreferences
         }
     }
+
+    val shownSwipeLeftDialog: Flow<Boolean?> = applicationContext.dataStore.data
+        .map { preferences ->
+            preferences[SHOWN_SWIPE_LEFT_DIALOG]
+        }
+
+    suspend fun shownSwipeLeftDialog(shownSwipeLeftDialog: Boolean) {
+
+        applicationContext.dataStore.edit { settings ->
+            settings[SHOWN_SWIPE_LEFT_DIALOG] = shownSwipeLeftDialog
+        }
+    }
     suspend fun setIsDarkMode(isDarkMode: Boolean) {
 
         applicationContext.dataStore.edit { settings ->
@@ -101,6 +113,8 @@ class UserPrefrences(context: Context) {
         val FONT_SCALE = floatPreferencesKey("font_scale")
         val APP_INSTALLED_JUST_NOW = booleanPreferencesKey("app_installed_now")
         val HAS_CHANGED_PREFERENCES = booleanPreferencesKey("has_changed_preferences")
+
+        val SHOWN_SWIPE_LEFT_DIALOG = booleanPreferencesKey("showswipeleftdialog")
 
         val IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
     }
