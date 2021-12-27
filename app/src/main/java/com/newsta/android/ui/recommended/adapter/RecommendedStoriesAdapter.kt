@@ -48,8 +48,12 @@ class RecommendedStoriesAdapter(private val onClick: (Int) -> Unit) : RecyclerVi
         stories.clear()
         stories.addAll(storiesList)
         stories = ArrayList(stories.distinct())
+        stories.sortByDescending{
+            it.updatedAt
+        }
+
         println("LIST SIZE ${stories.size}")
-        onDataSetChangeListener.onDataSetChange(convertStoryType(storiesList))
+        onDataSetChangeListener.onDataSetChange(convertStoryType(stories))
         notifyDataSetChanged()
     }
 

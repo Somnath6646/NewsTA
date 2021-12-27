@@ -2,34 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/recommendedStoriesFragment">
+    app:startDestination="@id/mainLandingFragment">
 
-    <fragment
-        android:id="@+id/recommendedStoriesFragment"
-        android:name="com.newsta.android.ui.recommended.fragments.RecommendedStoriesFragment"
-        android:label="RecommendedStoriesFragment" >
-        <action
-            android:id="@+id/action_recommendedStoriesFragment_to_detailsFragment2"
-            app:destination="@id/detailsFragment2"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-        <action
-            android:id="@+id/action_recommendedStoriesFragment_to_settingsFragment2"
-            app:destination="@id/settingsFragment2"
-            app:enterAnim="@anim/in_from_right"
-            app:exitAnim="@anim/out_to_left"
-            app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
-        <action
-            android:id="@+id/action_recommendedStoriesFragment_to_searchFragment2"
-            app:destination="@id/searchFragment2" />
-    </fragment>
     <fragment
         android:id="@+id/mainLandingFragment"
         android:name="com.newsta.android.ui.landing.fragments.LandingFragment"
-        android:label="LandingFragment" >
+        android:label="LandingFragment">
         <action
             android:id="@+id/action_mainLandingFragment_to_detailsFragment2"
             app:destination="@id/detailsFragment2"
@@ -43,48 +21,71 @@
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
+            app:popExitAnim="@anim/out_to_right" />
         <action
             android:id="@+id/action_mainLandingFragment_to_searchFragment2"
             app:destination="@id/searchFragment2" />
     </fragment>
     <fragment
+        android:id="@+id/recommendedStoriesFragment"
+        android:name="com.newsta.android.ui.recommended.fragments.RecommendedStoriesFragment"
+        android:label="RecommendedStoriesFragment">
+        <action
+            android:id="@+id/action_recommendedStoriesFragment_to_detailsFragment2"
+            app:destination="@id/detailsFragment2"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right" />
+        <action
+            android:id="@+id/action_recommendedStoriesFragment_to_settingsFragment2"
+            app:destination="@id/settingsFragment2"
+            app:enterAnim="@anim/in_from_right"
+            app:exitAnim="@anim/out_to_left"
+            app:popEnterAnim="@anim/in_from_left"
+            app:popExitAnim="@anim/out_to_right" />
+        <action
+            android:id="@+id/action_recommendedStoriesFragment_to_searchFragment2"
+            app:destination="@id/searchFragment2" />
+    </fragment>
+
+    <fragment
         android:id="@+id/notifyFragment"
         android:name="com.newsta.android.ui.notify.NotifyFragment"
-        android:label="NotifyFragment" >
+        android:label="NotifyFragment">
         <action
             android:id="@+id/action_notifyFragment_to_detailsFragment2"
             app:destination="@id/detailsFragment2"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
+            app:popExitAnim="@anim/out_to_right" />
         <action
             android:id="@+id/action_notifyFragment_to_settingsFragment2"
             app:destination="@id/settingsFragment2"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
+            app:popExitAnim="@anim/out_to_right" />
     </fragment>
     <fragment
         android:id="@+id/savedStoriesFragment"
         android:name="com.newsta.android.ui.saved.fragment.SavedStoriesFragment"
-        android:label="SavedStoriesFragment" >
+        android:label="SavedStoriesFragment">
         <action
             android:id="@+id/action_savedStoriesFragment_to_detailsFragment2"
             app:destination="@id/detailsFragment2"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
+            app:popExitAnim="@anim/out_to_right" />
         <action
             android:id="@+id/action_savedStoriesFragment_to_settingsFragment2"
             app:destination="@id/settingsFragment2"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
+            app:popExitAnim="@anim/out_to_right" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment2"
@@ -93,14 +94,14 @@
     <fragment
         android:id="@+id/settingsFragment2"
         android:name="com.newsta.android.ui.settings.SettingsFragment"
-        android:label="SettingsFragment" >
+        android:label="SettingsFragment">
         <action
             android:id="@+id/action_settingsFragment2_to_categoriesFragment2"
             app:destination="@id/categoriesFragment2"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
+            app:popExitAnim="@anim/out_to_right" />
     </fragment>
     <fragment
         android:id="@+id/categoriesFragment2"
@@ -109,7 +110,7 @@
     <fragment
         android:id="@+id/mainFragment2"
         android:name="com.newsta.android.ui.main.fragments.MainFragment"
-        android:label="MainFragment" >
+        android:label="MainFragment">
         <action
             android:id="@+id/action_mainFragment2_to_settingsFragment2"
             app:destination="@id/settingsFragment2"
@@ -121,13 +122,13 @@
     <fragment
         android:id="@+id/searchFragment2"
         android:name="com.newsta.android.ui.search.fragment.SearchFragment"
-        android:label="SearchFragment" >
+        android:label="SearchFragment">
         <action
             android:id="@+id/action_searchFragment2_to_detailsFragment2"
             app:destination="@id/detailsFragment2"
             app:enterAnim="@anim/in_from_right"
             app:exitAnim="@anim/out_to_left"
             app:popEnterAnim="@anim/in_from_left"
-            app:popExitAnim="@anim/out_to_right"/>
+            app:popExitAnim="@anim/out_to_right" />
     </fragment>
 </navigation>

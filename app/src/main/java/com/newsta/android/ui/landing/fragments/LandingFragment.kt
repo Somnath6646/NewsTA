@@ -161,14 +161,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                 }
 
                 R.id.privacy_policy -> {
-                    /*val url = "http://www.newsta.in/privacy"
-                    val webpage: Uri = Uri.parse(url)
-                    val intent = Intent(Intent.ACTION_VIEW, webpage)
-                    startActivity(Intent.createChooser(intent, "Contact us - contact@newsta.in"))
-                    true
-                    findNavController().navigate(R.id.action_landingFragment_to_privacyFragment)
-                    closeNavigationDrawer()*/
-                    val url = "http://www.newsta.in/privacy"
+                    val url = "https://thirsty-heyrovsky-b69ef3.netlify.app/privacy"
                     val webpage: Uri = Uri.parse(url)
                     val intent = Intent(Intent.ACTION_VIEW, webpage)
                     startActivity(Intent.createChooser(intent, "Rate us on Google Play Store"))
@@ -185,7 +178,7 @@ class LandingFragment : BaseFragment<FragmentLandingBinding>() {
                     true
                     findNavController().navigate(R.id.action_landingFragment_to_feedBackFragment)
                     closeNavigationDrawer()*/
-                    val url = "http://www.newsta.in/feedback"
+                    val url = "https://thirsty-heyrovsky-b69ef3.netlify.app/feedback"
                     val webpage: Uri = Uri.parse(url)
                     val intent = Intent(Intent.ACTION_VIEW, webpage)
                     startActivity(Intent.createChooser(intent, "Rate us on Google Play Store"))

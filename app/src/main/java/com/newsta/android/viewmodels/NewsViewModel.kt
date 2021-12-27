@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.max
 
 class NewsViewModel
 @ViewModelInject
@@ -39,6 +40,9 @@ constructor(private val newsRepository: StoriesRepository,
     var refreshState = MutableLiveData<Boolean>(false)
 
     var urlToRequest: String = "http://13.235.50.53/"
+
+    val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
+
 
     private val _selectedStoryList = MutableLiveData<List<Story>>()
 
@@ -317,7 +321,7 @@ constructor(private val newsRepository: StoriesRepository,
 
             var _newStories = newStories.filter { story -> story.category == category.categoryId }
             _newStories = _newStories.sortedByDescending {
-                it.viewCount
+                it.updatedAt
             }
 
             val catStories = _newStories + _oldStories
@@ -377,7 +381,7 @@ constructor(private val newsRepository: StoriesRepository,
                                 )
                                 if(!isRefreshedByDefault) {
                                     isRefreshedByDefault = true
-                                    getNewStories(maxStory.storyId, maxStory.updatedAt)
+                                    getNewStories(maxStory.storyId, max(days3, maxStory.updatedAt))
                                 }
                             }
                         } catch (e: Exception) {
@@ -557,7 +561,7 @@ constructor(private val newsRepository: StoriesRepository,
                             )
                             if (!isRefreshedByDefault) {
                                 isRefreshedByDefault = true
-                                getNewStories(maxStory.storyId, maxStory.updatedAt)
+                                getNewStories(maxStory.storyId, max(days3, maxStory.updatedAt))
                             }
                         } catch (e: Exception) {
                             debugToast("Min max error")

@@ -2,14 +2,6 @@
 
     <string name="facebook_app_id">4394745367235472</string>
     <string name="app_name">Newsta</string>
-    <string name="log_in_btn_text">Log In</string>
-    <string name="sign_up_btn_text">Sign Up</string>
-    <string name="font_scale">Font scale</string>
     <string name="font_size">Font size</string>
-    <string name="skip">Skip</string>
-    <string name="continue_without_log_in">Continue without Log In</string>
     <string name="log_in">Log In</string>
-    <string name="continue_without_sign_up">Continue without Sign Up</string>
-    <string name="continue_as_guest">Continue as guest</string>
-    <string name="skip_for_now"><![CDATA[Skip for now >]]></string>
 </resources>

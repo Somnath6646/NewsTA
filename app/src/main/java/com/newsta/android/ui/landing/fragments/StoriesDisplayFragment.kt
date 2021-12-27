@@ -25,6 +25,7 @@ import com.newsta.android.utils.models.DetailsPageData
 import com.newsta.android.utils.models.MaxStoryAndUpdateTime
 import com.newsta.android.utils.models.Story
 import com.newsta.android.viewmodels.NewsViewModel
+import kotlin.math.max
 
 class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), OnDataSetChangedListener {
 
@@ -53,14 +54,15 @@ class StoriesDisplayFragment : BaseFragment<FragmentStoriesDisplayBinding>(), On
     private fun initViews() {
 
         binding.refreshLayout.setOnRefreshListener {
-            if (maxStory != null) {
+            val days3 = System.currentTimeMillis() - (3 * 24 * 60 * 60 * 1000)
 
-                viewModel.getNewStories(maxStory.storyId, maxStory.updatedAt, true)
-                viewModel.updateNews(maxStory.storyId, maxStory.updatedAt)
+            if (maxStory != null) {
+                viewModel.getNewStories(maxStory.storyId, max(days3, maxStory.updatedAt) , true)
+                viewModel.updateNews(maxStory.storyId, max(days3, maxStory.updatedAt))
 
             } else if (!extras.isNullOrEmpty()) {
-                viewModel.getNewStories(extras.first().storyId, extras.first().updatedAt)
-                viewModel.updateNews(extras.first().storyId, extras.first().updatedAt)
+                viewModel.getNewStories(extras.first().storyId, max(extras.first().updatedAt, days3))
+                viewModel.updateNews(extras.first().storyId, max(extras.first().updatedAt, days3))
             } else {
                 Toast.makeText(
                     requireContext(),

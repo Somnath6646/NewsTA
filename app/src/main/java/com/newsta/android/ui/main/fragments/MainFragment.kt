@@ -35,7 +35,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), DetailsBottomNavInterf
         val popupMenu = PopupMenu(context, null)
         popupMenu.inflate(R.menu.bottom_nav_menu)
         val menu = popupMenu.menu
-//        binding.bottomNav.setupWithNavController(menu, navController)
+//       binding.bottomNav.setupWithNavController(menu, navController)
         binding.bottomNav.setupWithNavController(navController)
         var badge = binding.bottomNav.getOrCreateBadge(R.id.notifyFragment)
         badge.isVisible = true

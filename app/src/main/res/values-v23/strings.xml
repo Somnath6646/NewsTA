@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="font_scale">Font scale</string>
     <string name="font_size">Font size</string>
-    <string name="skip">Skip</string>
-    <string name="continue_without_log_in">Continue without Log In</string>
     <string name="log_in">Log In</string>
-    <string name="continue_without_sign_up">Continue without Sign Up</string>
-    <string name="continue_as_guest">Continue as guest</string>
-    <string name="skip_for_now"><![CDATA[Skip for now >]]></string>
 </resources>

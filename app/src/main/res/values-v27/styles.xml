@@ -14,20 +14,4 @@
 <!--        <item name="navigationIconTint">@color/colorText</item>-->
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
-
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorPrimary</item>
-
-        <item name="android:fontFamily">@font/regular</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-
-        <item name="android:windowContentTransitions">true</item>
-
-    </style>
 </resources>

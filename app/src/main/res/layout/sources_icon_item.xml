@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="1dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/test_img" />
+                android:src="@drawable/ic_logo" />
 
             <TextView
                 android:id="@+id/source_name_letter"

@@ -25,7 +25,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
         super.onActivityCreated(savedInstanceState)
 
         if(isAdded){
-            timer = object : CountDownTimer(2200, 1000) {
+            timer = object : CountDownTimer(100, 1000) {
                 override fun onFinish() {
                     if(isAdded){
                         if (NewstaApp.access_token != null) {

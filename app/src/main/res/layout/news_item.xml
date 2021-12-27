@@ -16,6 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="12dp">
 
@@ -25,11 +26,11 @@
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/colorPrimary"
             android:visibility="gone"
-            app:cardCornerRadius="7dp"
+            app:cardCornerRadius="15dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/image_card"
+            app:layout_constraintEnd_toStartOf="@id/news_layout"
             android:layout_marginEnd="8dp">
 
             <ImageView
@@ -42,86 +43,96 @@
                 />
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/image_card"
-            android:layout_width="match_parent"
-            android:layout_height="175dp"
-            android:elevation="0dp"
-            android:layout_marginVertical="3dp"
-            app:cardCornerRadius="10dp"
-            app:cardMaxElevation="0dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toStartOf="@id/title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/newsta_default" />
-
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/title"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/news_layout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            style="@style/NewsAdapterText"
-            android:lineHeight="20sp"
-            android:text="Weeklong Lockdown in Dist Bordering Maharashtra, Two-day Clampdown in Shajapur as Cases Rise in MP"
-            android:textColor="@color/colorText"
-            android:maxLines="4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_card" />
-
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="4dp"
-            android:fontFamily="@font/regular"
-            android:text="N hours ago"
-            android:textColor="@color/colorSourceTitle"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/check_layout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title"
-             />
+            >
+            <androidx.cardview.widget.CardView
+                android:id="@+id/image_card"
+                android:layout_width="match_parent"
+                android:layout_height="175dp"
+                android:elevation="0dp"
+                android:layout_marginVertical="3dp"
+                app:cardCornerRadius="10dp"
+                app:cardMaxElevation="0dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toStartOf="@id/title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/timeline_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:orientation="horizontal"
-            android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/title">
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/newsta_default" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_timeline"
-                android:layout_gravity="center"
-                />
+            </androidx.cardview.widget.CardView>
+
             <TextView
-                android:id="@+id/timeline"
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                style="@style/NewsAdapterText"
+                android:lineHeight="20sp"
+                android:text="Weeklong Lockdown in Dist Bordering Maharashtra, Two-day Clampdown in Shajapur as Cases Rise in MP"
+                android:textColor="@color/colorText"
+                android:maxLines="4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image_card" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="4dp"
+                android:fontFamily="@font/regular"
+                android:text="N hours ago"
+                android:textColor="@color/colorSourceTitle"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                />
+
+            <LinearLayout
+                android:id="@+id/timeline_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:fontFamily="@font/regular"
-                android:text="Timeline"
-                android:textColor="@color/colorSourceTitle"
-                android:textSize="12sp"/>
-        </LinearLayout>
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/title">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_timeline"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/timeline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/regular"
+                    android:text="Timeline"
+                    android:textColor="@color/colorSourceTitle"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

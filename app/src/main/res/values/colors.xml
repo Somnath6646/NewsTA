@@ -16,6 +16,5 @@
     <color name="dividerColor">#D5D5D5</color>
     <color name="sourceIconBgColor">#fff</color>
     <color name="bg_white">#fff</color>
-    <color name="tab_unselectedText_color">#ABAFB3</color>
 
 </resources>
